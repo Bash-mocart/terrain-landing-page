@@ -1,38 +1,51 @@
-import Image from "next/image";
+// Three buyer / seller testimonials. Cards keep the Figma's 44px-
+// rounded shape on the Forest Verification section, but the AI-
+// generated portrait photographs and dark gradient overlays are gone.
+// Each card is now a typeset citation on Warm Canvas with a hairline
+// border, an initials monogram in a Forest Verification circle, a
+// Nunito quote, and a Late-Night Boardroom attribution row with the
+// verified-role dot.
+//
+// Honest trust signals: the photos in the Figma were synthetic; an
+// initials monogram is the same visual rhythm without claiming a face
+// that does not exist.
 
-// Three buyer testimonials. Photo-backed cards over a Forest
-// Verification wash; quotes match the Figma's copy verbatim apart
-// from the TERRA -> Terrain rename.
 type Testimonial = {
   name: string;
   role: string;
+  city: string;
   quote: string;
-  image: string;
 };
 
 const TESTIMONIALS: Testimonial[] = [
   {
     name: "Adewale Okafor",
-    role: "First-time buyer · Lagos",
+    role: "Buyer",
+    city: "Abuja",
     quote:
-      "I was skeptical at first — buying land remotely felt risky. But Terrain's escrow held my funds until I physically confirmed the beacon numbers matched. First time I've felt safe doing this.",
-    image: "/figma/testimonial-1.png",
+      "I was skeptical at first. Buying land remotely felt risky. Terrain's escrow held my funds until I physically confirmed the beacons matched the survey plan. First time I felt safe doing this.",
   },
   {
     name: "Chidi Eze",
-    role: "Land seller · Abuja",
+    role: "Seller",
+    city: "Abuja",
     quote:
-      "I listed my plot on a Thursday, had a verified buyer by Saturday, and the title transfer was done in 12 days. The fastest land transaction I've ever done in Nigeria.",
-    image: "/figma/testimonial-2.png",
+      "I listed a plot on a Thursday. The reviewer came on Friday. By the next Saturday I had a verified buyer, and the title transfer was done in 12 days.",
   },
   {
     name: "Fatima Ibrahim",
-    role: "Repeat buyer · Port Harcourt",
+    role: "Repeat buyer",
+    city: "Port Harcourt",
     quote:
       "The C of O verification and KYC process gives me confidence that every listing is legitimate. I've completed three purchases through Terrain and I won't go back to the old way.",
-    image: "/figma/testimonial-3.png",
   },
 ];
+
+function initials(name: string): string {
+  const parts = name.trim().split(/\s+/);
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
 
 export function Testimonials() {
   return (
@@ -66,39 +79,53 @@ export function Testimonials() {
 
 function TestimonialCard({ t }: { t: Testimonial }) {
   return (
-    <article className="relative flex h-[540px] flex-col justify-between overflow-hidden rounded-[44px] bg-primary p-8">
-      <Image
-        src={t.image}
-        alt=""
-        fill
-        className="absolute inset-0 object-cover opacity-55"
-        sizes="(min-width: 768px) 33vw, 100vw"
-      />
-      <div
-        className="absolute inset-0 bg-gradient-to-b from-primary/30 via-primary/60 to-primary/90"
-        aria-hidden
-      />
+    <article className="flex h-full flex-col justify-between gap-10 rounded-[44px] border border-[--color-border-rule] bg-canvas p-8 text-primary">
+      <div className="flex items-start justify-between gap-4">
+        <div
+          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-verified text-canvas"
+          aria-hidden
+        >
+          <span
+            className="text-sm tracking-[0.04em]"
+            style={{
+              fontFamily: "var(--font-interactive)",
+              fontWeight: 700,
+            }}
+          >
+            {initials(t.name)}
+          </span>
+        </div>
+        <span
+          className="mt-2 text-[10px] uppercase tracking-[0.18em] text-secondary"
+          style={{ fontFamily: "var(--font-interactive)" }}
+        >
+          On record
+        </span>
+      </div>
       <blockquote
-        className="relative z-10 text-lg leading-relaxed text-canvas"
+        className="text-lg leading-relaxed text-primary"
         style={{ fontFamily: "var(--font-body)" }}
       >
-        &ldquo;{t.quote}&rdquo;
+        “{t.quote}”
       </blockquote>
-      <footer className="relative z-10">
+      <footer className="border-t border-[--color-border-rule] pt-5">
         <p
-          className="text-base text-canvas"
-          style={{
-            fontFamily: "var(--font-interactive)",
-            fontWeight: 700,
-          }}
+          className="text-base text-primary"
+          style={{ fontFamily: "var(--font-body)", fontWeight: 700 }}
         >
           {t.name}
         </p>
         <p
-          className="mt-1 text-sm text-canvas/70"
-          style={{ fontFamily: "var(--font-body)" }}
+          className="mt-1 flex items-center gap-1.5 text-[11px] uppercase tracking-[0.16em] text-secondary"
+          style={{ fontFamily: "var(--font-interactive)" }}
         >
-          {t.role}
+          <span
+            aria-hidden
+            className="inline-block h-1.5 w-1.5 rounded-full bg-verified"
+          />
+          Verified {t.role.toLowerCase()}
+          <span aria-hidden> · </span>
+          {t.city}
         </p>
       </footer>
     </article>
