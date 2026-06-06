@@ -16,8 +16,18 @@ import "mapbox-gl/dist/mapbox-gl.css";
 // cmd/ctrl and doesn't hijack page scroll. NavigationControl is
 // dropped; the map is a backdrop, not a control surface.
 
-const ABUJA_CENTER: [number, number] = [7.3986, 9.0765]; // [lng, lat]
-const ABUJA_ZOOM = 10.2;
+// Camera defaults. Initial framing covers the FCT urban districts
+// (Maitama, Wuse, Asokoro, Garki). After listings arrive we fit the
+// camera to the actual plot bounds so the visible map is exactly the
+// area where verified plots sit, padded for breathing room.
+const ABUJA_CENTER: [number, number] = [7.4951, 9.0579]; // [lng, lat], central FCT urban
+const ABUJA_ZOOM = 11.4;
+// FCT bounding box, prevents the user from panning to Lagos or beyond
+// once they're inside the map.
+const ABUJA_MAX_BOUNDS: [[number, number], [number, number]] = [
+  [7.1, 8.7], // SW
+  [7.85, 9.45], // NE
+];
 
 type Listing = {
   id: string;
@@ -71,6 +81,7 @@ export function LiveMap() {
       style: "mapbox://styles/mapbox/streets-v12",
       center: ABUJA_CENTER,
       zoom: ABUJA_ZOOM,
+      maxBounds: ABUJA_MAX_BOUNDS,
       attributionControl: false,
       cooperativeGestures: true,
     });
@@ -95,13 +106,27 @@ export function LiveMap() {
 
         for (const listing of listings) {
           if (!Number.isFinite(listing.latitude) || !Number.isFinite(listing.longitude)) continue;
-          const dot = document.createElement("button");
-          dot.className = "terrain-pin-dot";
-          dot.type = "button";
-          dot.setAttribute(
+          const pin = document.createElement("button");
+          pin.className = "terrain-pin-marker";
+          pin.type = "button";
+          pin.setAttribute(
             "aria-label",
             `${listing.title ?? "Verified plot"}, ${formatPrice(listing.price)}`,
           );
+          // SVG teardrop: Forest Verification body, Warm Canvas inner
+          // ring. Anchor "bottom" on the Mapbox marker so the tail of
+          // the teardrop lands precisely on the lat/lng.
+          pin.innerHTML = `
+            <svg viewBox="0 0 22 30" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+              <path
+                d="M11 1 C 5.5 1 1 5.5 1 11 C 1 18 11 29 11 29 C 11 29 21 18 21 11 C 21 5.5 16.5 1 11 1 Z"
+                fill="var(--color-verified)"
+                stroke="var(--color-canvas)"
+                stroke-width="1.6"
+              />
+              <circle cx="11" cy="11" r="3.2" fill="var(--color-canvas)" />
+            </svg>
+          `;
 
           const popup = new mapboxgl.Popup({
             offset: 14,
@@ -116,11 +141,31 @@ export function LiveMap() {
              </div>`,
           );
 
-          const marker = new mapboxgl.Marker({ element: dot, anchor: "center" })
+          const marker = new mapboxgl.Marker({ element: pin, anchor: "bottom" })
             .setLngLat([listing.longitude, listing.latitude])
             .setPopup(popup)
             .addTo(map);
           markersRef.current.push(marker);
+        }
+
+        // Fit the camera to the actual plot envelope so the visible
+        // map is exactly the area where plots sit. Skip if there are
+        // 0 or 1 plots (fitBounds on a single point throws); the
+        // initial Abuja camera handles those.
+        const coords = listings
+          .filter(
+            (l) =>
+              Number.isFinite(l.latitude) && Number.isFinite(l.longitude),
+          )
+          .map((l) => [l.longitude, l.latitude] as [number, number]);
+        if (coords.length >= 2) {
+          const bounds = new mapboxgl.LngLatBounds(coords[0], coords[0]);
+          for (const c of coords) bounds.extend(c);
+          map.fitBounds(bounds, {
+            padding: { top: 80, bottom: 80, left: 80, right: 80 },
+            maxZoom: 13,
+            duration: 700,
+          });
         }
       } catch (e) {
         if (cancelled) return;

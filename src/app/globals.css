@@ -54,39 +54,40 @@ body {
 }
 
 /* ============================================================
- * Mapbox plot dot + popup chrome
+ * Mapbox plot pin + popup chrome
  *
- * Pin is a small Forest Verification dot with a Warm Canvas halo so
- * it reads against the colorful streets map without competing with
- * the hero copy that overlays the same map. Popup matches the same
- * Warm Canvas card vocabulary the rest of the page uses.
+ * Pin is a small Forest Verification teardrop (location-pin shape)
+ * with a Warm Canvas inner ring. The tail anchors to the lat/lng so
+ * the marker reads as "this is a specific place at this point" rather
+ * than "this area, somewhere." Matches the Figma's location-pin
+ * vocabulary while keeping the verified-trust palette.
  * ============================================================ */
 
-.terrain-pin-dot {
-  width: 12px;
-  height: 12px;
+.terrain-pin-marker {
+  display: block;
+  width: 22px;
+  height: 30px;
   padding: 0;
   border: none;
-  border-radius: 50%;
-  background: var(--color-verified);
+  background: transparent;
   cursor: pointer;
-  box-shadow:
-    0 0 0 2px rgba(253, 252, 251, 0.95),
-    0 0 0 3px rgba(9, 5, 3, 0.18),
-    0 2px 4px rgba(9, 5, 3, 0.18);
-  transition:
-    transform 140ms cubic-bezier(0.2, 0.6, 0.2, 1),
-    box-shadow 140ms cubic-bezier(0.2, 0.6, 0.2, 1);
+  filter: drop-shadow(0 2px 3px rgba(9, 5, 3, 0.28));
+  transform-origin: 50% 100%; /* scale grows from the tail point */
+  transition: transform 140ms cubic-bezier(0.2, 0.6, 0.2, 1),
+    filter 140ms cubic-bezier(0.2, 0.6, 0.2, 1);
 }
 
-.terrain-pin-dot:hover,
-.terrain-pin-dot:focus-visible {
-  transform: scale(1.35);
+.terrain-pin-marker svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.terrain-pin-marker:hover,
+.terrain-pin-marker:focus-visible {
+  transform: scale(1.15);
   outline: none;
-  box-shadow:
-    0 0 0 2px rgba(253, 252, 251, 1),
-    0 0 0 3px rgba(9, 5, 3, 0.32),
-    0 3px 6px rgba(9, 5, 3, 0.24);
+  filter: drop-shadow(0 3px 5px rgba(9, 5, 3, 0.36));
 }
 
 .terrain-popup .mapboxgl-popup-content {
