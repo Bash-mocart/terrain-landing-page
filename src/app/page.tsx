@@ -1,25 +1,25 @@
 import { TopNav } from "@/components/TopNav";
 import { Hero } from "@/components/Hero";
-import { SamplePlotRecord } from "@/components/SamplePlotRecord";
-import { VerificationSteps } from "@/components/VerificationSteps";
-import { Citations } from "@/components/Citations";
+import { ThreeSteps } from "@/components/ThreeSteps";
+import { WhatsOnMarket } from "@/components/WhatsOnMarket";
+import { BrowseTransactTrack } from "@/components/BrowseTransactTrack";
+import { Testimonials } from "@/components/Testimonials";
 import { FAQ } from "@/components/FAQ";
 import { Footer } from "@/components/Footer";
 
-// Landing page composition. Five content sections read top-to-bottom
-// as a single Terrain Record entry: title block (with live Abuja
-// map), sample plot drawn from the live registry, the three
-// verification steps, citations, and common questions. The hairline
-// rule (1px Border Rule) is the dominant structural element; no
-// section-level background swaps, no pill chrome.
+// Landing page composition. Tracks the Figma's 7-section structure with
+// the live Mapbox map in the hero (replacing the Figma's blank map
+// placeholder) and palette discipline enforced throughout (no peach,
+// no medium gray, no em-dashes, no "Built in Lagos" pose).
 export default function Home() {
   return (
     <>
       <TopNav />
       <Hero />
-      <SamplePlotRecord />
-      <VerificationSteps />
-      <Citations />
+      <ThreeSteps />
+      <WhatsOnMarket />
+      <BrowseTransactTrack />
+      <Testimonials />
       <FAQ />
       <Footer />
     </>

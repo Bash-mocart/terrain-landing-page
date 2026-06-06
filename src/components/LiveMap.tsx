@@ -4,33 +4,22 @@ import { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 
-// Hero map, treated as Plate I in a Terrain registry document. Chamfered
-// frame (45deg cuts at each corner) makes the plate read as a stamped
-// surveyor's document, not a raw rectangle. Inside the frame:
+// Hero map. Mapbox GL JS satellite tiles + real verified plot pins
+// pulled from /v1/listings. Pin chrome mirrors the Flutter buyer-map
+// vocabulary: Warm Canvas pill with price text, hairline border, no
+// map-pin glyph. A visitor who later installs the app sees the same
+// map.
 //
-//   - Header strip:   PLATE I · ABUJA, PLOTS ON RECORD      N ↑
-//   - Hairline divider
-//   - Map content:    satellite tiles + verified-plot dots
-//                     + four corner coordinate tickmarks
-//   - Bottom caption: UPDATED dd MMM yyyy · N VERIFIED PLOTS ON RECORD
-//
-// Pins are 8px Forest Verification dots with a Warm Canvas halo so they
-// read against the satellite. Hover (desktop) shows a small price-only
-// chip; click reveals the full popup. Mobile collapses to tap = full
-// popup since touchscreens don't fire hover events.
+// Behaviour:
+//   - Camera: Abuja centroid, zoom 10.2.
+//   - Fetch: /v1/listings?city=Abuja&verified=true&limit=50 on mount.
+//   - Markers: HTML elements per plot, click to open a popup with
+//     title, price, and a "Get the app to view the record" line.
+//   - Cooperative gestures: wheel-zoom requires cmd/ctrl so the map
+//     does not hijack scroll on a reading page.
 
 const ABUJA_CENTER: [number, number] = [7.3986, 9.0765]; // [lng, lat]
 const ABUJA_ZOOM = 10.2;
-
-// Hardcoded bounding box for the corner tickmarks. Reflects the initial
-// camera frame, not the live pan/zoom — the registry voice is "this is
-// the bounding box of Plate I as published", not a live readout.
-const PLATE_BOUNDS = {
-  northLat: 9.2,
-  southLat: 9.0,
-  westLng: 7.3,
-  eastLng: 7.5,
-};
 
 type Listing = {
   id: string;
@@ -59,31 +48,12 @@ function formatPrice(naira: number): string {
   return `₦${naira.toLocaleString("en-NG")}`;
 }
 
-function formatLat(lat: number): string {
-  return `${lat.toFixed(2)}°${lat >= 0 ? "N" : "S"}`;
-}
-
-function formatLng(lng: number): string {
-  return `${lng.toFixed(2)}°${lng >= 0 ? "E" : "W"}`;
-}
-
-function formatUpdatedDate(d: Date): string {
-  return d
-    .toLocaleDateString("en-GB", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    })
-    .toUpperCase();
-}
-
 export function LiveMap() {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const markersRef = useRef<mapboxgl.Marker[]>([]);
   const [count, setCount] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [updatedAt] = useState(() => new Date());
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -101,7 +71,10 @@ export function LiveMap() {
       attributionControl: false,
       cooperativeGestures: true,
     });
-    map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), "top-right");
+    map.addControl(
+      new mapboxgl.NavigationControl({ showCompass: false }),
+      "top-right",
+    );
     map.addControl(
       new mapboxgl.AttributionControl({ compact: true }),
       "bottom-right",
@@ -123,33 +96,19 @@ export function LiveMap() {
 
         for (const listing of listings) {
           if (!Number.isFinite(listing.latitude) || !Number.isFinite(listing.longitude)) continue;
-
-          const dot = document.createElement("button");
-          dot.className = "terrain-pin-dot";
-          dot.type = "button";
-          dot.setAttribute(
+          const el = document.createElement("div");
+          el.className = "terrain-pin";
+          el.textContent = formatPrice(listing.price);
+          el.setAttribute("role", "button");
+          el.setAttribute(
             "aria-label",
             `${listing.title ?? "Verified plot"}, ${formatPrice(listing.price)}`,
           );
 
-          // Hover-peek: price-only chip that follows the dot on
-          // mouseenter. closeOnClick:false lets the marker's own click
-          // handler swap it for the full popup without a flicker.
-          const peekPopup = new mapboxgl.Popup({
-            offset: 14,
-            closeButton: false,
-            closeOnClick: false,
-            className: "terrain-popup terrain-popup-peek",
-            anchor: "bottom",
-          }).setHTML(
-            `<span class="terrain-popup-peek-price">${formatPrice(listing.price)}</span>`,
-          );
-
-          const fullPopup = new mapboxgl.Popup({
-            offset: 16,
+          const popup = new mapboxgl.Popup({
+            offset: 18,
             closeButton: false,
             className: "terrain-popup",
-            anchor: "bottom",
           }).setHTML(
             `<div class="terrain-popup-inner">
                <div class="terrain-popup-title">${(listing.title ?? "Verified plot").replace(/</g, "&lt;")}</div>
@@ -158,21 +117,10 @@ export function LiveMap() {
              </div>`,
           );
 
-          const marker = new mapboxgl.Marker({ element: dot, anchor: "center" })
+          const marker = new mapboxgl.Marker({ element: el, anchor: "bottom" })
             .setLngLat([listing.longitude, listing.latitude])
+            .setPopup(popup)
             .addTo(map);
-
-          dot.addEventListener("mouseenter", () => {
-            if (fullPopup.isOpen()) return;
-            peekPopup.setLngLat([listing.longitude, listing.latitude]).addTo(map);
-          });
-          dot.addEventListener("mouseleave", () => peekPopup.remove());
-          dot.addEventListener("click", (e) => {
-            e.stopPropagation();
-            peekPopup.remove();
-            fullPopup.setLngLat([listing.longitude, listing.latitude]).addTo(map);
-          });
-
           markersRef.current.push(marker);
         }
 
@@ -195,51 +143,21 @@ export function LiveMap() {
   }, []);
 
   return (
-    <figure className="flex flex-col gap-3">
-      <div className="terrain-plate">
-        <div className="terrain-plate-inner">
-          <div className="terrain-plate-header">
-            <span className="terrain-plate-header-label">
-              <span className="tabular-nums">Plate I</span>
-              <span aria-hidden> · </span>
-              Abuja, plots on record
-            </span>
-            <span className="terrain-plate-header-compass" aria-hidden>
-              N ↑
-            </span>
-          </div>
-          <div className="terrain-plate-divider" aria-hidden />
-          <div className="terrain-plate-map-wrap">
-            <div ref={containerRef} className="terrain-plate-map" />
-            <span className="terrain-plate-corner terrain-plate-corner-tl">
-              {formatLat(PLATE_BOUNDS.northLat)} · {formatLng(PLATE_BOUNDS.westLng)}
-            </span>
-            <span className="terrain-plate-corner terrain-plate-corner-tr">
-              {formatLat(PLATE_BOUNDS.northLat)} · {formatLng(PLATE_BOUNDS.eastLng)}
-            </span>
-            <span className="terrain-plate-corner terrain-plate-corner-bl">
-              {formatLat(PLATE_BOUNDS.southLat)} · {formatLng(PLATE_BOUNDS.westLng)}
-            </span>
-            <span className="terrain-plate-corner terrain-plate-corner-br">
-              {formatLat(PLATE_BOUNDS.southLat)} · {formatLng(PLATE_BOUNDS.eastLng)}
-            </span>
-          </div>
-        </div>
-      </div>
-      <figcaption
-        className="px-1 text-[11px] uppercase tracking-[0.16em] text-[#717171]"
+    <div className="flex flex-col gap-3">
+      <div
+        ref={containerRef}
+        className="aspect-square w-full overflow-hidden rounded-[44px] border border-[--color-border-rule] bg-canvas lg:aspect-[5/6]"
+        aria-label="Map of verified plots in Abuja"
+        role="region"
+      />
+      <p
+        className="text-[11px] uppercase tracking-[0.16em] text-secondary"
         style={{ fontFamily: "var(--font-interactive)" }}
       >
-        {error ? (
-          error
-        ) : (
-          <>
-            Updated {formatUpdatedDate(updatedAt)}
-            <span aria-hidden> &nbsp;·&nbsp; </span>
-            {count !== null ? `${count} verified plots on record` : "loading plots…"}
-          </>
-        )}
-      </figcaption>
-    </figure>
+        {error
+          ? error
+          : `Verified plots in Abuja${count !== null ? ` · ${count}` : ""}`}
+      </p>
+    </div>
   );
 }
