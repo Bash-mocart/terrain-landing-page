@@ -178,15 +178,24 @@ export function LiveMap() {
           // SVG teardrop: Forest Verification body, Warm Canvas inner
           // ring. Anchor "bottom" on the Mapbox marker so the tail of
           // the teardrop lands precisely on the lat/lng.
+          //
+          // Explicit width / height attributes (NOT just viewBox) so
+          // the SVG has intrinsic dimensions: Mapbox's marker
+          // positioning chain can collapse a parent button to 0x0
+          // when the only child is an SVG without intrinsic size.
+          // Hex colors hardcoded (rather than var(--color-verified))
+          // because CSS variables in SVG presentation attributes do
+          // not consistently resolve across browsers when the SVG
+          // lives inside Mapbox's marker subtree.
           pin.innerHTML = `
-            <svg viewBox="0 0 22 30" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+            <svg viewBox="0 0 22 30" width="22" height="30" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
               <path
                 d="M11 1 C 5.5 1 1 5.5 1 11 C 1 18 11 29 11 29 C 11 29 21 18 21 11 C 21 5.5 16.5 1 11 1 Z"
-                fill="var(--color-verified)"
-                stroke="var(--color-canvas)"
+                fill="#4a7c59"
+                stroke="#fdfcfb"
                 stroke-width="1.6"
               />
-              <circle cx="11" cy="11" r="3.2" fill="var(--color-canvas)" />
+              <circle cx="11" cy="11" r="3.2" fill="#fdfcfb" />
             </svg>
           `;
 
