@@ -51,15 +51,23 @@ export function LiveMap() {
   const markersRef = useRef<mapboxgl.Marker[]>([]);
 
   useEffect(() => {
-    if (!containerRef.current) return;
+    const container = containerRef.current;
+    if (!container) return;
     if (!MAPBOX_TOKEN) {
       console.warn("Terrain map: NEXT_PUBLIC_MAPBOX_TOKEN is not set.");
       return;
     }
+    // React 19 strict-mode in dev double-mounts effects. Mapbox's
+    // `map.remove()` cleanup doesn't always evict its DOM children
+    // synchronously, so the second mount can land on a non-empty
+    // container and warn "The map container element should be empty".
+    // Replacing the children first is harmless on a clean container
+    // and idempotent on a dirty one.
+    container.replaceChildren();
     mapboxgl.accessToken = MAPBOX_TOKEN;
 
     const map = new mapboxgl.Map({
-      container: containerRef.current,
+      container,
       style: "mapbox://styles/mapbox/streets-v12",
       center: ABUJA_CENTER,
       zoom: ABUJA_ZOOM,
