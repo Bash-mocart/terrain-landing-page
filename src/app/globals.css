@@ -86,15 +86,20 @@ body {
 }
 
 .terrain-pin-body {
-  padding: 4px 10px 5px;
-  background: #fdfcfb;
-  border: 1px solid #ebebeb;
+  padding: 5px 11px 6px;
+  /* Late-Night Boardroom pill with Warm Canvas text — matches the
+     Flutter app's selected-pin variant. Light streets map below
+     means a Warm Canvas pill would blend into the cream terrain; the
+     dark variant pops cleanly and stays in the Flutter pin
+     vocabulary. */
+  background: #090503;
+  border: 1px solid #090503;
   border-radius: 999px;
-  color: #090503;
+  color: #fdfcfb;
   font-family: var(--font-interactive);
   font-size: 12px;
   font-weight: 700;
-  letter-spacing: -0.01em;
+  letter-spacing: 0;
   line-height: 1.2;
   white-space: nowrap;
 }
@@ -106,7 +111,7 @@ body {
   margin-top: -1px; /* overlap pill bottom edge so the seam is hidden */
   border-left: 5px solid transparent;
   border-right: 5px solid transparent;
-  border-top: 6px solid #fdfcfb;
+  border-top: 6px solid #090503;
 }
 
 .terrain-popup .mapboxgl-popup-content {
