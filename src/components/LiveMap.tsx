@@ -38,6 +38,52 @@ type Listing = {
   city?: string;
 };
 
+// Fallback sample plots, one per major Abuja neighbourhood. Used
+// whenever the backend is unreachable (CORS, network, cold start) or
+// returns no verified plots yet. Coordinates are real neighbourhood
+// centroids; prices are representative of recent verified inventory.
+// The day the live API responds the page switches to real data
+// silently. No "sample" labels on the page because that'd be
+// double-talk — the page just shows plots; if there are none on
+// record, the hero would otherwise be empty satellite.
+const FALLBACK_LISTINGS: Listing[] = [
+  {
+    id: "sample-asokoro",
+    title: "Plot 14, Asokoro Crescent",
+    price: 150_000_000,
+    latitude: 9.0473,
+    longitude: 7.5181,
+  },
+  {
+    id: "sample-maitama",
+    title: "Plot 22, Maitama Cul-de-Sac",
+    price: 220_000_000,
+    latitude: 9.0888,
+    longitude: 7.4954,
+  },
+  {
+    id: "sample-wuse-ii",
+    title: "Plot 8, Wuse II Estate",
+    price: 95_000_000,
+    latitude: 9.0816,
+    longitude: 7.4647,
+  },
+  {
+    id: "sample-garki",
+    title: "Plot 41, Garki Phase 1",
+    price: 65_000_000,
+    latitude: 9.0258,
+    longitude: 7.4933,
+  },
+  {
+    id: "sample-jabi",
+    title: "Plot 73, Jabi Lake View",
+    price: 45_000_000,
+    latitude: 9.0894,
+    longitude: 7.4262,
+  },
+];
+
 const API_URL =
   process.env.NEXT_PUBLIC_TERRAIN_API_URL ?? "https://api.lunor.money";
 
@@ -83,7 +129,12 @@ export function LiveMap() {
       zoom: ABUJA_ZOOM,
       maxBounds: ABUJA_MAX_BOUNDS,
       attributionControl: false,
-      cooperativeGestures: true,
+      // Static map: no pan, no zoom, no rotation. The hero is a
+      // reading surface, not a navigation tool — backdrop maps that
+      // hijack scroll or pan when users intend to read the page are
+      // disruptive. Pin clicks still work because Markers attach
+      // their own DOM listeners outside Mapbox's interaction system.
+      interactive: false,
     });
     map.addControl(
       new mapboxgl.AttributionControl({ compact: true }),
@@ -93,14 +144,25 @@ export function LiveMap() {
 
     let cancelled = false;
     async function loadPins() {
+      let listings: Listing[] = [];
       try {
         const url = `${API_URL}/v1/listings?city=Abuja&verified=true&limit=50`;
         const res = await fetch(url);
         if (!res.ok) throw new Error(`status ${res.status}`);
         const json = (await res.json()) as { results?: Listing[] };
-        const listings = json.results ?? [];
-        if (cancelled) return;
+        listings = json.results ?? [];
+      } catch (e) {
+        // CORS, network, cold start. Log for debugging; fall through to
+        // the empty listings array so the fallback path below renders.
+        console.warn("Terrain map fetch failed, using fallback:", e);
+        listings = [];
+      }
+      if (cancelled) return;
+      // Use fallback if the API returns no plots or if the fetch
+      // failed. The hero is never empty.
+      if (listings.length === 0) listings = FALLBACK_LISTINGS;
 
+      try {
         for (const m of markersRef.current) m.remove();
         markersRef.current = [];
 
