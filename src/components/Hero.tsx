@@ -12,13 +12,16 @@ export function Hero() {
       <div className="absolute inset-0 z-0">
         <LiveMap />
       </div>
-      {/* Reading wash: Warm Canvas gradient confined to the left ~45% so
-         the headline + CTAs remain legible against the streets map. Stops
-         well before the map's centre so plot pins in the middle-right
-         half are never washed out (a wider wash hid clustered pins in
-         dev when fitBounds tightened to a few plots). */}
+      {/* Reading wash: confined to the left 40% of the hero so the
+         headline + CTAs sit on a quieter surface, while plot pins in
+         the middle and right of the map are never washed out. Opacity
+         drops fast — peak 75% at the left edge, 25% by mid-wash, 0%
+         at the right edge of the wash (which is 40% across the hero).
+         A typical pin in the wash region still reads clearly because
+         peak opacity sits behind the text density, not behind the
+         middle of the map where pins cluster. */}
       <div
-        className="pointer-events-none absolute inset-y-0 left-0 z-[1] w-3/5 bg-gradient-to-r from-canvas/90 via-canvas/60 to-transparent"
+        className="pointer-events-none absolute inset-y-0 left-0 z-[1] w-2/5 bg-gradient-to-r from-canvas/75 via-canvas/25 to-transparent"
         aria-hidden
       />
       <div className="relative z-10 mx-auto grid max-w-[1440px] grid-cols-12 gap-8 px-10 pt-28 pb-20 lg:pt-36 lg:pb-32">
