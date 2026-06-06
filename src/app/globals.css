@@ -1,26 +1,47 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
+/*
+ * Terrain brand tokens. Sourced from the Flutter app's DESIGN.md so
+ * the marketing site and product surfaces stay visually unified.
+ *
+ *   Warm Canvas         #FDFCFB   page background, sheet surface
+ *   Late-Night Boardroom#090503   primary text + dark CTA surface
+ *   Forest Verification #4A7C59   trust anchor (verified badge, CTA accent)
+ *   Survey Gray         #717171   secondary text
+ *   Border Rule         #EBEBEB   hairlines, dividers, input borders
+ *
+ * Restrained palette — no other colors land in marketing without an
+ * explicit brand approval. If a Figma surface introduces something
+ * new, treat it as a question first, not a token.
+ */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-canvas: #fdfcfb;
+  --color-primary: #090503;
+  --color-verified: #4a7c59;
+  --color-secondary: #717171;
+  --color-border-rule: #ebebeb;
+
+  /* Display / body / interactive font roles match the Flutter app's
+     Two-Font-Per-Screen rule (Zain + Nunito) plus Inter-Only-on-
+     Interactive (numerals, caps, button labels). */
+  --font-display: var(--font-zain), system-ui, sans-serif;
+  --font-body: var(--font-nunito), system-ui, sans-serif;
+  --font-interactive: var(--font-inter), system-ui, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* Reset baseline. No dark-mode auto-switch — DESIGN.md commits to
+   Warm Canvas as the marketing register. A dedicated dark variant
+   would be a separate art direction decision, not a default. */
+html,
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-canvas);
+  color: var(--color-primary);
+}
+
+/* Selection tint reuses Forest Verification so the brand voice
+   carries even into text-select state. 14% alpha keeps it as a
+   wash, not a highlight. */
+::selection {
+  background: color-mix(in oklch, var(--color-verified) 14%, transparent);
+  color: var(--color-primary);
 }
