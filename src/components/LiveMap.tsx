@@ -1,22 +1,20 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 
-// Hero map. Mapbox GL JS satellite tiles + real verified plot pins
-// pulled from /v1/listings. Pin chrome mirrors the Flutter buyer-map
-// vocabulary: Warm Canvas pill with price text, hairline border, no
-// map-pin glyph. A visitor who later installs the app sees the same
-// map.
+// Hero backdrop. Mapbox GL JS light streets style + real verified
+// plot pins pulled from /v1/listings. Fills the parent container
+// (the Hero section); the headline + CTAs overlay on top. Pin chrome
+// is a small Forest Verification dot with a Warm Canvas halo so it
+// reads against the colorful street map without competing with the
+// hero copy.
 //
-// Behaviour:
-//   - Camera: Abuja centroid, zoom 10.2.
-//   - Fetch: /v1/listings?city=Abuja&verified=true&limit=50 on mount.
-//   - Markers: HTML elements per plot, click to open a popup with
-//     title, price, and a "Get the app to view the record" line.
-//   - Cooperative gestures: wheel-zoom requires cmd/ctrl so the map
-//     does not hijack scroll on a reading page.
+// Style choice: streets-v12 (light streets) rather than satellite,
+// per the Figma. Cooperative gestures stay true so wheel-zoom needs
+// cmd/ctrl and doesn't hijack page scroll. NavigationControl is
+// dropped; the map is a backdrop, not a control surface.
 
 const ABUJA_CENTER: [number, number] = [7.3986, 9.0765]; // [lng, lat]
 const ABUJA_ZOOM = 10.2;
@@ -28,7 +26,6 @@ type Listing = {
   latitude: number;
   longitude: number;
   city?: string;
-  is_verified?: boolean;
 };
 
 const API_URL =
@@ -52,29 +49,23 @@ export function LiveMap() {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const markersRef = useRef<mapboxgl.Marker[]>([]);
-  const [count, setCount] = useState<number | null>(null);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!containerRef.current) return;
     if (!MAPBOX_TOKEN) {
-      setError("Map unavailable. NEXT_PUBLIC_MAPBOX_TOKEN is not set.");
+      console.warn("Terrain map: NEXT_PUBLIC_MAPBOX_TOKEN is not set.");
       return;
     }
     mapboxgl.accessToken = MAPBOX_TOKEN;
 
     const map = new mapboxgl.Map({
       container: containerRef.current,
-      style: "mapbox://styles/mapbox/satellite-streets-v12",
+      style: "mapbox://styles/mapbox/streets-v12",
       center: ABUJA_CENTER,
       zoom: ABUJA_ZOOM,
       attributionControl: false,
       cooperativeGestures: true,
     });
-    map.addControl(
-      new mapboxgl.NavigationControl({ showCompass: false }),
-      "top-right",
-    );
     map.addControl(
       new mapboxgl.AttributionControl({ compact: true }),
       "bottom-right",
@@ -87,7 +78,7 @@ export function LiveMap() {
         const url = `${API_URL}/v1/listings?city=Abuja&verified=true&limit=50`;
         const res = await fetch(url);
         if (!res.ok) throw new Error(`status ${res.status}`);
-        const json = (await res.json()) as { results?: Listing[]; total?: number };
+        const json = (await res.json()) as { results?: Listing[] };
         const listings = json.results ?? [];
         if (cancelled) return;
 
@@ -96,19 +87,19 @@ export function LiveMap() {
 
         for (const listing of listings) {
           if (!Number.isFinite(listing.latitude) || !Number.isFinite(listing.longitude)) continue;
-          const el = document.createElement("div");
-          el.className = "terrain-pin";
-          el.textContent = formatPrice(listing.price);
-          el.setAttribute("role", "button");
-          el.setAttribute(
+          const dot = document.createElement("button");
+          dot.className = "terrain-pin-dot";
+          dot.type = "button";
+          dot.setAttribute(
             "aria-label",
             `${listing.title ?? "Verified plot"}, ${formatPrice(listing.price)}`,
           );
 
           const popup = new mapboxgl.Popup({
-            offset: 18,
+            offset: 14,
             closeButton: false,
             className: "terrain-popup",
+            anchor: "bottom",
           }).setHTML(
             `<div class="terrain-popup-inner">
                <div class="terrain-popup-title">${(listing.title ?? "Verified plot").replace(/</g, "&lt;")}</div>
@@ -117,18 +108,15 @@ export function LiveMap() {
              </div>`,
           );
 
-          const marker = new mapboxgl.Marker({ element: el, anchor: "bottom" })
+          const marker = new mapboxgl.Marker({ element: dot, anchor: "center" })
             .setLngLat([listing.longitude, listing.latitude])
             .setPopup(popup)
             .addTo(map);
           markersRef.current.push(marker);
         }
-
-        setCount(typeof json.total === "number" ? json.total : listings.length);
       } catch (e) {
         if (cancelled) return;
         console.error("Terrain map fetch failed:", e);
-        setError("Couldn't load plots. The map is interactive; the app holds the records.");
       }
     }
     void loadPins();
@@ -143,21 +131,11 @@ export function LiveMap() {
   }, []);
 
   return (
-    <div className="flex flex-col gap-3">
-      <div
-        ref={containerRef}
-        className="aspect-square w-full overflow-hidden rounded-[44px] border border-[--color-border-rule] bg-canvas lg:aspect-[5/6]"
-        aria-label="Map of verified plots in Abuja"
-        role="region"
-      />
-      <p
-        className="text-[11px] uppercase tracking-[0.16em] text-secondary"
-        style={{ fontFamily: "var(--font-interactive)" }}
-      >
-        {error
-          ? error
-          : `Verified plots in Abuja${count !== null ? ` · ${count}` : ""}`}
-      </p>
-    </div>
+    <div
+      ref={containerRef}
+      className="h-full w-full"
+      aria-label="Map of verified plots in Abuja"
+      role="region"
+    />
   );
 }
