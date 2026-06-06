@@ -3,12 +3,11 @@ import { Inter, Nunito, Zain } from "next/font/google";
 import "./globals.css";
 
 // Brand type system mirrors the Terrain Flutter app (DESIGN.md):
-//   Zain    — display / wordmark / hero headings
-//   Nunito  — body copy
-//   Inter   — interactive labels, numerals, caps
-// next/font self-hosts each file and adds a CSS variable we can
-// reference from Tailwind (config: see `@theme` block in globals.css)
-// so the cascade stays predictable across server-rendered HTML.
+//   Zain    display, headlines, wordmark
+//   Nunito  body copy
+//   Inter   interactive labels, caps, numerals
+// next/font self-hosts each weight and emits a CSS variable on <html>.
+// globals.css re-publishes those as semantic role tokens.
 const zain = Zain({
   variable: "--font-zain",
   subsets: ["latin"],
@@ -31,14 +30,14 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Terrain — Verified land + property records in Nigeria",
+  title: "Terrain. Verified land on record in Nigeria.",
   description:
-    "Buy, sell, and verify Nigerian land and property records. Every plot validated on the ground by a Terrain reviewer before it reaches you.",
+    "Browse verified plots across Abuja, Lagos, and beyond. Every title confirmed before funds move. Reviewed on the ground.",
   metadataBase: new URL("https://terrain.ng"),
   openGraph: {
-    title: "Terrain — Verified land + property records in Nigeria",
+    title: "Terrain. Verified land on record in Nigeria.",
     description:
-      "Every plot validated on the ground by a Terrain reviewer before it reaches you.",
+      "Browse verified plots across Abuja, Lagos, and beyond. Every title confirmed before funds move.",
     url: "https://terrain.ng",
     siteName: "Terrain",
     locale: "en_NG",
@@ -56,7 +55,7 @@ export default function RootLayout({
       lang="en"
       className={`${zain.variable} ${nunito.variable} ${inter.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-body bg-canvas text-primary">
+      <body className="min-h-full" style={{ fontFamily: "var(--font-body)" }}>
         {children}
       </body>
     </html>
