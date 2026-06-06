@@ -4,28 +4,33 @@ import { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 
-// Hero map. Mapbox GL JS satellite tiles + real verified plot pins
-// pulled from /v1/listings. Mirrors the Flutter buyer-map vocabulary
-// (satellite-streets-v12, Warm Canvas pill chrome) so a visitor who
-// later installs the app sees the same map. Client component because
-// Mapbox GL JS is a browser-only library.
+// Hero map, treated as Plate I in a Terrain registry document. Chamfered
+// frame (45deg cuts at each corner) makes the plate read as a stamped
+// surveyor's document, not a raw rectangle. Inside the frame:
 //
-// On mount:
-//   1. Initialise the map centred on Abuja.
-//   2. Fetch verified plots from /v1/listings?city=Abuja.
-//   3. Render each plot as an HTML marker (DOM element, not bitmap).
-//      HTML markers are fine at the 50-plot cap; we'd switch to a
-//      GeoJSON source + SymbolLayer if the count ever scaled past
-//      ~500, the same break-point the Flutter app has.
-//   4. Click a marker -> small popup with price + "Get the app to
-//      view the record" link.
+//   - Header strip:   PLATE I · ABUJA, PLOTS ON RECORD      N ↑
+//   - Hairline divider
+//   - Map content:    satellite tiles + verified-plot dots
+//                     + four corner coordinate tickmarks
+//   - Bottom caption: UPDATED dd MMM yyyy · N VERIFIED PLOTS ON RECORD
 //
-// No animation on entry: the map renders in place to match the
-// document register. No scroll-driven zoom (the camera responds to
-// user gestures only).
+// Pins are 8px Forest Verification dots with a Warm Canvas halo so they
+// read against the satellite. Hover (desktop) shows a small price-only
+// chip; click reveals the full popup. Mobile collapses to tap = full
+// popup since touchscreens don't fire hover events.
 
 const ABUJA_CENTER: [number, number] = [7.3986, 9.0765]; // [lng, lat]
 const ABUJA_ZOOM = 10.2;
+
+// Hardcoded bounding box for the corner tickmarks. Reflects the initial
+// camera frame, not the live pan/zoom — the registry voice is "this is
+// the bounding box of Plate I as published", not a live readout.
+const PLATE_BOUNDS = {
+  northLat: 9.2,
+  southLat: 9.0,
+  westLng: 7.3,
+  eastLng: 7.5,
+};
 
 type Listing = {
   id: string;
@@ -54,17 +59,36 @@ function formatPrice(naira: number): string {
   return `₦${naira.toLocaleString("en-NG")}`;
 }
 
+function formatLat(lat: number): string {
+  return `${lat.toFixed(2)}°${lat >= 0 ? "N" : "S"}`;
+}
+
+function formatLng(lng: number): string {
+  return `${lng.toFixed(2)}°${lng >= 0 ? "E" : "W"}`;
+}
+
+function formatUpdatedDate(d: Date): string {
+  return d
+    .toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    })
+    .toUpperCase();
+}
+
 export function LiveMap() {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const markersRef = useRef<mapboxgl.Marker[]>([]);
   const [count, setCount] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [updatedAt] = useState(() => new Date());
 
   useEffect(() => {
     if (!containerRef.current) return;
     if (!MAPBOX_TOKEN) {
-      setError("Map unavailable: NEXT_PUBLIC_MAPBOX_TOKEN is not set.");
+      setError("Map unavailable. NEXT_PUBLIC_MAPBOX_TOKEN is not set.");
       return;
     }
     mapboxgl.accessToken = MAPBOX_TOKEN;
@@ -75,7 +99,7 @@ export function LiveMap() {
       center: ABUJA_CENTER,
       zoom: ABUJA_ZOOM,
       attributionControl: false,
-      cooperativeGestures: true, // wheel zoom requires ctrl/cmd; respects readers
+      cooperativeGestures: true,
     });
     map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), "top-right");
     map.addControl(
@@ -99,19 +123,33 @@ export function LiveMap() {
 
         for (const listing of listings) {
           if (!Number.isFinite(listing.latitude) || !Number.isFinite(listing.longitude)) continue;
-          const el = document.createElement("div");
-          el.className = "terrain-pin";
-          el.textContent = formatPrice(listing.price);
-          el.setAttribute("role", "button");
-          el.setAttribute(
+
+          const dot = document.createElement("button");
+          dot.className = "terrain-pin-dot";
+          dot.type = "button";
+          dot.setAttribute(
             "aria-label",
             `${listing.title ?? "Verified plot"}, ${formatPrice(listing.price)}`,
           );
 
-          const popup = new mapboxgl.Popup({
-            offset: 18,
+          // Hover-peek: price-only chip that follows the dot on
+          // mouseenter. closeOnClick:false lets the marker's own click
+          // handler swap it for the full popup without a flicker.
+          const peekPopup = new mapboxgl.Popup({
+            offset: 14,
+            closeButton: false,
+            closeOnClick: false,
+            className: "terrain-popup terrain-popup-peek",
+            anchor: "bottom",
+          }).setHTML(
+            `<span class="terrain-popup-peek-price">${formatPrice(listing.price)}</span>`,
+          );
+
+          const fullPopup = new mapboxgl.Popup({
+            offset: 16,
             closeButton: false,
             className: "terrain-popup",
+            anchor: "bottom",
           }).setHTML(
             `<div class="terrain-popup-inner">
                <div class="terrain-popup-title">${(listing.title ?? "Verified plot").replace(/</g, "&lt;")}</div>
@@ -120,19 +158,27 @@ export function LiveMap() {
              </div>`,
           );
 
-          const marker = new mapboxgl.Marker({ element: el, anchor: "bottom" })
+          const marker = new mapboxgl.Marker({ element: dot, anchor: "center" })
             .setLngLat([listing.longitude, listing.latitude])
-            .setPopup(popup)
             .addTo(map);
+
+          dot.addEventListener("mouseenter", () => {
+            if (fullPopup.isOpen()) return;
+            peekPopup.setLngLat([listing.longitude, listing.latitude]).addTo(map);
+          });
+          dot.addEventListener("mouseleave", () => peekPopup.remove());
+          dot.addEventListener("click", (e) => {
+            e.stopPropagation();
+            peekPopup.remove();
+            fullPopup.setLngLat([listing.longitude, listing.latitude]).addTo(map);
+          });
+
           markersRef.current.push(marker);
         }
 
         setCount(typeof json.total === "number" ? json.total : listings.length);
       } catch (e) {
         if (cancelled) return;
-        // Don't surface the raw error to users; render the map empty
-        // and fall through to the typeset caption beneath which still
-        // reads honestly without a plot count.
         console.error("Terrain map fetch failed:", e);
         setError("Couldn't load plots. The map is interactive; the app holds the records.");
       }
@@ -149,21 +195,51 @@ export function LiveMap() {
   }, []);
 
   return (
-    <div className="flex flex-col gap-3">
-      <div
-        ref={containerRef}
-        className="aspect-[4/5] w-full overflow-hidden rounded-md border border-[#ebebeb] bg-[#fdfcfb] sm:aspect-square lg:aspect-[5/6]"
-        aria-label="Map of verified plots in Abuja"
-        role="region"
-      />
-      <p
-        className="text-[11px] uppercase tracking-[0.16em] text-[#717171]"
+    <figure className="flex flex-col gap-3">
+      <div className="terrain-plate">
+        <div className="terrain-plate-inner">
+          <div className="terrain-plate-header">
+            <span className="terrain-plate-header-label">
+              <span className="tabular-nums">Plate I</span>
+              <span aria-hidden> · </span>
+              Abuja, plots on record
+            </span>
+            <span className="terrain-plate-header-compass" aria-hidden>
+              N ↑
+            </span>
+          </div>
+          <div className="terrain-plate-divider" aria-hidden />
+          <div className="terrain-plate-map-wrap">
+            <div ref={containerRef} className="terrain-plate-map" />
+            <span className="terrain-plate-corner terrain-plate-corner-tl">
+              {formatLat(PLATE_BOUNDS.northLat)} · {formatLng(PLATE_BOUNDS.westLng)}
+            </span>
+            <span className="terrain-plate-corner terrain-plate-corner-tr">
+              {formatLat(PLATE_BOUNDS.northLat)} · {formatLng(PLATE_BOUNDS.eastLng)}
+            </span>
+            <span className="terrain-plate-corner terrain-plate-corner-bl">
+              {formatLat(PLATE_BOUNDS.southLat)} · {formatLng(PLATE_BOUNDS.westLng)}
+            </span>
+            <span className="terrain-plate-corner terrain-plate-corner-br">
+              {formatLat(PLATE_BOUNDS.southLat)} · {formatLng(PLATE_BOUNDS.eastLng)}
+            </span>
+          </div>
+        </div>
+      </div>
+      <figcaption
+        className="px-1 text-[11px] uppercase tracking-[0.16em] text-[#717171]"
         style={{ fontFamily: "var(--font-interactive)" }}
       >
-        {error
-          ? error
-          : `Plate I · Abuja, plots on record${count !== null ? ` · ${count} plots` : ""}`}
-      </p>
-    </div>
+        {error ? (
+          error
+        ) : (
+          <>
+            Updated {formatUpdatedDate(updatedAt)}
+            <span aria-hidden> &nbsp;·&nbsp; </span>
+            {count !== null ? `${count} verified plots on record` : "loading plots…"}
+          </>
+        )}
+      </figcaption>
+    </figure>
   );
 }
