@@ -122,7 +122,7 @@ function createClusterMarker(
   badge.className = "terrain-cluster-badge";
   badge.setAttribute(
     "aria-label",
-    `Zoom to ${count} verified plots in this area`,
+    `Explore ${count} verified plots in this area`,
   );
   // Single span inside the circle; count formatted "12" for ≤99
   // and "99+" beyond — keeps the badge a consistent two-character
@@ -386,6 +386,19 @@ export function LiveMap() {
       dragRotate: false,
       pitchWithRotate: false,
       touchPitch: false,
+      // Override Mapbox's default cooperative-gestures help text so
+      // the overlay reads in Terrain's registry voice instead of the
+      // mechanical "move the map" default. Visual chrome of the
+      // overlay is restyled in globals.css to Warm Canvas + Inter
+      // caps so the whole affordance matches the rest of the page.
+      locale: {
+        "ScrollZoomBlocker.CtrlMessage":
+          "Hold ctrl + scroll to explore the registry",
+        "ScrollZoomBlocker.CmdMessage":
+          "Hold ⌘ + scroll to explore the registry",
+        "TouchPanBlocker.Message":
+          "Two fingers to explore the registry",
+      },
     });
     map.addControl(
       new mapboxgl.AttributionControl({ compact: true }),

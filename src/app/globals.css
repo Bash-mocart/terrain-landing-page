@@ -306,6 +306,68 @@ body {
    install CTA lives in the hero store buttons, not on every pin
    tooltip. */
 
+/* Cooperative-gestures help overlays. Mapbox renders two of them —
+   ScrollZoomBlocker fires when the user wheel-scrolls over the map
+   without ⌘/ctrl, TouchPanBlocker fires on single-finger touch over
+   the map. Default chrome is an opaque dark scrim with a system-font
+   message that reads "Mapbox interrupting me" instead of "Terrain
+   telling me something."
+
+   Restyled as a quiet typographic toast: nearly-transparent
+   Late-Night Boardroom wash over the map, a small Warm Canvas pill
+   centred inside, message in Inter caps at 11px / 0.14em — the same
+   eyebrow grammar used elsewhere on the page. The wash is light
+   enough (12% Late-Night Boardroom) that pins behind it remain
+   readable, so the overlay feels like a label rather than a modal. */
+.mapboxgl-scroll-zoom-blocker,
+.mapboxgl-touch-pan-blocker {
+  background: rgba(9, 5, 3, 0.12) !important;
+  color: var(--color-primary) !important;
+  font-family: var(--font-interactive) !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.14em !important;
+  text-transform: uppercase !important;
+  text-align: center !important;
+  line-height: 1.4 !important;
+  /* Mapbox positions the message text directly inside this element
+     with default flex centering — keep that, just replace the chrome.
+     padding lifts the text into a Warm Canvas pill via background
+     and box-shadow rather than a child element so the typography
+     reads as a single typeset toast. */
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* The inner text node — Mapbox wraps the message in a span/div with
+   one of these class fragments. Style both safely; both targeted via
+   the parent's flex centring, so we just need to dress them as a pill. */
+.mapboxgl-scroll-zoom-blocker > *,
+.mapboxgl-touch-pan-blocker > * {
+  background: var(--color-canvas) !important;
+  border: 1px solid var(--color-border-rule) !important;
+  border-radius: 999px !important;
+  padding: 10px 18px !important;
+  max-width: 320px !important;
+  box-shadow: 0 6px 18px rgba(9, 5, 3, 0.16) !important;
+}
+
+/* Visibility transition: fade in/out fast (180ms) using the same
+   ease-out curve as the pin hover. Mapbox toggles a "-show" class
+   variant for the visible state. */
+.mapboxgl-scroll-zoom-blocker,
+.mapboxgl-touch-pan-blocker {
+  transition: opacity 180ms cubic-bezier(0.2, 0.6, 0.2, 1) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mapboxgl-scroll-zoom-blocker,
+  .mapboxgl-touch-pan-blocker {
+    transition: none !important;
+  }
+}
+
 .mapboxgl-ctrl-bottom-right .mapboxgl-ctrl-attrib {
   background: rgba(253, 252, 251, 0.85);
   font-family: var(--font-interactive);
