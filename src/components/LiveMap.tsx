@@ -438,12 +438,14 @@ export function LiveMap() {
           const padding =
             w < 640
               ? {
-                  // ~62% of hero height keeps pins clear of the
-                  // headline + subhead + CTA stack. Capped at 500 for
-                  // unusually tall mobile viewports (foldables) so
-                  // there's still room left for actual map.
-                  top: Math.min(500, Math.round(h * 0.62)),
-                  bottom: 72,
+                  // ~70% of hero height keeps the pin pill (which
+                  // extends 30-40px ABOVE its lat/lng anchor) clear
+                  // of the CTA button bottom edge. The earlier 62%
+                  // value put pill labels touching the buttons.
+                  // Capped at 560 for foldables / unusually tall
+                  // viewports so there's still room for actual map.
+                  top: Math.min(560, Math.round(h * 0.7)),
+                  bottom: 64,
                   left: 24,
                   right: 24,
                 }

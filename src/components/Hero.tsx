@@ -21,7 +21,7 @@ export function Hero() {
          (text sits at the top so the bottom of the hero stays open
          for the map) and horizontal from the lg breakpoint up. */}
       <div
-        className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-canvas/85 via-canvas/40 to-transparent sm:bg-none"
+        className="pointer-events-none absolute inset-x-0 top-0 z-[1] h-[60%] bg-gradient-to-b from-canvas/90 via-canvas/65 to-transparent sm:hidden"
         aria-hidden
       />
       <div
