@@ -21,7 +21,16 @@ export function Hero() {
 
   return (
     <section className="relative min-h-[680px] w-full overflow-hidden bg-canvas sm:min-h-[760px] lg:min-h-[1012px]">
-      <div className="absolute inset-0 z-0">
+      {/* Note: no z-index on this wrapper. The previous z-0 created a
+         stacking context that trapped Mapbox popups inside the map's
+         layer, so on mobile the popup ended up under the wash gradient
+         (z-1) and the bottom fade (z-2). Without z-index here, the
+         popup's CSS rule (z-index: 100) escapes to the section's
+         document context and floats above every overlay. The map
+         canvas still renders below the washes/fade because it is
+         first in DOM order and carries no explicit z-index — auto
+         stacking below explicit z-indexed siblings. */}
+      <div className="absolute inset-0">
         <LiveMap isExploring={isExploring} />
       </div>
       {/* Reading wash: covers a wider band on small viewports so the
