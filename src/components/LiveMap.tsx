@@ -420,22 +420,56 @@ export function LiveMap() {
           const bounds = new mapboxgl.LngLatBounds(coords[0], coords[0]);
           for (const c of coords) bounds.extend(c);
           // Padding adapts to viewport so pins don't get clipped on
-          // narrow screens AND don't sit underneath the hero's reading
-          // wash on wide ones. Mobile: tight even padding so the
-          // available width is mostly map. Tablet: a little headroom
-          // on the left to push pins out of the partial wash. Desktop:
-          // wider left pad matches the 40% wash so the pin cluster
-          // never lands under the headline.
-          const w = map.getContainer().clientWidth;
+          // narrow screens AND don't sit underneath the content
+          // overlay. The hero overlay (eyebrow + headline + subhead +
+          // two CTA buttons) consumes the top ~460px on mobile, the
+          // top ~520px on tablet, and the left ~40% on desktop. Bias
+          // fitBounds padding into that region so the pin cluster is
+          // pushed into the actually-visible map band — otherwise pins
+          // land geographically correct but behind the headline where
+          // a buyer can never see them.
+          //
+          // maxZoom drops to 12 on mobile so even a single-listing
+          // case shows a few neighbouring districts; at zoom 13 the
+          // camera would tunnel into one street.
+          const c = map.getContainer();
+          const w = c.clientWidth;
+          const h = c.clientHeight;
           const padding =
             w < 640
-              ? { top: 56, bottom: 140, left: 32, right: 32 }
+              ? {
+                  // ~62% of hero height keeps pins clear of the
+                  // headline + subhead + CTA stack. Capped at 500 for
+                  // unusually tall mobile viewports (foldables) so
+                  // there's still room left for actual map.
+                  top: Math.min(500, Math.round(h * 0.62)),
+                  bottom: 72,
+                  left: 24,
+                  right: 24,
+                }
               : w < 1024
-                ? { top: 72, bottom: 140, left: 120, right: 64 }
+                ? { top: Math.round(h * 0.4), bottom: 120, left: 80, right: 64 }
                 : { top: 80, bottom: 160, left: Math.round(w * 0.4), right: 80 };
           map.fitBounds(bounds, {
             padding,
-            maxZoom: 13,
+            maxZoom: w < 640 ? 12 : 13,
+            duration: 700,
+          });
+        } else if (coords.length === 1) {
+          // Single-pin case: fitBounds can't run (a single point has
+          // zero extent), but we still want the pin rendered in the
+          // visible band rather than behind the headline. Ease to
+          // the pin with a viewport offset that pushes its centerpoint
+          // into the bottom of the hero on mobile.
+          const c = map.getContainer();
+          const w = c.clientWidth;
+          const h = c.clientHeight;
+          const offset: [number, number] =
+            w < 640 ? [0, Math.round(h * 0.24)] : [Math.round(w * 0.18), 0];
+          map.easeTo({
+            center: coords[0],
+            zoom: w < 640 ? 12 : 13,
+            offset,
             duration: 700,
           });
         }
