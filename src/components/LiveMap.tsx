@@ -157,6 +157,17 @@ export function LiveMap() {
         // client by lat/lng bounding box (ABUJA_MAX_BOUNDS, the same
         // FCT envelope the map locks to). Anything geographically in
         // FCT shows up regardless of how the city field is shaped.
+        //
+        // BAND-AID: this client-side filter is a workaround, not the
+        // right answer. The proper fix is data normalisation in the
+        // seller wizard — FCT districts should resolve to city="Abuja"
+        // with the district kept in a separate field. Same pattern for
+        // Lagos districts (Lekki, Ikoyi, Victoria Island). Until that
+        // ships in terra-backend, this bounds filter solves the symptom
+        // for the landing page only; the Flutter buyer-map, the search
+        // results screen, and the city explore screen all still miss
+        // these listings when they filter by city. See
+        // docs/known-data-issues.md for the full fix proposal.
         const baseUrl = `${API_URL}/v1/listings?verified=true&limit=50`;
         const [landRes, houseRes] = await Promise.all([
           fetch(`${baseUrl}&type_slug=land`),
