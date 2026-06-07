@@ -38,6 +38,7 @@ type Listing = {
   city?: string;
   image_urls?: string[];
   size_sqm?: number;
+  type_slug?: "land" | "house";
 };
 
 // Fallback sample plots, one per major Abuja neighbourhood. Used
@@ -148,11 +149,25 @@ export function LiveMap() {
     async function loadPins() {
       let listings: Listing[] = [];
       try {
-        const url = `${API_URL}/v1/listings?city=Abuja&verified=true&limit=50`;
-        const res = await fetch(url);
-        if (!res.ok) throw new Error(`status ${res.status}`);
-        const json = (await res.json()) as { results?: Listing[] };
-        listings = json.results ?? [];
+        // Two parallel calls so both verified lands AND verified houses
+        // surface on the hero map. The backend's /v1/listings without
+        // a type_slug filter does return both kinds, but the dev DB
+        // skewed land-only and we want the call shape to make our
+        // intent explicit. If either call fails the other still
+        // contributes; only a total miss falls through to the empty
+        // array (which triggers the FALLBACK_LISTINGS path below).
+        const baseUrl = `${API_URL}/v1/listings?city=Abuja&verified=true&limit=25`;
+        const [landRes, houseRes] = await Promise.all([
+          fetch(`${baseUrl}&type_slug=land`),
+          fetch(`${baseUrl}&type_slug=house`),
+        ]);
+        const land = landRes.ok
+          ? ((await landRes.json()) as { results?: Listing[] }).results ?? []
+          : [];
+        const house = houseRes.ok
+          ? ((await houseRes.json()) as { results?: Listing[] }).results ?? []
+          : [];
+        listings = [...land, ...house];
       } catch (e) {
         // CORS, network, cold start. Log for debugging; fall through to
         // the empty listings array so the fallback path below renders.
