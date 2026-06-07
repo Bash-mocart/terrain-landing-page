@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import mapboxgl from "mapbox-gl";
+import Supercluster from "supercluster";
 import "mapbox-gl/dist/mapbox-gl.css";
 
 // Hero backdrop. Mapbox GL JS light streets style + real verified
@@ -97,6 +98,51 @@ const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? "";
 // before. Only one popup is visible at any moment regardless of how
 // many pins the user hovers.
 type PopupRef = { current: mapboxgl.Popup | null };
+
+// Cluster-badge factory. When supercluster groups two or more pins
+// into a single visual point at the current zoom level, this renders
+// a Late-Night Boardroom circular badge with the plot count inside
+// it. Buyers read "12 plots" rather than a stack of overlapping
+// price pills — registry-document quietness over marketing density.
+//
+// The hero map is interactive: false, so cluster badges don't expand
+// on click — there's no zoom available. They are pure visualisation
+// of inventory depth in that district. The Flutter app's buyer map
+// is where clusters become tappable; here they are signal only.
+function createClusterMarker(
+  lng: number,
+  lat: number,
+  count: number,
+): mapboxgl.Marker {
+  const badge = document.createElement("div");
+  badge.className = "terrain-cluster-badge";
+  badge.setAttribute("role", "img");
+  badge.setAttribute(
+    "aria-label",
+    `${count} verified plots in this area`,
+  );
+  // Single span inside the circle; count formatted "12" for ≤99
+  // and "99+" beyond — keeps the badge a consistent two-character
+  // width so the layout stays calm at any cluster size.
+  badge.innerHTML = `<span class="terrain-cluster-count">${count > 99 ? "99+" : count}</span>`;
+  return new mapboxgl.Marker({ element: badge, anchor: "center" }).setLngLat([
+    lng,
+    lat,
+  ]);
+}
+
+// GeoJSON Point feature properties for supercluster. The leaf carries
+// the full Listing so the same createPinForListing factory can render
+// it once supercluster reports it as a non-cluster leaf at the current
+// zoom. Cluster nodes get their own auto-generated properties from
+// supercluster ({ cluster: true, point_count, cluster_id, ... }).
+type LeafProps = { listing: Listing };
+type ClusterProps = {
+  cluster: true;
+  cluster_id: number;
+  point_count: number;
+  point_count_abbreviated: string | number;
+};
 
 // Per-pin factory. Every plot on the hero map goes through this exact
 // function — there is no per-pin special-casing, no listing-specific
@@ -392,30 +438,102 @@ export function LiveMap() {
         for (const m of markersRef.current) m.remove();
         markersRef.current = [];
 
-        // Single-popup-at-a-time tracker. Shared across all pins via
-        // the popupRef object so opening one pin's popup closes the
-        // previous. Reset on every fresh loadPins call.
+        // Single-popup-at-a-time tracker. Shared across renderClusters
+        // invocations so opening a leaf pin's popup closes whichever
+        // was open before, even across the idle re-renders that fire
+        // after fitBounds settles.
         const popupRef: PopupRef = { current: null };
 
-        // Every plot goes through the same factory call. No per-pin
-        // conditional logic here — if a runtime difference shows up
-        // between pins, it's data or geometry, not construction.
-        for (const listing of listings) {
-          if (!Number.isFinite(listing.latitude) || !Number.isFinite(listing.longitude)) continue;
-          const marker = createPinForListing(listing, map, popupRef);
-          markersRef.current.push(marker);
-        }
+        // Build the supercluster index once from the listings. Each
+        // leaf carries its full Listing in feature properties so the
+        // same createPinForListing factory can render it at zoom
+        // levels where supercluster no longer merges it.
+        const features = listings
+          .filter(
+            (l) =>
+              Number.isFinite(l.latitude) && Number.isFinite(l.longitude),
+          )
+          .map<GeoJSON.Feature<GeoJSON.Point, LeafProps>>((l) => ({
+            type: "Feature",
+            geometry: {
+              type: "Point",
+              coordinates: [l.longitude, l.latitude],
+            },
+            properties: { listing: l },
+          }));
+
+        // Cluster radius 50px at the current zoom — empirically the
+        // value where the Wuse / Gwarinpa / Asokoro corridor reads as
+        // 2-3 district badges rather than one giant lump, while a
+        // single neighbourhood with overlapping pins collapses cleanly.
+        // maxZoom 16 means past that level supercluster releases every
+        // pin as a leaf (the hero only ever sits between 10-13, so this
+        // mainly matters when the same module powers the Registry map).
+        const cluster = new Supercluster<LeafProps, ClusterProps>({
+          radius: 50,
+          maxZoom: 16,
+          minPoints: 2,
+        });
+        cluster.load(features);
+
+        // Re-render the visible markers from the supercluster index
+        // every time the map is idle (post-fitBounds settle, post-
+        // initial-load). Idempotent: clear existing markers, recompute
+        // clusters at the current zoom + visible bounds, render.
+        const renderClusters = () => {
+          if (cancelled) return;
+          for (const m of markersRef.current) m.remove();
+          markersRef.current = [];
+
+          const bounds = map.getBounds();
+          if (!bounds) return;
+          const bbox: [number, number, number, number] = [
+            bounds.getWest(),
+            bounds.getSouth(),
+            bounds.getEast(),
+            bounds.getNorth(),
+          ];
+          const zoom = Math.round(map.getZoom());
+          const items = cluster.getClusters(bbox, zoom);
+
+          for (const item of items) {
+            const [lng, lat] = item.geometry.coordinates as [number, number];
+            const props = item.properties;
+            // Discriminate cluster vs leaf via the supercluster-
+            // assigned `cluster: true` flag on cluster features. Leaf
+            // features carry our original LeafProps shape with the
+            // full Listing inside.
+            if (
+              "cluster" in props &&
+              (props as { cluster?: boolean }).cluster === true
+            ) {
+              const { point_count } = props as ClusterProps;
+              const marker = createClusterMarker(lng, lat, point_count).addTo(
+                map,
+              );
+              markersRef.current.push(marker);
+            } else {
+              const { listing } = props as LeafProps;
+              const marker = createPinForListing(listing, map, popupRef);
+              markersRef.current.push(marker);
+            }
+          }
+        };
+        map.on("idle", renderClusters);
+        // Render once immediately for the case where the map is
+        // already idle by the time listings finish loading (cache hit,
+        // very fast network). The idle event won't fire again until
+        // something changes, so without this we'd see no markers
+        // until fitBounds runs below.
+        renderClusters();
 
         // Fit the camera to the actual plot envelope so the visible
         // map is exactly the area where plots sit. Skip if there are
         // 0 or 1 plots (fitBounds on a single point throws); the
         // initial Abuja camera handles those.
-        const coords = listings
-          .filter(
-            (l) =>
-              Number.isFinite(l.latitude) && Number.isFinite(l.longitude),
-          )
-          .map((l) => [l.longitude, l.latitude] as [number, number]);
+        const coords = features.map(
+          (f) => f.geometry.coordinates as [number, number],
+        );
         if (coords.length >= 2) {
           const bounds = new mapboxgl.LngLatBounds(coords[0], coords[0]);
           for (const c of coords) bounds.extend(c);

@@ -132,6 +132,37 @@ body {
   border-top: 6px solid #090503;
 }
 
+/* Cluster badge — Late-Night Boardroom circle with the plot count in
+   Warm Canvas Inter caps. Rendered by createClusterMarker when
+   supercluster merges 2+ pins at the current zoom. Sized larger than
+   a price pill so the badge reads as a category-different object, not
+   as a "different style of pin". Centred via anchor="center" in the
+   Marker constructor, so transform-origin sits at the visual centre
+   without disturbing Mapbox's positioning transform. */
+.terrain-cluster-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background: #090503;
+  border: 2px solid var(--color-canvas);
+  box-shadow: 0 2px 6px rgba(9, 5, 3, 0.28);
+  filter: drop-shadow(0 4px 8px rgba(9, 5, 3, 0.18));
+  cursor: default; /* hero map is non-interactive; not a button */
+  transition: transform 140ms cubic-bezier(0.2, 0.6, 0.2, 1);
+}
+
+.terrain-cluster-count {
+  font-family: var(--font-interactive);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #fdfcfb;
+  line-height: 1;
+}
+
 .terrain-popup .mapboxgl-popup-content {
   padding: 0;
   background: var(--color-canvas);
