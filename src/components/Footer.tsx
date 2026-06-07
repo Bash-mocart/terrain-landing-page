@@ -7,20 +7,20 @@ const NAV = [
   {
     heading: "Explore",
     links: [
-      { label: "Available Plots", href: "#listings" },
+      { label: "Available Listings", href: "#listings" },
       { label: "How it Works", href: "#how-it-works" },
       { label: "Start Browsing", href: "#download" },
-      { label: "List Property", href: "mailto:sellers@terrain.ng" },
+      { label: "List as an Agent", href: "mailto:agents@terrain.ng" },
     ],
   },
   {
     heading: "Company",
     links: [
       { label: "About Us", href: "#" },
-      { label: "Our Realtors", href: "#" },
-      { label: "Legal & Title Verification", href: "#" },
-      { label: "Direct-to-Realtor Contract Frameworks", href: "#" },
-      { label: "Anti-Fraud Guarantees", href: "#" },
+      { label: "For Real Estate Agents", href: "#" },
+      { label: "Vetting Process", href: "#" },
+      { label: "Privacy", href: "#" },
+      { label: "Terms", href: "#" },
     ],
   },
   {
@@ -50,8 +50,9 @@ export function Footer() {
               className="mt-6 max-w-sm text-base leading-relaxed text-canvas/70"
               style={{ fontFamily: "var(--font-body)" }}
             >
-              Nigeria&rsquo;s verified land marketplace. Every plot reviewed on
-              the ground before it reaches you.
+              Nigeria&rsquo;s directory of CAC-verified real estate agents.
+              Vetted before they list, so you start every search with
+              a registered company.
             </p>
             <div className="mt-8 flex items-center gap-4 text-sm">
               <SocialLink href="https://wa.me/" label="WhatsApp">
@@ -105,7 +106,7 @@ export function Footer() {
             reserved.
           </p>
           <p style={{ fontFamily: "var(--font-interactive)" }}>
-            Funds held in trust by Terrain Trustees Ltd.
+            Built in Nigeria for buyers at home and in the diaspora.
           </p>
         </div>
       </div>
