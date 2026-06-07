@@ -34,12 +34,19 @@ export function Hero() {
         className="pointer-events-none absolute inset-x-0 bottom-0 z-[2] h-32 bg-gradient-to-b from-transparent to-canvas"
         aria-hidden
       />
-      <div className="relative z-10 mx-auto grid max-w-[1440px] grid-cols-12 gap-8 px-10 pt-28 pb-20 lg:pt-36 lg:pb-32">
+      {/* pointer-events-none on the grid container so its empty right
+         half doesn't intercept hover events bound for plot pins behind
+         it. Pin elements at z-0 inside the map were unreachable to the
+         cursor when overlaid by this z-10 layer; mouseenter only fired
+         on pins outside the container's bounding box. */}
+      <div className="pointer-events-none relative z-10 mx-auto grid max-w-[1440px] grid-cols-12 gap-8 px-10 pt-28 pb-20 lg:pt-36 lg:pb-32">
         {/* Text column shrunk from col-span-7 to col-span-6 (58% to 50%)
            so the headline terminates before it crowds the pin cluster on
            the right side of the map. Critique flagged "Fear" running
-           into the leftmost pin. */}
-        <div className="col-span-12 lg:col-span-6">
+           into the leftmost pin. pointer-events-auto restored on the
+           content column so eyebrow, CTAs, and any interactive children
+           still receive clicks. */}
+        <div className="pointer-events-auto col-span-12 lg:col-span-6">
           <span
             className="inline-block rounded-full bg-canvas/85 px-3 py-1.5 text-xs uppercase tracking-[0.18em] text-primary backdrop-blur-sm"
             style={{ fontFamily: "var(--font-interactive)" }}
