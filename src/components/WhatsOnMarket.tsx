@@ -32,9 +32,10 @@ export function WhatsOnMarket() {
             className="mt-6 max-w-md text-lg leading-relaxed text-secondary"
             style={{ fontFamily: "var(--font-body)" }}
           >
-            Hundreds of plots and houses listed by CAC-verified real
-            estate agents we have vetted. Filter by city, price, and
-            property type. Contact the agent directly through the app.
+            Hundreds of plots and houses, each with photos, videos,
+            drone aerials, and 3D virtual tours where available.
+            Listed by CAC-verified agents we have vetted. Contact
+            the agent directly through the app.
           </p>
           <Link
             href="#top"

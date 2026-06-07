@@ -85,8 +85,9 @@ export function Hero() {
             className="mt-6 max-w-xl text-lg leading-relaxed text-secondary"
             style={{ fontFamily: "var(--font-body)" }}
           >
-            Browse plots and houses in Abuja, listed by real estate
-            agents we have CAC-verified and vetted before approving.
+            Walk every plot and house in Abuja through videos, drone
+            aerials, and 3D tours before you visit. Listed by real
+            estate agents we have CAC-verified and vetted.
           </p>
           <div className="mt-10 flex flex-wrap items-center gap-3">
             <StoreButton href="https://apps.apple.com" platform="ios" />

@@ -16,9 +16,9 @@ type Step = {
 const STEPS: Step[] = [
   {
     eyebrow: "01",
-    title: "Browse Vetted\nListings.",
+    title: "Walk the Plot\nFrom Home.",
     body:
-      "Search every available plot and house on a live map. Filter by city, price, and property type. Every listing comes from a real estate agent we have CAC-verified and vetted before approving them to publish.",
+      "Every listing comes with videos, drone aerials, and 3D virtual tours where available, so you experience the property before you step on it. Filter by city, price, and property type on a live map. Every listing is from a CAC-verified real estate agent we have vetted.",
     background: "canvas",
   },
   {

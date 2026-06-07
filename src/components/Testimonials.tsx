@@ -37,7 +37,7 @@ const TESTIMONIALS: Testimonial[] = [
     role: "Diaspora buyer",
     city: "London / Abuja",
     quote:
-      "I live abroad. Buying land back home used to mean trusting a cousin. Terrain let me browse plots from agents whose companies were already CAC-verified. I closed two plots without flying in to vet anyone myself.",
+      "I live abroad. Buying land back home used to mean trusting a cousin to walk a plot for me. With Terrain I watched the drone aerials and the walkthroughs myself, then dealt with a CAC-verified agent. I closed two plots without flying in.",
   },
 ];
 
