@@ -43,12 +43,19 @@ export function ThreeSteps() {
     <section id="how-it-works" className="relative bg-canvas py-24 lg:py-32">
       <div className="mx-auto max-w-[1440px] px-10">
         <div className="mb-16 flex flex-col items-center text-center">
+          {/* Eyebrow without the rounded-pill chrome — caps Inter with
+             a hairline rule beneath, matching the Flutter app's
+             section-label pattern. */}
           <span
-            className="rounded-full bg-[--color-border-rule]/60 px-3 py-1.5 text-xs uppercase tracking-[0.18em] text-primary"
+            className="text-[11px] uppercase tracking-[0.18em] text-primary"
             style={{ fontFamily: "var(--font-interactive)" }}
           >
             How it works
           </span>
+          <span
+            aria-hidden
+            className="mt-3 inline-block h-px w-12 bg-[--color-border-rule]"
+          />
           <h2
             className="mt-6 text-[clamp(36px,5vw,64px)] leading-[1.0] tracking-tight text-primary"
             style={{ fontFamily: "var(--font-display)", fontWeight: 700 }}
@@ -72,7 +79,7 @@ function StepCard({ step }: { step: Step }) {
   const isDark = step.background === "boardroom" || step.background === "topo";
   return (
     <article
-      className={`relative flex h-[560px] flex-col justify-between overflow-hidden rounded-[44px] p-8 ${
+      className={`relative flex h-[560px] flex-col justify-between overflow-hidden rounded-[20px] p-8 ${
         step.background === "canvas"
           ? "bg-canvas border border-[--color-border-rule]"
           : step.background === "boardroom"
@@ -90,17 +97,12 @@ function StepCard({ step }: { step: Step }) {
         />
       )}
       <div className="relative z-10">
+        {/* Step number as a typeset numeral, not a pill. */}
         <span
-          className={`inline-block rounded-full px-3 py-1.5 text-xs ${
-            isDark
-              ? "bg-canvas/15 text-canvas"
-              : "bg-[--color-border-rule]/60 text-primary"
+          className={`text-[11px] uppercase tracking-[0.18em] ${
+            isDark ? "text-canvas/70" : "text-secondary"
           }`}
-          style={{
-            fontFamily: "var(--font-interactive)",
-            fontWeight: 600,
-            letterSpacing: "0.16em",
-          }}
+          style={{ fontFamily: "var(--font-interactive)" }}
         >
           Step {step.eyebrow}
         </span>

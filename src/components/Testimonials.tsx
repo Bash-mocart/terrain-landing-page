@@ -49,17 +49,25 @@ function initials(name: string): string {
 
 export function Testimonials() {
   return (
-    <section id="testimonials" className="bg-verified py-24 lg:py-32 text-canvas">
+    <section id="testimonials" className="bg-canvas py-24 lg:py-32 text-primary">
       <div className="mx-auto max-w-[1440px] px-10">
         <div className="mb-16 flex flex-col items-center text-center">
+          {/* Section flipped from Forest Verification background to Warm
+             Canvas so the Forest accent INSIDE each card (the verified
+             dot) regains its semantic punch — when the whole section was
+             Forest, the dot disappeared into the wallpaper. */}
           <span
-            className="rounded-full bg-canvas/15 px-3 py-1.5 text-xs uppercase tracking-[0.18em] text-canvas"
+            className="text-[11px] uppercase tracking-[0.18em] text-primary"
             style={{ fontFamily: "var(--font-interactive)" }}
           >
             Trust on record
           </span>
+          <span
+            aria-hidden
+            className="mt-3 inline-block h-px w-12 bg-[--color-border-rule]"
+          />
           <h2
-            className="mt-6 text-[clamp(36px,5vw,64px)] leading-[1.0] tracking-tight"
+            className="mt-6 text-[clamp(36px,5vw,64px)] leading-[1.0] tracking-tight text-primary"
             style={{ fontFamily: "var(--font-display)", fontWeight: 700 }}
           >
             Trustable Buyers and
@@ -79,7 +87,7 @@ export function Testimonials() {
 
 function TestimonialCard({ t }: { t: Testimonial }) {
   return (
-    <article className="flex h-full flex-col justify-between gap-10 rounded-[44px] border border-[--color-border-rule] bg-canvas p-8 text-primary">
+    <article className="flex h-full flex-col justify-between gap-10 rounded-[20px] border border-[--color-border-rule] bg-canvas p-8 text-primary">
       <div className="flex items-start justify-between gap-4">
         <div
           className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-verified text-canvas"

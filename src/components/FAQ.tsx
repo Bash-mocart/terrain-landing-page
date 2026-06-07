@@ -42,12 +42,20 @@ export function FAQ() {
     <section className="bg-primary py-24 lg:py-32 text-canvas">
       <div className="mx-auto grid max-w-[1440px] grid-cols-1 gap-12 px-10 lg:grid-cols-12">
         <div className="lg:col-span-5">
+          {/* Eyebrow without pill chrome: caps Inter + Border Rule
+             hairline above the headline. Same pattern across every
+             section so the rhythm reads as registry-document, not
+             marketing-template. */}
           <span
-            className="rounded-full bg-canvas/12 px-3 py-1.5 text-xs uppercase tracking-[0.18em] text-canvas/80"
+            className="text-[11px] uppercase tracking-[0.18em] text-canvas/70"
             style={{ fontFamily: "var(--font-interactive)" }}
           >
             FAQ
           </span>
+          <span
+            aria-hidden
+            className="mt-3 inline-block h-px w-12 bg-canvas/30 align-middle"
+          />
           <h2
             className="mt-6 text-[clamp(36px,5vw,64px)] leading-[1.0] tracking-tight"
             style={{ fontFamily: "var(--font-display)", fontWeight: 700 }}
