@@ -740,9 +740,11 @@ export function LiveMap() {
           <span className="terrain-map-toggle-text">
             {isExploring ? "Done exploring" : "Tap to explore the registry"}
           </span>
-          <span className="terrain-map-toggle-glyph" aria-hidden>
-            {isExploring ? "×" : "→"}
-          </span>
+          {isExploring && (
+            <span className="terrain-map-toggle-glyph" aria-hidden>
+              ×
+            </span>
+          )}
         </button>
       )}
     </div>

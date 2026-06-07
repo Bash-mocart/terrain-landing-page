@@ -307,20 +307,23 @@ body {
    tooltip. */
 
 /* Mobile-only "Tap to explore" toggle. Mounted by LiveMap.tsx as a
-   sibling of the Mapbox container, positioned bottom-center over the
-   map. Closed state = Warm Canvas pill with Late-Night Boardroom
-   caps text, signalling "tap to enter exploration mode." Active state
-   inverts the chrome (Late-Night Boardroom fill / Warm Canvas text)
-   to telegraph "you are now in exploration mode; tap again to exit."
+   sibling of the Mapbox container, anchored to the bottom-right
+   corner of the visible map area. Closed state = Warm Canvas pill
+   with Late-Night Boardroom caps text. Active state inverts the
+   chrome (Late-Night Boardroom fill / Warm Canvas text) and adds a
+   "×" dismiss glyph to telegraph "tap again to exit."
 
-   Positioned at bottom: 168px so it clears the Mapbox attribution row
-   (pushed up to 132px by the hero) and the bottom fade gradient
-   (80px tall on mobile) without crowding either. */
+   Corner anchor (not centered) because controls live on edges; a
+   floating-center pill in the visible map middle reads as a third
+   CTA in column with the App Store + Google Play buttons above and
+   stacks on top of pin content. Bottom-right hugs the Mapbox
+   attribution row (pushed up to bottom: 132px by the hero) without
+   colliding with it: pill sits at bottom: 168px so a 36px breathing
+   gap separates the two right-aligned rows. */
 .terrain-map-toggle {
   position: absolute;
   bottom: 168px;
-  left: 50%;
-  transform: translateX(-50%);
+  right: 16px;
   z-index: 5;
   display: inline-flex;
   align-items: center;
@@ -348,7 +351,7 @@ body {
 .terrain-map-toggle:hover,
 .terrain-map-toggle:focus-visible {
   outline: none;
-  transform: translateX(-50%) translateY(-1px);
+  transform: translateY(-1px);
   box-shadow: 0 8px 22px rgba(9, 5, 3, 0.22);
 }
 
