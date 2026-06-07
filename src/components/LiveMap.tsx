@@ -92,6 +92,139 @@ const API_URL =
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? "";
 
+// Active-popup tracker shared across all pins. Passed by reference into
+// each pin factory so opening one popup can close whichever was open
+// before. Only one popup is visible at any moment regardless of how
+// many pins the user hovers.
+type PopupRef = { current: mapboxgl.Popup | null };
+
+// Per-pin factory. Every plot on the hero map goes through this exact
+// function — there is no per-pin special-casing, no listing-specific
+// branching, no "skip this one if it has X" logic. If a particular
+// pin behaves differently from others at runtime, the cause is either
+// the listing's data (e.g. missing image_urls) or a geometric overlap
+// at its lat/lng (Mapbox stacks markers in latitude order; a pin
+// underneath another in the same screen position can be unreachable
+// to the cursor). It is NOT differential construction.
+//
+// Returns the Mapbox Marker so the caller can push it onto a markers
+// array for later cleanup.
+function createPinForListing(
+  listing: Listing,
+  map: mapboxgl.Map,
+  popupRef: PopupRef,
+): mapboxgl.Marker {
+  const pin = document.createElement("button");
+  pin.className = "terrain-pin-marker";
+  pin.type = "button";
+  pin.setAttribute(
+    "aria-label",
+    `${listing.title ?? "Verified plot"}, ${formatPrice(listing.price)}`,
+  );
+  // Price-pill chrome matches the Flutter buyer-map exactly: Late-
+  // Night Boardroom pill with the price in Inter, small triangular
+  // tail beneath the pill so the tip lands on the lat/lng. Two
+  // children (body + tail) so Mapbox anchor "bottom" positions the
+  // tail tip precisely at the coordinate.
+  pin.innerHTML = `
+    <span class="terrain-pin-body">${formatPrice(listing.price)}</span>
+    <span class="terrain-pin-tail" aria-hidden="true"></span>
+  `;
+
+  // Pick the first http(s) image url if any. The Flutter app uploads
+  // images to media.lunor.money; backend ships them verbatim. Videos
+  // (.mp4 / .mov) are filtered out so the popup never gets a broken
+  // video-as-image render.
+  const heroImage = (listing.image_urls ?? []).find((u) => {
+    if (typeof u !== "string" || !u.startsWith("http")) return false;
+    const lower = u.toLowerCase();
+    return !lower.endsWith(".mp4") && !lower.endsWith(".mov");
+  });
+  const escapeHtml = (s: string) =>
+    s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+  const sizeLine =
+    listing.size_sqm && Number.isFinite(listing.size_sqm)
+      ? `<div class="terrain-popup-meta">${listing.size_sqm.toLocaleString("en-NG")} sqm · ${listing.city ?? "Abuja"}</div>`
+      : `<div class="terrain-popup-meta">${listing.city ?? "Abuja"}</div>`;
+
+  const popup = new mapboxgl.Popup({
+    offset: 14,
+    closeButton: false,
+    className: "terrain-popup",
+    // anchor: undefined lets Mapbox pick the best side based on
+    // viewport space. Pins near the top get the popup below; pins
+    // anywhere else get the popup above.
+    maxWidth: "280px",
+  }).setHTML(
+    `<div class="terrain-popup-inner">
+       ${
+         heroImage
+           ? `<div class="terrain-popup-image" style="background-image: url('${escapeHtml(heroImage)}')"></div>`
+           : ""
+       }
+       <div class="terrain-popup-content">
+         <div class="terrain-popup-price">${formatPrice(listing.price)}</div>
+         <div class="terrain-popup-title">${escapeHtml(listing.title ?? "Verified plot")}</div>
+         ${sizeLine}
+         <div class="terrain-popup-cta">Get the app to view the record</div>
+       </div>
+     </div>`,
+  );
+
+  const marker = new mapboxgl.Marker({ element: pin, anchor: "bottom" })
+    .setLngLat([listing.longitude, listing.latitude])
+    .addTo(map);
+
+  // Hover preview with a 120ms close buffer. The cursor needs to be
+  // able to move from pin -> popup without the popup closing on the
+  // gap. setTimeout schedules the close, and a mouseenter on either
+  // pin OR popup cancels it. Single-popup-at-a-time enforced via
+  // popupRef.current so the page never shows two popups at once.
+  let closeTimeout: ReturnType<typeof setTimeout> | null = null;
+  const cancelClose = () => {
+    if (closeTimeout) {
+      clearTimeout(closeTimeout);
+      closeTimeout = null;
+    }
+  };
+  const scheduleClose = () => {
+    cancelClose();
+    closeTimeout = setTimeout(() => {
+      popup.remove();
+      closeTimeout = null;
+    }, 120);
+  };
+  const openPopup = () => {
+    cancelClose();
+    if (popup.isOpen()) return;
+    if (
+      popupRef.current &&
+      popupRef.current !== popup &&
+      popupRef.current.isOpen()
+    ) {
+      popupRef.current.remove();
+    }
+    popupRef.current = popup;
+    popup.setLngLat([listing.longitude, listing.latitude]).addTo(map);
+    // The popup element only exists after addTo. Attach the cursor-
+    // over-popup handlers so the popup stays open while the user
+    // reads it.
+    const popupEl = popup.getElement();
+    if (popupEl) {
+      popupEl.addEventListener("mouseenter", cancelClose);
+      popupEl.addEventListener("mouseleave", scheduleClose);
+    }
+  };
+  pin.addEventListener("mouseenter", openPopup);
+  pin.addEventListener("mouseleave", scheduleClose);
+  pin.addEventListener("click", (e) => {
+    e.stopPropagation();
+    openPopup();
+  });
+
+  return marker;
+}
+
 function formatPrice(naira: number): string {
   if (naira >= 1e9) {
     const v = naira / 1e9;
@@ -207,143 +340,17 @@ export function LiveMap() {
         for (const m of markersRef.current) m.remove();
         markersRef.current = [];
 
-        // Track which popup is currently visible across all markers
-        // so opening a new one closes the previous. Without this the
-        // hover state can pile up multiple popups if the close buffer
-        // hasn't fired yet, and visually the page looks broken (and
-        // for pins that happen to share a DOM stacking order, the
-        // "older" popup can block the new one from receiving its
-        // hover-popup attachment).
-        let activePopup: mapboxgl.Popup | null = null;
+        // Single-popup-at-a-time tracker. Shared across all pins via
+        // the popupRef object so opening one pin's popup closes the
+        // previous. Reset on every fresh loadPins call.
+        const popupRef: PopupRef = { current: null };
 
+        // Every plot goes through the same factory call. No per-pin
+        // conditional logic here — if a runtime difference shows up
+        // between pins, it's data or geometry, not construction.
         for (const listing of listings) {
           if (!Number.isFinite(listing.latitude) || !Number.isFinite(listing.longitude)) continue;
-          const pin = document.createElement("button");
-          pin.className = "terrain-pin-marker";
-          pin.type = "button";
-          pin.setAttribute(
-            "aria-label",
-            `${listing.title ?? "Verified plot"}, ${formatPrice(listing.price)}`,
-          );
-          // Price-pill chrome matches the Flutter buyer-map exactly:
-          // Late-Night Boardroom pill with the price in Inter, small
-          // triangular tail beneath the pill so the tip lands on the
-          // lat/lng. Two children (body + tail) so Mapbox's anchor
-          // "bottom" positioning lands the tail tip precisely at the
-          // coordinate.
-          pin.innerHTML = `
-            <span class="terrain-pin-body">${formatPrice(listing.price)}</span>
-            <span class="terrain-pin-tail" aria-hidden="true"></span>
-          `;
-
-          // Pick the first http(s) image url if any. The Flutter app
-          // uploads images to media.lunor.money; backend ships them
-          // verbatim. Videos (.mp4 / .mov) are filtered out so the
-          // popup never gets a broken video-as-image render.
-          const heroImage = (listing.image_urls ?? []).find((u) => {
-            if (typeof u !== "string" || !u.startsWith("http")) return false;
-            const lower = u.toLowerCase();
-            return !lower.endsWith(".mp4") && !lower.endsWith(".mov");
-          });
-          const escapeHtml = (s: string) =>
-            s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
-          const sizeLine =
-            listing.size_sqm && Number.isFinite(listing.size_sqm)
-              ? `<div class="terrain-popup-meta">${listing.size_sqm.toLocaleString("en-NG")} sqm · ${listing.city ?? "Abuja"}</div>`
-              : `<div class="terrain-popup-meta">${listing.city ?? "Abuja"}</div>`;
-
-          const popup = new mapboxgl.Popup({
-            offset: 14,
-            closeButton: false,
-            className: "terrain-popup",
-            // anchor: undefined lets Mapbox pick the best side based
-            // on viewport space. Pins near the top of the visible map
-            // get their popup rendered BELOW (Mapbox-default popup tip
-            // points up); pins anywhere else get the popup above with
-            // a downward-pointing tip. This fixes the "popups clipped
-            // off-screen for pins near the top" symptom.
-            maxWidth: "280px",
-          }).setHTML(
-            `<div class="terrain-popup-inner">
-               ${
-                 heroImage
-                   ? `<div class="terrain-popup-image" style="background-image: url('${escapeHtml(heroImage)}')"></div>`
-                   : ""
-               }
-               <div class="terrain-popup-content">
-                 <div class="terrain-popup-price">${formatPrice(listing.price)}</div>
-                 <div class="terrain-popup-title">${escapeHtml(listing.title ?? "Verified plot")}</div>
-                 ${sizeLine}
-                 <div class="terrain-popup-cta">Get the app to view the record</div>
-               </div>
-             </div>`,
-          );
-
-          const marker = new mapboxgl.Marker({ element: pin, anchor: "bottom" })
-            .setLngLat([listing.longitude, listing.latitude])
-            .addTo(map);
-
-          // Hover preview with a 120ms close buffer.
-          //
-          // The bug fixed: the popup is positioned a few pixels above
-          // (or below) the pin with a small gap. When the user moves
-          // their cursor from the pin toward the popup to read it,
-          // the cursor crosses that gap, mouseleave fires on the pin,
-          // and the popup closes before they can interact with it.
-          //
-          // The fix: schedule the close on a 120ms timeout. If the
-          // cursor lands on the popup itself during that window, the
-          // popup's own mouseenter cancels the close. Leaving the
-          // popup re-schedules it.
-          //
-          // Mobile browsers fire mouseenter on first tap, so the tap
-          // surface still works as tap-to-open without separate touch
-          // handlers.
-          let closeTimeout: ReturnType<typeof setTimeout> | null = null;
-          const cancelClose = () => {
-            if (closeTimeout) {
-              clearTimeout(closeTimeout);
-              closeTimeout = null;
-            }
-          };
-          const scheduleClose = () => {
-            cancelClose();
-            closeTimeout = setTimeout(() => {
-              popup.remove();
-              closeTimeout = null;
-            }, 120);
-          };
-          const openPopup = () => {
-            cancelClose();
-            if (popup.isOpen()) return;
-            // Close whatever popup was previously open. Single-popup-
-            // at-a-time keeps the page calm and unblocks pins whose
-            // hover trigger fires before the previous pin's close
-            // buffer has elapsed.
-            if (activePopup && activePopup !== popup && activePopup.isOpen()) {
-              activePopup.remove();
-            }
-            activePopup = popup;
-            popup.setLngLat([listing.longitude, listing.latitude]).addTo(map);
-            // The popup element only exists after addTo. Attach the
-            // mouse handlers once it's mounted so cursor-over-popup
-            // also keeps it open.
-            const popupEl = popup.getElement();
-            if (popupEl) {
-              popupEl.addEventListener("mouseenter", cancelClose);
-              popupEl.addEventListener("mouseleave", scheduleClose);
-            }
-          };
-          pin.addEventListener("mouseenter", openPopup);
-          pin.addEventListener("mouseleave", scheduleClose);
-          // Click pins the popup open until the cursor wanders well
-          // off — same close buffer applies, but the click path skips
-          // the cancel-on-popup-mouseenter dance.
-          pin.addEventListener("click", (e) => {
-            e.stopPropagation();
-            openPopup();
-          });
-
+          const marker = createPinForListing(listing, map, popupRef);
           markersRef.current.push(marker);
         }
 
