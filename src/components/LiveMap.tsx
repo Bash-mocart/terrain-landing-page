@@ -342,7 +342,20 @@ function formatPrice(naira: number): string {
   return `₦${naira.toLocaleString("en-NG")}`;
 }
 
-export function LiveMap() {
+type LiveMapProps = {
+  /**
+   * When true on a mobile viewport the map's pan / pinch / double-tap
+   * handlers are enabled and the user can interact freely; when false
+   * the map is a backdrop and single-finger touches pass through to
+   * page scroll. The Hero owns this flag so the toggle UI lives in
+   * the document's reading flow (a caps link beneath the store CTAs)
+   * rather than as floating chrome on top of the map. Ignored on
+   * desktop where cooperative-gestures + ⌘+wheel handle interaction.
+   */
+  isExploring?: boolean;
+};
+
+export function LiveMap({ isExploring = false }: LiveMapProps = {}) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const markersRef = useRef<mapboxgl.Marker[]>([]);
@@ -353,17 +366,12 @@ export function LiveMap() {
     center: mapboxgl.LngLat;
     zoom: number;
   } | null>(null);
-  // isMobile drives both whether the toggle button renders and
-  // whether the runtime handler-enable effect engages. Set once on
-  // mount; this hero doesn't try to adapt across breakpoints in a
-  // single session (would require tearing down + re-creating the
-  // map, which is expensive and disruptive).
+  // isMobile gates the runtime handler-enable effect — desktop
+  // doesn't toggle handlers at runtime because cooperative-gestures
+  // handles its interaction model statically. Set once on mount;
+  // this hero doesn't try to adapt across breakpoints in a single
+  // session (would require tearing down + re-creating the map).
   const [isMobile, setIsMobile] = useState(false);
-  // Mode flag — false = map is a backdrop and single-finger touches
-  // fall through to page scroll. True = pan / pinch zoom enabled,
-  // page scroll is intercepted while the finger is on the map. The
-  // user toggles via an on-map "Tap to explore" pill.
-  const [isExploring, setIsExploring] = useState(false);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -723,30 +731,11 @@ export function LiveMap() {
   }, [isExploring, isMobile]);
 
   return (
-    <div className="relative h-full w-full">
-      <div
-        ref={containerRef}
-        className="h-full w-full"
-        aria-label="Map of verified plots in Abuja"
-        role="region"
-      />
-      {isMobile && (
-        <button
-          type="button"
-          onClick={() => setIsExploring((prev) => !prev)}
-          aria-pressed={isExploring}
-          className={`terrain-map-toggle ${isExploring ? "terrain-map-toggle-active" : ""}`}
-        >
-          <span className="terrain-map-toggle-text">
-            {isExploring ? "Done exploring" : "Tap to explore the registry"}
-          </span>
-          {isExploring && (
-            <span className="terrain-map-toggle-glyph" aria-hidden>
-              ×
-            </span>
-          )}
-        </button>
-      )}
-    </div>
+    <div
+      ref={containerRef}
+      className="h-full w-full"
+      aria-label="Map of verified plots in Abuja"
+      role="region"
+    />
   );
 }

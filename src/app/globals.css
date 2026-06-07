@@ -306,33 +306,27 @@ body {
    install CTA lives in the hero store buttons, not on every pin
    tooltip. */
 
-/* Mobile-only "Tap to explore" toggle. Mounted by LiveMap.tsx as a
-   sibling of the Mapbox container, anchored to the bottom-right
-   corner of the visible map area. Closed state = Warm Canvas pill
-   with Late-Night Boardroom caps text. Active state inverts the
-   chrome (Late-Night Boardroom fill / Warm Canvas text) and adds a
-   "×" dismiss glyph to telegraph "tap again to exit."
+/* Mobile-only "Tap to explore the map" affordance. Rendered by Hero.tsx
+   beneath the App Store + Google Play CTA row, hidden on sm+. Sits in
+   the document's reading flow as a caps eyebrow link rather than
+   floating on top of the map. Same Inter 11px / 0.14em letter-spacing
+   grammar used everywhere else on the page (eyebrow chip, section
+   labels), so it reads as another voiceline of the registry rather
+   than as third-party chrome layered over content.
 
-   Corner anchor (not centered) because controls live on edges; a
-   floating-center pill in the visible map middle reads as a third
-   CTA in column with the App Store + Google Play buttons above and
-   stacks on top of pin content. Bottom-right hugs the Mapbox
-   attribution row (pushed up to bottom: 132px by the hero) without
-   colliding with it: pill sits at bottom: 168px so a 36px breathing
-   gap separates the two right-aligned rows. */
-.terrain-map-toggle {
-  position: absolute;
-  bottom: 168px;
-  right: 16px;
-  z-index: 5;
+   Anatomy: a small Late-Night Boardroom glyph box (→ or ×) on the
+   left, caps text on the right. Hover and focus shift the text to
+   Forest Verification and nudge the arrow right by 2px as a tiny
+   affordance hint. Keyboard focus also rings the glyph box in
+   Forest Verification. */
+.terrain-map-link {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 16px;
-  border-radius: 999px;
-  background: var(--color-canvas);
-  border: 1px solid var(--color-border-rule);
-  box-shadow: 0 6px 18px rgba(9, 5, 3, 0.18);
+  gap: 10px;
+  margin-top: 28px;
+  padding: 0;
+  background: transparent;
+  border: none;
   cursor: pointer;
   font-family: var(--font-interactive);
   font-size: 11px;
@@ -340,51 +334,48 @@ body {
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--color-primary);
-  white-space: nowrap;
-  transition:
-    transform 180ms cubic-bezier(0.165, 0.84, 0.44, 1),
-    background-color 180ms cubic-bezier(0.165, 0.84, 0.44, 1),
-    color 180ms cubic-bezier(0.165, 0.84, 0.44, 1),
-    box-shadow 180ms cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition: color 180ms cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
-.terrain-map-toggle:hover,
-.terrain-map-toggle:focus-visible {
+.terrain-map-link:hover,
+.terrain-map-link:focus-visible {
   outline: none;
-  transform: translateY(-1px);
-  box-shadow: 0 8px 22px rgba(9, 5, 3, 0.22);
+  color: var(--color-verified);
 }
 
-.terrain-map-toggle:focus-visible {
-  box-shadow:
-    0 6px 18px rgba(9, 5, 3, 0.18),
-    0 0 0 2px var(--color-verified);
+.terrain-map-link:focus-visible .terrain-map-link-arrow {
+  box-shadow: 0 0 0 2px var(--color-verified);
 }
 
-.terrain-map-toggle-active {
+/* Glyph box: small Late-Night Boardroom square with the Warm Canvas
+   arrow / × inside. Square (not circle) so it reads as a typographic
+   ornament rather than as another button. Same chrome whether the
+   glyph is the closed-state → or the active-state ×. */
+.terrain-map-link-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
   background: var(--color-primary);
-  border-color: var(--color-primary);
   color: var(--color-canvas);
-}
-
-.terrain-map-toggle-active:hover,
-.terrain-map-toggle-active:focus-visible {
-  box-shadow: 0 10px 26px rgba(9, 5, 3, 0.32);
-}
-
-.terrain-map-toggle-glyph {
-  display: inline-block;
   font-family: var(--font-interactive);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: 0;
-  /* Vertically nudge so the arrow / × baselines align with the caps
-     text x-height rather than the descender line. */
-  margin-top: -1px;
+  line-height: 1;
+  transition: transform 180ms cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.terrain-map-link:hover .terrain-map-link-arrow,
+.terrain-map-link:focus-visible .terrain-map-link-arrow {
+  transform: translateX(2px);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .terrain-map-toggle {
+  .terrain-map-link,
+  .terrain-map-link-arrow {
     transition: none !important;
   }
 }
