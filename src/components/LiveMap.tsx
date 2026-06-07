@@ -36,6 +36,8 @@ type Listing = {
   latitude: number;
   longitude: number;
   city?: string;
+  image_urls?: string[];
+  size_sqm?: number;
 };
 
 // Fallback sample plots, one per major Abuja neighbourhood. Used
@@ -176,33 +178,76 @@ export function LiveMap() {
             `${listing.title ?? "Verified plot"}, ${formatPrice(listing.price)}`,
           );
           // Price-pill chrome matches the Flutter buyer-map exactly:
-          // Warm Canvas pill with the price in Inter, hairline Border
-          // Rule outline, small Warm Canvas triangular tail beneath
-          // the pill so the tip lands on the lat/lng. Two children
-          // (body + tail) so Mapbox's anchor "bottom" positioning
-          // lands the tail tip precisely at the coordinate.
+          // Late-Night Boardroom pill with the price in Inter, small
+          // triangular tail beneath the pill so the tip lands on the
+          // lat/lng. Two children (body + tail) so Mapbox's anchor
+          // "bottom" positioning lands the tail tip precisely at the
+          // coordinate.
           pin.innerHTML = `
             <span class="terrain-pin-body">${formatPrice(listing.price)}</span>
             <span class="terrain-pin-tail" aria-hidden="true"></span>
           `;
+
+          // Pick the first http(s) image url if any. The Flutter app
+          // uploads images to media.lunor.money; backend ships them
+          // verbatim. Videos (.mp4 / .mov) are filtered out so the
+          // popup never gets a broken video-as-image render.
+          const heroImage = (listing.image_urls ?? []).find((u) => {
+            if (typeof u !== "string" || !u.startsWith("http")) return false;
+            const lower = u.toLowerCase();
+            return !lower.endsWith(".mp4") && !lower.endsWith(".mov");
+          });
+          const escapeHtml = (s: string) =>
+            s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+          const sizeLine =
+            listing.size_sqm && Number.isFinite(listing.size_sqm)
+              ? `<div class="terrain-popup-meta">${listing.size_sqm.toLocaleString("en-NG")} sqm · ${listing.city ?? "Abuja"}</div>`
+              : `<div class="terrain-popup-meta">${listing.city ?? "Abuja"}</div>`;
 
           const popup = new mapboxgl.Popup({
             offset: 14,
             closeButton: false,
             className: "terrain-popup",
             anchor: "bottom",
+            maxWidth: "280px",
           }).setHTML(
             `<div class="terrain-popup-inner">
-               <div class="terrain-popup-title">${(listing.title ?? "Verified plot").replace(/</g, "&lt;")}</div>
-               <div class="terrain-popup-price">${formatPrice(listing.price)}</div>
-               <div class="terrain-popup-cta">Get the app to view the record</div>
+               ${
+                 heroImage
+                   ? `<div class="terrain-popup-image" style="background-image: url('${escapeHtml(heroImage)}')"></div>`
+                   : ""
+               }
+               <div class="terrain-popup-content">
+                 <div class="terrain-popup-price">${formatPrice(listing.price)}</div>
+                 <div class="terrain-popup-title">${escapeHtml(listing.title ?? "Verified plot")}</div>
+                 ${sizeLine}
+                 <div class="terrain-popup-cta">Get the app to view the record</div>
+               </div>
              </div>`,
           );
 
           const marker = new mapboxgl.Marker({ element: pin, anchor: "bottom" })
             .setLngLat([listing.longitude, listing.latitude])
-            .setPopup(popup)
             .addTo(map);
+
+          // Hover preview: open on mouseenter, close on mouseleave.
+          // Mobile browsers also fire mouseenter on first tap, so the
+          // tap surface effectively becomes a tap-to-toggle without
+          // separate touch handlers.
+          pin.addEventListener("mouseenter", () => {
+            popup.setLngLat([listing.longitude, listing.latitude]).addTo(map);
+          });
+          pin.addEventListener("mouseleave", () => {
+            popup.remove();
+          });
+          // Click on a marker keeps the popup open even after the
+          // pointer leaves, useful for users who want to dwell on the
+          // detail without holding the cursor.
+          pin.addEventListener("click", (e) => {
+            e.stopPropagation();
+            popup.setLngLat([listing.longitude, listing.latitude]).addTo(map);
+          });
+
           markersRef.current.push(marker);
         }
 

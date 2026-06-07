@@ -117,10 +117,11 @@ body {
 .terrain-popup .mapboxgl-popup-content {
   padding: 0;
   background: var(--color-canvas);
-  border-radius: 4px;
+  border-radius: 12px;
   border: 1px solid var(--color-border-rule);
-  box-shadow: 0 6px 18px rgba(9, 5, 3, 0.12);
-  min-width: 200px;
+  box-shadow: 0 12px 28px rgba(9, 5, 3, 0.18);
+  overflow: hidden; /* keeps the image's top corners rounded with the card */
+  min-width: 240px;
 }
 
 .terrain-popup .mapboxgl-popup-tip {
@@ -128,21 +129,51 @@ body {
 }
 
 .terrain-popup-inner {
-  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Hero image at the top of the popup card. background-image rather
+   than <img> so the image keeps the same crop behaviour across all
+   listings and we don't need to handle per-image dimensions. Cover +
+   centre positions the most informative part of a typical plot
+   photo (sky and ground frame the subject; cover crops to the
+   middle band). */
+.terrain-popup-image {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  background-color: var(--color-border-rule);
+  background-size: cover;
+  background-position: center;
+}
+
+.terrain-popup-content {
+  padding: 12px 14px 14px;
+}
+
+.terrain-popup-price {
+  font-family: var(--font-body);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-primary);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
 }
 
 .terrain-popup-title {
+  margin-top: 6px;
   font-family: var(--font-body);
-  font-size: 14px;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 600;
   color: var(--color-primary);
   line-height: 1.3;
 }
 
-.terrain-popup-price {
-  margin-top: 4px;
-  font-family: var(--font-body);
-  font-size: 14px;
+.terrain-popup-meta {
+  margin-top: 2px;
+  font-family: var(--font-interactive);
+  font-size: 11px;
+  letter-spacing: 0.04em;
   color: var(--color-secondary);
 }
 
