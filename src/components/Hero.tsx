@@ -24,6 +24,16 @@ export function Hero() {
         className="pointer-events-none absolute inset-y-0 left-0 z-[1] w-2/5 bg-gradient-to-r from-canvas/75 via-canvas/25 to-transparent"
         aria-hidden
       />
+      {/* Bottom fade: dissolves the sharp horizontal line between the
+         map and the next section (ThreeSteps' Warm Canvas surface) into
+         a gradual gradient. Sits above the map (z-[2]) but below the
+         content layer (z-10) so the headline still cuts through cleanly.
+         128px feels natural — long enough to read as "dissolving", short
+         enough to leave most of the map visible. */}
+      <div
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-[2] h-32 bg-gradient-to-b from-transparent to-canvas"
+        aria-hidden
+      />
       <div className="relative z-10 mx-auto grid max-w-[1440px] grid-cols-12 gap-8 px-10 pt-28 pb-20 lg:pt-36 lg:pb-32">
         {/* Text column shrunk from col-span-7 to col-span-6 (58% to 50%)
            so the headline terminates before it crowds the pin cluster on

@@ -211,3 +211,14 @@ body {
   border-radius: 4px;
   border: 1px solid var(--color-border-rule);
 }
+
+/* Hero map's bottom controls (Mapbox logo + attribution) sit above
+   the 128px fade gradient at the hero's bottom edge so they remain
+   visible. Mapbox ToS requires the attribution + logo to be visible
+   and unobscured; if the fade covered them they'd dissolve into the
+   Warm Canvas section below. Pushed up 132px (fade height + 4px
+   breathing room). */
+.mapboxgl-ctrl-bottom-left,
+.mapboxgl-ctrl-bottom-right {
+  bottom: 132px !important;
+}
