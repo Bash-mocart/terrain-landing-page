@@ -182,6 +182,16 @@ body {
   line-height: 1;
 }
 
+/* Wrapper z-index. Mapbox does not assign one by default, so the
+   popup relies on DOM order — and our pin hover sets z-index: 10 on
+   the hovered marker, which can stack on top of a sibling pin's open
+   popup. Pinning the popup wrapper to z-index: 100 keeps the open
+   record floating above every marker in the same stacking context,
+   regardless of which pin the user hovers next. */
+.terrain-popup {
+  z-index: 100;
+}
+
 .terrain-popup .mapboxgl-popup-content {
   padding: 0;
   background: var(--color-canvas);

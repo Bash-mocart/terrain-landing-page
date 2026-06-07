@@ -190,12 +190,24 @@ function createPinForListing(
   // first in image_urls wins. Video listings get an autoplay loop
   // (muted, playsinline) so the popup shows motion; image listings
   // get the static background-image card.
-  const firstMedia = (listing.image_urls ?? []).find(
-    (u) => typeof u === "string" && u.startsWith("http"),
-  );
+  // Prefer a video so the popup leads with motion (the immersive
+  // "walk every plot through videos, drone aerials, and 3D tours"
+  // promise from the landing copy). Listings whose seller uploaded
+  // media in [image, image, video] order were showing the first image
+  // and the video never autoplayed — reported as "we only show the
+  // images not the video for those ones." Walking the array for a
+  // video URL first, falling back to the first valid URL otherwise,
+  // makes the popup honour the listing's most informative media.
+  //
   // Detect video by extension. Allow .mp4 / .mov / .webm and tolerate
   // query strings (e.g. CDN cache busters: media.example.com/clip.mp4?v=2).
-  const isVideo = firstMedia ? /\.(mp4|mov|webm)(\?|#|$)/i.test(firstMedia) : false;
+  const isVideoUrl = (u: string) =>
+    /\.(mp4|mov|webm)(\?|#|$)/i.test(u);
+  const validMediaUrls = (listing.image_urls ?? []).filter(
+    (u): u is string => typeof u === "string" && u.startsWith("http"),
+  );
+  const firstMedia = validMediaUrls.find(isVideoUrl) ?? validMediaUrls[0];
+  const isVideo = firstMedia ? isVideoUrl(firstMedia) : false;
   const escapeHtml = (s: string) =>
     s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
   const sizeLine =
