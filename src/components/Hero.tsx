@@ -8,30 +8,32 @@ import { LiveMap } from "./LiveMap";
 // contrast against any high-contrast street segments behind it.
 export function Hero() {
   return (
-    <section className="relative min-h-[760px] w-full overflow-hidden bg-canvas lg:min-h-[1012px]">
+    <section className="relative min-h-[680px] w-full overflow-hidden bg-canvas sm:min-h-[760px] lg:min-h-[1012px]">
       <div className="absolute inset-0 z-0">
         <LiveMap />
       </div>
-      {/* Reading wash: confined to the left 40% of the hero so the
-         headline + CTAs sit on a quieter surface, while plot pins in
-         the middle and right of the map are never washed out. Opacity
-         drops fast — peak 75% at the left edge, 25% by mid-wash, 0%
-         at the right edge of the wash (which is 40% across the hero).
-         A typical pin in the wash region still reads clearly because
-         peak opacity sits behind the text density, not behind the
-         middle of the map where pins cluster. */}
+      {/* Reading wash: covers a wider band on small viewports so the
+         headline always sits on a quieter surface. On mobile (<640px)
+         the column spans the full width since the text column itself
+         takes the whole viewport; on tablet ~70%, on desktop the
+         original 40% so plot pins in the middle/right of the map are
+         never washed out. Two-pass gradient — vertical on mobile
+         (text sits at the top so the bottom of the hero stays open
+         for the map) and horizontal from the lg breakpoint up. */}
       <div
-        className="pointer-events-none absolute inset-y-0 left-0 z-[1] w-2/5 bg-gradient-to-r from-canvas/75 via-canvas/25 to-transparent"
+        className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-canvas/85 via-canvas/40 to-transparent sm:bg-none"
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute inset-y-0 left-0 z-[1] hidden w-3/5 bg-gradient-to-r from-canvas/80 via-canvas/30 to-transparent sm:block lg:w-2/5 lg:from-canvas/75 lg:via-canvas/25"
         aria-hidden
       />
       {/* Bottom fade: dissolves the sharp horizontal line between the
          map and the next section (ThreeSteps' Warm Canvas surface) into
-         a gradual gradient. Sits above the map (z-[2]) but below the
-         content layer (z-10) so the headline still cuts through cleanly.
-         128px feels natural — long enough to read as "dissolving", short
-         enough to leave most of the map visible. */}
+         a gradual gradient. Shorter on mobile so it does not eat the
+         already-cramped hero vertical real estate. */}
       <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 z-[2] h-32 bg-gradient-to-b from-transparent to-canvas"
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-[2] h-20 bg-gradient-to-b from-transparent to-canvas sm:h-32"
         aria-hidden
       />
       {/* pointer-events-none on the grid container so its empty right
@@ -39,7 +41,7 @@ export function Hero() {
          it. Pin elements at z-0 inside the map were unreachable to the
          cursor when overlaid by this z-10 layer; mouseenter only fired
          on pins outside the container's bounding box. */}
-      <div className="pointer-events-none relative z-10 mx-auto grid max-w-[1440px] grid-cols-12 gap-8 px-10 pt-28 pb-20 lg:pt-36 lg:pb-32">
+      <div className="pointer-events-none relative z-10 mx-auto grid max-w-[1440px] grid-cols-12 gap-6 px-6 pt-24 pb-16 sm:gap-8 sm:px-8 sm:pt-28 sm:pb-20 lg:px-10 lg:pt-36 lg:pb-32">
         {/* Text column shrunk from col-span-7 to col-span-6 (58% to 50%)
            so the headline terminates before it crowds the pin cluster on
            the right side of the map. Critique flagged "Fear" running
@@ -54,7 +56,7 @@ export function Hero() {
             Verified on the ground
           </span>
           <h1
-            className="mt-6 text-[clamp(48px,6vw,80px)] leading-[0.95] tracking-tight text-primary"
+            className="mt-5 text-[clamp(40px,9vw,80px)] leading-[0.95] tracking-tight text-primary sm:mt-6"
             style={{ fontFamily: "var(--font-display)", fontWeight: 700 }}
           >
             Own a Property

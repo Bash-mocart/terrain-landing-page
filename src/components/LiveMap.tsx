@@ -419,8 +419,22 @@ export function LiveMap() {
         if (coords.length >= 2) {
           const bounds = new mapboxgl.LngLatBounds(coords[0], coords[0]);
           for (const c of coords) bounds.extend(c);
+          // Padding adapts to viewport so pins don't get clipped on
+          // narrow screens AND don't sit underneath the hero's reading
+          // wash on wide ones. Mobile: tight even padding so the
+          // available width is mostly map. Tablet: a little headroom
+          // on the left to push pins out of the partial wash. Desktop:
+          // wider left pad matches the 40% wash so the pin cluster
+          // never lands under the headline.
+          const w = map.getContainer().clientWidth;
+          const padding =
+            w < 640
+              ? { top: 56, bottom: 140, left: 32, right: 32 }
+              : w < 1024
+                ? { top: 72, bottom: 140, left: 120, right: 64 }
+                : { top: 80, bottom: 160, left: Math.round(w * 0.4), right: 80 };
           map.fitBounds(bounds, {
-            padding: { top: 80, bottom: 80, left: 80, right: 80 },
+            padding,
             maxZoom: 13,
             duration: 700,
           });

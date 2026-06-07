@@ -39,8 +39,8 @@ const FAQS: Q[] = [
 export function FAQ() {
   const [open, setOpen] = useState<number | null>(0);
   return (
-    <section className="bg-primary py-24 lg:py-32 text-canvas">
-      <div className="mx-auto grid max-w-[1440px] grid-cols-1 gap-12 px-10 lg:grid-cols-12">
+    <section className="bg-primary py-16 sm:py-24 lg:py-32 text-canvas">
+      <div className="mx-auto grid max-w-[1440px] grid-cols-1 gap-10 px-6 sm:gap-12 sm:px-8 lg:grid-cols-12 lg:px-10">
         <div className="lg:col-span-5">
           {/* Eyebrow without pill chrome: caps Inter + Border Rule
              hairline above the headline. Same pattern across every
@@ -91,10 +91,10 @@ export function FAQ() {
                   aria-expanded={isOpen}
                   aria-controls={`faq-panel-${i}`}
                   onClick={() => setOpen(isOpen ? null : i)}
-                  className="flex w-full items-center justify-between gap-4 py-6 text-left transition-colors hover:text-verified/90"
+                  className="flex w-full items-center justify-between gap-3 py-5 text-left transition-colors hover:text-verified/90 sm:gap-4 sm:py-6"
                 >
                   <span
-                    className="text-lg leading-snug text-canvas"
+                    className="text-base leading-snug text-canvas sm:text-lg"
                     style={{
                       fontFamily: "var(--font-body)",
                       fontWeight: 600,
@@ -119,7 +119,7 @@ export function FAQ() {
                 >
                   <div className="min-h-0 overflow-hidden">
                     <p
-                      className="pb-6 pr-12 text-base leading-relaxed text-canvas/75"
+                      className="pb-5 pr-4 text-[15px] leading-relaxed text-canvas/75 sm:pb-6 sm:pr-12 sm:text-base"
                       style={{ fontFamily: "var(--font-body)" }}
                     >
                       {item.a}

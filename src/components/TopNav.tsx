@@ -8,7 +8,7 @@ export function TopNav() {
   return (
     <nav
       id="top"
-      className="absolute top-0 left-0 right-0 z-30 flex items-center justify-between px-10 py-6"
+      className="absolute top-0 left-0 right-0 z-30 flex items-center justify-between px-6 py-4 sm:px-8 sm:py-5 lg:px-10 lg:py-6"
       aria-label="Primary"
     >
       <Link
@@ -35,7 +35,7 @@ export function TopNav() {
       {/* Spacer to balance the right side so the anchor links stay
          centred relative to the wordmark. Matches the wordmark's
          approximate width. */}
-      <span aria-hidden className="w-[112px]" />
+      <span aria-hidden className="hidden md:inline-block w-[112px]" />
     </nav>
   );
 }

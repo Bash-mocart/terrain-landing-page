@@ -35,10 +35,10 @@ const NAV = [
 
 export function Footer() {
   return (
-    <footer className="bg-primary py-20 text-canvas">
-      <div className="mx-auto max-w-[1440px] px-10">
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
-          <div className="lg:col-span-4">
+    <footer className="bg-primary py-16 text-canvas sm:py-20">
+      <div className="mx-auto max-w-[1440px] px-6 sm:px-8 lg:px-10">
+        <div className="grid grid-cols-1 gap-10 sm:gap-12 sm:grid-cols-2 lg:grid-cols-12">
+          <div className="sm:col-span-2 lg:col-span-4">
             <Link
               href="/"
               className="text-3xl tracking-tight"
@@ -99,7 +99,7 @@ export function Footer() {
             </div>
           ))}
         </div>
-        <div className="mt-16 flex flex-col items-start gap-3 border-t border-canvas/15 pt-6 text-xs text-canvas/55 md:flex-row md:items-center md:justify-between">
+        <div className="mt-12 flex flex-col items-start gap-3 border-t border-canvas/15 pt-6 text-xs text-canvas/55 sm:mt-16 md:flex-row md:items-center md:justify-between">
           <p style={{ fontFamily: "var(--font-body)" }}>
             © {new Date().getFullYear()} Terrain Technologies Ltd. All rights
             reserved.

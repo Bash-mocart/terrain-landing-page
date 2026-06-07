@@ -40,9 +40,9 @@ const STEPS: Step[] = [
 
 export function ThreeSteps() {
   return (
-    <section id="how-it-works" className="relative bg-canvas py-24 lg:py-32">
-      <div className="mx-auto max-w-[1440px] px-10">
-        <div className="mb-16 flex flex-col items-center text-center">
+    <section id="how-it-works" className="relative bg-canvas py-16 sm:py-24 lg:py-32">
+      <div className="mx-auto max-w-[1440px] px-6 sm:px-8 lg:px-10">
+        <div className="mb-12 flex flex-col items-center text-center sm:mb-16">
           {/* Eyebrow without the rounded-pill chrome — caps Inter with
              a hairline rule beneath, matching the Flutter app's
              section-label pattern. */}
@@ -79,7 +79,7 @@ function StepCard({ step }: { step: Step }) {
   const isDark = step.background === "boardroom" || step.background === "topo";
   return (
     <article
-      className={`relative flex h-[560px] flex-col justify-between overflow-hidden rounded-[20px] p-8 ${
+      className={`relative flex min-h-[420px] flex-col justify-between gap-10 overflow-hidden rounded-[20px] p-7 sm:gap-12 sm:p-8 lg:h-[560px] lg:min-h-0 lg:gap-0 ${
         step.background === "canvas"
           ? "bg-canvas border border-[--color-border-rule]"
           : step.background === "boardroom"

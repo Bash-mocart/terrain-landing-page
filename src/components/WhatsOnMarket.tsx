@@ -9,8 +9,8 @@ import Link from "next/link";
 // (dishonest — anchor went to #download) to "Get the App" (honest).
 export function WhatsOnMarket() {
   return (
-    <section id="listings" className="bg-canvas py-24 lg:py-32">
-      <div className="mx-auto grid max-w-[1440px] grid-cols-1 items-center gap-12 px-10 lg:grid-cols-12">
+    <section id="listings" className="bg-canvas py-16 sm:py-24 lg:py-32">
+      <div className="mx-auto grid max-w-[1440px] grid-cols-1 items-center gap-10 px-6 sm:gap-12 sm:px-8 lg:grid-cols-12 lg:px-10">
         <div className="lg:col-span-6">
           <span
             className="text-[11px] uppercase tracking-[0.18em] text-primary"
@@ -38,14 +38,14 @@ export function WhatsOnMarket() {
           </p>
           <Link
             href="#top"
-            className="mt-10 inline-flex items-center justify-center rounded-full bg-primary px-7 py-3.5 text-canvas transition-opacity hover:opacity-90"
+            className="mt-8 inline-flex items-center justify-center rounded-full bg-primary px-7 py-3.5 text-canvas transition-opacity hover:opacity-90 sm:mt-10"
             style={{ fontFamily: "var(--font-interactive)", fontWeight: 600 }}
           >
             Get the App
           </Link>
         </div>
         <div className="relative lg:col-span-6">
-          <div className="relative mx-auto aspect-[3/4] max-w-md overflow-hidden rounded-[20px] border border-[--color-border-rule] bg-canvas">
+          <div className="relative mx-auto aspect-[3/4] w-full max-w-sm overflow-hidden rounded-[20px] border border-[--color-border-rule] bg-canvas sm:max-w-md">
             <Image
               src="/figma/mockup-search.png"
               alt="Terrain app showing search results for verified plots"

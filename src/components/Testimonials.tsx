@@ -49,9 +49,9 @@ function initials(name: string): string {
 
 export function Testimonials() {
   return (
-    <section id="testimonials" className="bg-canvas py-24 lg:py-32 text-primary">
-      <div className="mx-auto max-w-[1440px] px-10">
-        <div className="mb-16 flex flex-col items-center text-center">
+    <section id="testimonials" className="bg-canvas py-16 sm:py-24 lg:py-32 text-primary">
+      <div className="mx-auto max-w-[1440px] px-6 sm:px-8 lg:px-10">
+        <div className="mb-12 flex flex-col items-center text-center sm:mb-16">
           {/* Section flipped from Forest Verification background to Warm
              Canvas so the Forest accent INSIDE each card (the verified
              dot) regains its semantic punch — when the whole section was
@@ -87,7 +87,7 @@ export function Testimonials() {
 
 function TestimonialCard({ t }: { t: Testimonial }) {
   return (
-    <article className="flex h-full flex-col justify-between gap-10 rounded-[20px] border border-[--color-border-rule] bg-canvas p-8 text-primary">
+    <article className="flex h-full flex-col justify-between gap-8 rounded-[20px] border border-[--color-border-rule] bg-canvas p-7 text-primary sm:gap-10 sm:p-8">
       <div className="flex items-start justify-between gap-4">
         <div
           className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-verified text-canvas"
@@ -111,7 +111,7 @@ function TestimonialCard({ t }: { t: Testimonial }) {
         </span>
       </div>
       <blockquote
-        className="text-lg leading-relaxed text-primary"
+        className="text-base leading-relaxed text-primary sm:text-lg"
         style={{ fontFamily: "var(--font-body)" }}
       >
         “{t.quote}”
