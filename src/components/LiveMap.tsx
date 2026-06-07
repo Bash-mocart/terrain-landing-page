@@ -247,7 +247,12 @@ export function LiveMap() {
             offset: 14,
             closeButton: false,
             className: "terrain-popup",
-            anchor: "bottom",
+            // anchor: undefined lets Mapbox pick the best side based
+            // on viewport space. Pins near the top of the visible map
+            // get their popup rendered BELOW (Mapbox-default popup tip
+            // points up); pins anywhere else get the popup above with
+            // a downward-pointing tip. This fixes the "popups clipped
+            // off-screen for pins near the top" symptom.
             maxWidth: "280px",
           }).setHTML(
             `<div class="terrain-popup-inner">
@@ -269,22 +274,57 @@ export function LiveMap() {
             .setLngLat([listing.longitude, listing.latitude])
             .addTo(map);
 
-          // Hover preview: open on mouseenter, close on mouseleave.
-          // Mobile browsers also fire mouseenter on first tap, so the
-          // tap surface effectively becomes a tap-to-toggle without
-          // separate touch handlers.
-          pin.addEventListener("mouseenter", () => {
+          // Hover preview with a 120ms close buffer.
+          //
+          // The bug fixed: the popup is positioned a few pixels above
+          // (or below) the pin with a small gap. When the user moves
+          // their cursor from the pin toward the popup to read it,
+          // the cursor crosses that gap, mouseleave fires on the pin,
+          // and the popup closes before they can interact with it.
+          //
+          // The fix: schedule the close on a 120ms timeout. If the
+          // cursor lands on the popup itself during that window, the
+          // popup's own mouseenter cancels the close. Leaving the
+          // popup re-schedules it.
+          //
+          // Mobile browsers fire mouseenter on first tap, so the tap
+          // surface still works as tap-to-open without separate touch
+          // handlers.
+          let closeTimeout: ReturnType<typeof setTimeout> | null = null;
+          const cancelClose = () => {
+            if (closeTimeout) {
+              clearTimeout(closeTimeout);
+              closeTimeout = null;
+            }
+          };
+          const scheduleClose = () => {
+            cancelClose();
+            closeTimeout = setTimeout(() => {
+              popup.remove();
+              closeTimeout = null;
+            }, 120);
+          };
+          const openPopup = () => {
+            cancelClose();
+            if (popup.isOpen()) return;
             popup.setLngLat([listing.longitude, listing.latitude]).addTo(map);
-          });
-          pin.addEventListener("mouseleave", () => {
-            popup.remove();
-          });
-          // Click on a marker keeps the popup open even after the
-          // pointer leaves, useful for users who want to dwell on the
-          // detail without holding the cursor.
+            // The popup element only exists after addTo. Attach the
+            // mouse handlers once it's mounted so cursor-over-popup
+            // also keeps it open.
+            const popupEl = popup.getElement();
+            if (popupEl) {
+              popupEl.addEventListener("mouseenter", cancelClose);
+              popupEl.addEventListener("mouseleave", scheduleClose);
+            }
+          };
+          pin.addEventListener("mouseenter", openPopup);
+          pin.addEventListener("mouseleave", scheduleClose);
+          // Click pins the popup open until the cursor wanders well
+          // off — same close buffer applies, but the click path skips
+          // the cancel-on-popup-mouseenter dance.
           pin.addEventListener("click", (e) => {
             e.stopPropagation();
-            popup.setLngLat([listing.longitude, listing.latitude]).addTo(map);
+            openPopup();
           });
 
           markersRef.current.push(marker);
