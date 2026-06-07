@@ -122,7 +122,7 @@ function createClusterMarker(
   badge.className = "terrain-cluster-badge";
   badge.setAttribute(
     "aria-label",
-    `Zoom to ${count} verified plots in this area`,
+    `Explore ${count} verified plots in this area`,
   );
   // Single span inside the circle; count formatted "12" for ≤99
   // and "99+" beyond — keeps the badge a consistent two-character
@@ -363,6 +363,24 @@ export function LiveMap() {
     container.replaceChildren();
     mapboxgl.accessToken = MAPBOX_TOKEN;
 
+    // Mobile vs desktop interactivity split. The cooperative-gestures
+    // overlay was reported by users as firing constantly on mobile —
+    // every incidental touch during page scroll landed on the map
+    // (full-bleed inset-0) and Mapbox's blocker assumes "the user is
+    // trying to use the map" instead of "the user is trying to scroll
+    // past it." On a long-scroll landing page hero, the latter is
+    // by far the more common intent. We turn the map non-interactive
+    // on mobile so single-finger touches pass straight through to
+    // page scroll with no overlay flash. Cluster badges + pin pills
+    // remain tappable: their click handlers are DOM listeners outside
+    // Mapbox's interaction system, and they call map.easeTo() /
+    // popup.addTo() programmatically — those work fine when user
+    // pan/zoom is disabled.
+    //
+    // Desktop keeps interactive + cooperativeGestures because wheel-
+    // zoom is a real exploration win on a trackpad/mouse and the
+    // overlay rarely fires (a deliberate ⌘+wheel is the common case).
+    const isMobile = container.clientWidth < 640;
     const map = new mapboxgl.Map({
       container,
       style: "mapbox://styles/mapbox/streets-v12",
@@ -370,22 +388,27 @@ export function LiveMap() {
       zoom: ABUJA_ZOOM,
       maxBounds: ABUJA_MAX_BOUNDS,
       attributionControl: false,
-      // Interactive with cooperative gestures — the Mapbox-canonical
-      // pattern for embedded maps. Wheel-scroll over the map shows
-      // "Use ⌘ + scroll to zoom" and lets the page scroll through;
-      // single-finger touch shows "Use two fingers to move" and
-      // lets the page swipe normally. Page scroll is never hijacked.
-      // Deliberate ⌘+wheel / two-finger gestures give real pan + zoom
-      // for buyers who want to explore the FCT inventory directly
-      // from the hero.
-      interactive: true,
-      cooperativeGestures: true,
+      interactive: !isMobile,
+      cooperativeGestures: !isMobile,
       // 2D inventory map — rotation and pitch would only confuse the
       // top-down lat/lng reading; disable them so a user who two-
       // fingers can pan + zoom but never tilt or twist.
       dragRotate: false,
       pitchWithRotate: false,
       touchPitch: false,
+      // Override Mapbox's default cooperative-gestures help text so
+      // the overlay reads in Terrain's registry voice instead of the
+      // mechanical "move the map" default. Visual chrome of the
+      // overlay is restyled in globals.css to Warm Canvas + Inter
+      // caps so the whole affordance matches the rest of the page.
+      locale: {
+        "ScrollZoomBlocker.CtrlMessage":
+          "Hold ctrl + scroll to explore the registry",
+        "ScrollZoomBlocker.CmdMessage":
+          "Hold ⌘ + scroll to explore the registry",
+        "TouchPanBlocker.Message":
+          "Two fingers to explore the registry",
+      },
     });
     map.addControl(
       new mapboxgl.AttributionControl({ compact: true }),
