@@ -23,21 +23,21 @@ const TESTIMONIALS: Testimonial[] = [
     role: "Buyer",
     city: "Abuja",
     quote:
-      "I was skeptical at first. Buying land remotely felt risky. Terrain's escrow held my funds until I physically confirmed the beacons matched the survey plan. First time I felt safe doing this.",
+      "I'd burned out on Instagram realtors. Terrain showed me a vetted agent in Abuja with a CAC-registered company. I visited the plot with him, ran the title check with my lawyer, and closed. First time it felt straightforward.",
   },
   {
     name: "Chidi Eze",
-    role: "Seller",
+    role: "Real estate agent",
     city: "Abuja",
     quote:
-      "I listed a plot on a Thursday. The reviewer came on Friday. By the next Saturday I had a verified buyer, and the title transfer was done in 12 days.",
+      "Getting verified took a day. Within the first week I was getting inquiries from buyers who had already read up on my company. The Terrain leads are a different quality from WhatsApp.",
   },
   {
     name: "Fatima Ibrahim",
-    role: "Repeat buyer",
-    city: "Port Harcourt",
+    role: "Diaspora buyer",
+    city: "London / Abuja",
     quote:
-      "The C of O verification and KYC process gives me confidence that every listing is legitimate. I've completed three purchases through Terrain and I won't go back to the old way.",
+      "I live abroad. Buying land back home used to mean trusting a cousin. Terrain let me browse plots from agents whose companies were already CAC-verified. I closed two plots without flying in to vet anyone myself.",
   },
 ];
 
@@ -124,14 +124,14 @@ function TestimonialCard({ t }: { t: Testimonial }) {
           {t.name}
         </p>
         <p
-          className="mt-1 flex items-center gap-1.5 text-[11px] uppercase tracking-[0.16em] text-secondary"
+          className="mt-1 text-[11px] uppercase tracking-[0.16em] text-secondary"
           style={{ fontFamily: "var(--font-interactive)" }}
         >
-          <span
-            aria-hidden
-            className="inline-block h-1.5 w-1.5 rounded-full bg-verified"
-          />
-          Verified {t.role.toLowerCase()}
+          {/* Dropped the "Verified {role}" prefix + Forest Verification
+             dot. Terrain vets real estate agents and companies, not
+             buyers; using the verification mark on every role would
+             overclaim. The role + city alone carries the citation. */}
+          {t.role}
           <span aria-hidden> · </span>
           {t.city}
         </p>

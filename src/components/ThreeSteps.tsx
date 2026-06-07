@@ -16,23 +16,23 @@ type Step = {
 const STEPS: Step[] = [
   {
     eyebrow: "01",
-    title: "Browse & Verify",
+    title: "Browse Vetted\nListings.",
     body:
-      "Search every available plot on a live map. Filter by city, price, certificate type, and verification status. Every listing's title document is on record with Terrain before it surfaces.",
+      "Search every available plot and house on a live map. Filter by city, price, and property type. Every listing comes from a real estate agent we have CAC-verified and vetted before approving them to publish.",
     background: "canvas",
   },
   {
     eyebrow: "02",
-    title: "Realtor Groups,\nOne Trip Away.",
+    title: "Connect With\nthe Agent.",
     body:
-      "Tap to schedule a site visit with the verified realtor for that plot. We coordinate the trip, walk the boundary with you, and confirm beacon numbers against the survey plan.",
+      "Tap any plot or house to see the agent who listed it. You get their company name, contact details, and other listings on file. Terrain does not sit between you and the agent.",
     background: "boardroom",
   },
   {
     eyebrow: "03",
-    title: "Transfer With\nEscrow Holding.",
+    title: "Visit and Buy\nDirectly.",
     body:
-      "Funds sit in Terrain escrow until the title transfers. Refunded automatically if the deed doesn't land. No commission. No middlemen.",
+      "Arrange a site visit with the agent. Inspect the property in person, run your own title due diligence, and buy directly on their terms. Terrain takes no commission and is not a party to the transaction.",
     background: "topo",
     topoImage: "/figma/step-3.png",
   },

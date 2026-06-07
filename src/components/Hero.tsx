@@ -65,7 +65,7 @@ export function Hero() {
             className="inline-block rounded-full bg-canvas/85 px-3 py-1.5 text-xs uppercase tracking-[0.18em] text-primary backdrop-blur-sm"
             style={{ fontFamily: "var(--font-interactive)" }}
           >
-            Verified on the ground
+            CAC-verified agents
           </span>
           <h1
             className="mt-5 text-[clamp(40px,9vw,80px)] leading-[0.95] tracking-tight text-primary sm:mt-6"
@@ -75,16 +75,18 @@ export function Hero() {
             <br />
             Without Fear.
           </h1>
-          {/* Subhead tightened: dropped "Lagos, and beyond" since the
-             map currently filters to FCT bounds only. Re-add when the
-             dev DB has verified Lagos inventory and the map widens its
-             camera + bounds to cover both cities. */}
+          {/* Subhead reframed: Terrain is a marketplace, not an escrow.
+             Trust signal is the agent vetting (CAC-registered + reviewed
+             before listing), not "title confirmed before funds move."
+             Lagos line dropped because the map currently filters to FCT
+             bounds. Add Lagos back when the dev DB has Lagos inventory
+             and the map widens to cover both cities. */}
           <p
             className="mt-6 max-w-xl text-lg leading-relaxed text-secondary"
             style={{ fontFamily: "var(--font-body)" }}
           >
-            Browse verified plots in Abuja. Every title confirmed before
-            funds move.
+            Browse plots and houses in Abuja, listed by real estate
+            agents we have CAC-verified and vetted before approving.
           </p>
           <div className="mt-10 flex flex-wrap items-center gap-3">
             <StoreButton href="https://apps.apple.com" platform="ios" />

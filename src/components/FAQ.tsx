@@ -10,29 +10,34 @@ type Q = { q: string; a: string };
 
 const FAQS: Q[] = [
   {
-    q: "How can I purchase land through the platform without an agent?",
+    q: "Do I need to go through a real estate agent?",
     a:
-      "Browse listings on the live map, tap a plot, then tap Make Offer. Terrain holds your funds in escrow while a verified realtor walks the boundary with you and confirms the survey plan. No agency in the middle.",
+      "Yes. Terrain is built around verified real estate agents. Every plot and house on the platform is listed by an agent or company we have CAC-verified and vetted before approving them to publish. You browse their listings and contact the agent directly through the app.",
   },
   {
-    q: "Are there any hidden agency fees or commissions?",
+    q: "Does Terrain charge any fees to buyers?",
     a:
-      "No. Terrain charges a flat platform fee disclosed on the listing detail before you commit. There are no buyer-side commissions, no broker spreads, and no surprise fees at closing.",
+      "No. Using Terrain is free for buyers. We do not take a commission on transactions. The agent or company you buy from may charge their own fees according to their own terms; Terrain does not add to those.",
   },
   {
-    q: "How do I schedule a physical site inspection?",
+    q: "How do I view a property in person?",
     a:
-      "Every verified listing surfaces a Book Site Visit option. The verified realtor for that plot coordinates date, transport, and a guided walk-through of the beacons against the survey plan.",
+      "Every listing shows the agent's contact details. Reach out directly through call or message in the app to arrange a site visit. The visit is between you and the agent; Terrain does not coordinate it.",
   },
   {
-    q: "How does the platform ensure that the land titles are genuine?",
+    q: "How does Terrain decide which agents are allowed to list?",
     a:
-      "Every plot is reviewed by a Terrain officer who pulls the Certificate of Occupancy or Governor's Consent at the relevant state Lands Bureau, cross-checks the survey plan, and confirms the seller's identity via KYC before the listing goes live.",
+      "Every agent or company applies to join Terrain. We confirm their CAC (Corporate Affairs Commission) registration, verify the business is operating, and review their company before approving them to publish on the platform. Agents that fail vetting are not allowed to list.",
   },
   {
-    q: "Who do I make payments to when I buy a plot?",
+    q: "Who do I make payments to when I buy?",
     a:
-      "Funds move into Terrain Trustees Ltd., a regulated escrow account, never directly to the seller. Funds release to the seller only when the title transfer is confirmed at the Lands Registry. If the deed doesn't land, the escrow refunds automatically.",
+      "Directly to the agent or company that listed the property, according to their own payment process. Terrain does not hold funds, does not act as escrow, and is not a party to the transaction. We are the marketplace that introduces you to vetted agents; the deal happens between you and them.",
+  },
+  {
+    q: "What protects me if a deal goes wrong?",
+    a:
+      "Terrain's protection is upstream of the deal. We only allow CAC-registered, vetted real estate companies on the platform, so you start from a position of dealing with a legitimate business. Once you and the agent agree on a price, follow standard practice: visit the property, run your own title due diligence (or hire a lawyer), and document the transaction.",
   },
 ];
 
