@@ -140,7 +140,9 @@ function createPinForListing(
   const firstMedia = (listing.image_urls ?? []).find(
     (u) => typeof u === "string" && u.startsWith("http"),
   );
-  const isVideo = firstMedia ? /\.(mp4|mov)$/i.test(firstMedia) : false;
+  // Detect video by extension. Allow .mp4 / .mov / .webm and tolerate
+  // query strings (e.g. CDN cache busters: media.example.com/clip.mp4?v=2).
+  const isVideo = firstMedia ? /\.(mp4|mov|webm)(\?|#|$)/i.test(firstMedia) : false;
   const escapeHtml = (s: string) =>
     s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
   const sizeLine =
@@ -213,11 +215,21 @@ function createPinForListing(
     popup.setLngLat([listing.longitude, listing.latitude]).addTo(map);
     // The popup element only exists after addTo. Attach the cursor-
     // over-popup handlers so the popup stays open while the user
-    // reads it.
+    // reads it. Also kick any <video> inside the popup into playback;
+    // innerHTML-injected videos don't always honour the autoplay
+    // attribute (browser policy considers them non-user-initiated).
     const popupEl = popup.getElement();
     if (popupEl) {
       popupEl.addEventListener("mouseenter", cancelClose);
       popupEl.addEventListener("mouseleave", scheduleClose);
+      popupEl.querySelectorAll("video").forEach((video) => {
+        // The element already has muted + playsinline + autoplay
+        // set as attributes via the setHTML string. play() returns
+        // a Promise that rejects if the browser blocks autoplay
+        // entirely — we swallow that quietly (no popup CTA depends
+        // on the video playing).
+        video.play().catch(() => {});
+      });
     }
   };
   pin.addEventListener("mouseenter", openPopup);
