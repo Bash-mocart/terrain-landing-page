@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import Supercluster from "supercluster";
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -346,6 +346,24 @@ export function LiveMap() {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const markersRef = useRef<mapboxgl.Marker[]>([]);
+  // Camera state captured the moment the user enters explore mode,
+  // so exiting can ease back to the original framing instead of
+  // leaving the map stranded wherever the user panned/zoomed to.
+  const preExploreCameraRef = useRef<{
+    center: mapboxgl.LngLat;
+    zoom: number;
+  } | null>(null);
+  // isMobile drives both whether the toggle button renders and
+  // whether the runtime handler-enable effect engages. Set once on
+  // mount; this hero doesn't try to adapt across breakpoints in a
+  // single session (would require tearing down + re-creating the
+  // map, which is expensive and disruptive).
+  const [isMobile, setIsMobile] = useState(false);
+  // Mode flag — false = map is a backdrop and single-finger touches
+  // fall through to page scroll. True = pan / pinch zoom enabled,
+  // page scroll is intercepted while the finger is on the map. The
+  // user toggles via an on-map "Tap to explore" pill.
+  const [isExploring, setIsExploring] = useState(false);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -380,7 +398,8 @@ export function LiveMap() {
     // Desktop keeps interactive + cooperativeGestures because wheel-
     // zoom is a real exploration win on a trackpad/mouse and the
     // overlay rarely fires (a deliberate ⌘+wheel is the common case).
-    const isMobile = container.clientWidth < 640;
+    const isMobileVal = container.clientWidth < 640;
+    setIsMobile(isMobileVal);
     const map = new mapboxgl.Map({
       container,
       style: "mapbox://styles/mapbox/streets-v12",
@@ -388,8 +407,8 @@ export function LiveMap() {
       zoom: ABUJA_ZOOM,
       maxBounds: ABUJA_MAX_BOUNDS,
       attributionControl: false,
-      interactive: !isMobile,
-      cooperativeGestures: !isMobile,
+      interactive: !isMobileVal,
+      cooperativeGestures: !isMobileVal,
       // 2D inventory map — rotation and pitch would only confuse the
       // top-down lat/lng reading; disable them so a user who two-
       // fingers can pan + zoom but never tilt or twist.
@@ -668,12 +687,64 @@ export function LiveMap() {
     };
   }, []);
 
+  // Toggle map interaction handlers in lockstep with isExploring.
+  // The map is constructed non-interactive on mobile, so dragPan /
+  // touchZoomRotate / doubleClickZoom are disabled at startup. When
+  // the user taps "Tap to explore", we enable them; tapping "Done"
+  // disables and eases the camera back to the pre-explore framing
+  // so the user lands where they started rather than wherever they
+  // last panned. Cooperative gestures stays off in both states —
+  // the user has already opted in via the pill, so the overlay
+  // would be pure noise.
+  useEffect(() => {
+    if (!isMobile) return;
+    const map = mapRef.current;
+    if (!map) return;
+    if (isExploring) {
+      preExploreCameraRef.current = {
+        center: map.getCenter(),
+        zoom: map.getZoom(),
+      };
+      map.dragPan.enable();
+      map.touchZoomRotate.enable();
+      map.doubleClickZoom.enable();
+    } else {
+      map.dragPan.disable();
+      map.touchZoomRotate.disable();
+      map.doubleClickZoom.disable();
+      if (preExploreCameraRef.current) {
+        map.easeTo({
+          center: preExploreCameraRef.current.center,
+          zoom: preExploreCameraRef.current.zoom,
+          duration: 500,
+        });
+      }
+    }
+  }, [isExploring, isMobile]);
+
   return (
-    <div
-      ref={containerRef}
-      className="h-full w-full"
-      aria-label="Map of verified plots in Abuja"
-      role="region"
-    />
+    <div className="relative h-full w-full">
+      <div
+        ref={containerRef}
+        className="h-full w-full"
+        aria-label="Map of verified plots in Abuja"
+        role="region"
+      />
+      {isMobile && (
+        <button
+          type="button"
+          onClick={() => setIsExploring((prev) => !prev)}
+          aria-pressed={isExploring}
+          className={`terrain-map-toggle ${isExploring ? "terrain-map-toggle-active" : ""}`}
+        >
+          <span className="terrain-map-toggle-text">
+            {isExploring ? "Done exploring" : "Tap to explore the registry"}
+          </span>
+          <span className="terrain-map-toggle-glyph" aria-hidden>
+            {isExploring ? "×" : "→"}
+          </span>
+        </button>
+      )}
+    </div>
   );
 }
