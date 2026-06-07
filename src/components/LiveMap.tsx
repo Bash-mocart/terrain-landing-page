@@ -105,26 +105,33 @@ type PopupRef = { current: mapboxgl.Popup | null };
 // it. Buyers read "12 plots" rather than a stack of overlapping
 // price pills — registry-document quietness over marketing density.
 //
-// The hero map is interactive: false, so cluster badges don't expand
-// on click — there's no zoom available. They are pure visualisation
-// of inventory depth in that district. The Flutter app's buyer map
-// is where clusters become tappable; here they are signal only.
+// With the map's cooperative gestures enabled the badge becomes
+// tappable: click / Enter / Space eases the camera into the
+// supercluster-reported expansion zoom for that cluster, breaking
+// the badge apart into its constituent pins (or smaller sub-clusters)
+// on the next idle re-render. Buyers can explore inventory from the
+// hero without leaving the page.
 function createClusterMarker(
   lng: number,
   lat: number,
   count: number,
+  onActivate: () => void,
 ): mapboxgl.Marker {
-  const badge = document.createElement("div");
+  const badge = document.createElement("button");
+  badge.type = "button";
   badge.className = "terrain-cluster-badge";
-  badge.setAttribute("role", "img");
   badge.setAttribute(
     "aria-label",
-    `${count} verified plots in this area`,
+    `Zoom to ${count} verified plots in this area`,
   );
   // Single span inside the circle; count formatted "12" for ≤99
   // and "99+" beyond — keeps the badge a consistent two-character
   // width so the layout stays calm at any cluster size.
   badge.innerHTML = `<span class="terrain-cluster-count">${count > 99 ? "99+" : count}</span>`;
+  badge.addEventListener("click", (e) => {
+    e.stopPropagation();
+    onActivate();
+  });
   return new mapboxgl.Marker({ element: badge, anchor: "center" }).setLngLat([
     lng,
     lat,
@@ -363,12 +370,22 @@ export function LiveMap() {
       zoom: ABUJA_ZOOM,
       maxBounds: ABUJA_MAX_BOUNDS,
       attributionControl: false,
-      // Static map: no pan, no zoom, no rotation. The hero is a
-      // reading surface, not a navigation tool — backdrop maps that
-      // hijack scroll or pan when users intend to read the page are
-      // disruptive. Pin clicks still work because Markers attach
-      // their own DOM listeners outside Mapbox's interaction system.
-      interactive: false,
+      // Interactive with cooperative gestures — the Mapbox-canonical
+      // pattern for embedded maps. Wheel-scroll over the map shows
+      // "Use ⌘ + scroll to zoom" and lets the page scroll through;
+      // single-finger touch shows "Use two fingers to move" and
+      // lets the page swipe normally. Page scroll is never hijacked.
+      // Deliberate ⌘+wheel / two-finger gestures give real pan + zoom
+      // for buyers who want to explore the FCT inventory directly
+      // from the hero.
+      interactive: true,
+      cooperativeGestures: true,
+      // 2D inventory map — rotation and pitch would only confuse the
+      // top-down lat/lng reading; disable them so a user who two-
+      // fingers can pan + zoom but never tilt or twist.
+      dragRotate: false,
+      pitchWithRotate: false,
+      touchPitch: false,
     });
     map.addControl(
       new mapboxgl.AttributionControl({ compact: true }),
@@ -507,10 +524,29 @@ export function LiveMap() {
               "cluster" in props &&
               (props as { cluster?: boolean }).cluster === true
             ) {
-              const { point_count } = props as ClusterProps;
-              const marker = createClusterMarker(lng, lat, point_count).addTo(
-                map,
-              );
+              const { point_count, cluster_id } = props as ClusterProps;
+              // Ask supercluster how far we need to zoom to break this
+              // cluster apart. +0.5 nudges past the merge threshold so
+              // the next idle render releases the leaves cleanly
+              // instead of rebuilding the same cluster one zoom-level
+              // shallower. Capped at 16 to match the index's maxZoom.
+              const onActivate = () => {
+                const expansionZoom = Math.min(
+                  16,
+                  cluster.getClusterExpansionZoom(cluster_id) + 0.5,
+                );
+                map.easeTo({
+                  center: [lng, lat],
+                  zoom: expansionZoom,
+                  duration: 600,
+                });
+              };
+              const marker = createClusterMarker(
+                lng,
+                lat,
+                point_count,
+                onActivate,
+              ).addTo(map);
               markersRef.current.push(marker);
             } else {
               const { listing } = props as LeafProps;
