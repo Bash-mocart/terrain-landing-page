@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import { LiveMap } from "./LiveMap";
 
@@ -6,11 +9,20 @@ import { LiveMap } from "./LiveMap";
 // Figma's 1440x1012 hero composition where the map is the surface,
 // not a side panel. A subtle Warm Canvas wash on the left lifts text
 // contrast against any high-contrast street segments behind it.
+//
+// Hero owns the map's explore-mode toggle state so the affordance
+// (a small caps text link beneath the store CTAs) lives in the
+// document's reading flow rather than on top of the map. The map
+// itself stays clean of UI chrome; the link sets the user's
+// intention from the same place the buyer already reads the
+// headline + subhead.
 export function Hero() {
+  const [isExploring, setIsExploring] = useState(false);
+
   return (
     <section className="relative min-h-[680px] w-full overflow-hidden bg-canvas sm:min-h-[760px] lg:min-h-[1012px]">
       <div className="absolute inset-0 z-0">
-        <LiveMap />
+        <LiveMap isExploring={isExploring} />
       </div>
       {/* Reading wash: covers a wider band on small viewports so the
          headline always sits on a quieter surface. On mobile (<640px)
@@ -78,6 +90,26 @@ export function Hero() {
             <StoreButton href="https://apps.apple.com" platform="ios" />
             <StoreButton href="https://play.google.com" platform="android" />
           </div>
+          {/* Mobile-only explore-the-map affordance. Sits in the document
+             flow beneath the store CTAs as a caps eyebrow link, so it
+             reads as another voiceline of the registry (same Inter 11px
+             / 0.14em letter-spacing grammar used by every other caps
+             label) rather than as a floating control on top of the map.
+             Desktop already has cooperative-gestures + ⌘+wheel, so the
+             link is hidden via sm:hidden. */}
+          <button
+            type="button"
+            onClick={() => setIsExploring((prev) => !prev)}
+            aria-pressed={isExploring}
+            className="terrain-map-link sm:hidden"
+          >
+            <span className="terrain-map-link-arrow" aria-hidden>
+              {isExploring ? "×" : "→"}
+            </span>
+            <span>
+              {isExploring ? "Done exploring" : "Tap to explore the map"}
+            </span>
+          </button>
         </div>
       </div>
     </section>
