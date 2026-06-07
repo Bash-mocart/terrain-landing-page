@@ -223,12 +223,47 @@ function createPinForListing(
       popupEl.addEventListener("mouseenter", cancelClose);
       popupEl.addEventListener("mouseleave", scheduleClose);
       popupEl.querySelectorAll("video").forEach((video) => {
-        // The element already has muted + playsinline + autoplay
-        // set as attributes via the setHTML string. play() returns
-        // a Promise that rejects if the browser blocks autoplay
-        // entirely — we swallow that quietly (no popup CTA depends
-        // on the video playing).
-        video.play().catch(() => {});
+        // Belt-and-suspenders: set muted + playsinline via JS as well
+        // as the HTML attributes. Some browsers (notably mobile
+        // Safari < 17) are inconsistent about parsing boolean
+        // attributes from setHTML-injected markup.
+        video.muted = true;
+        video.setAttribute("muted", "");
+        video.setAttribute("playsinline", "");
+
+        // Surface load-time errors so per-video failures are visible
+        // (codec mismatch on iPhone .mov files in Chrome / Firefox,
+        // CORS rejection, 404, etc.). Without this the .catch below
+        // swallows everything and "some videos don't play" is opaque.
+        video.addEventListener("error", () => {
+          const err = video.error;
+          console.warn(
+            "Terrain popup video failed:",
+            video.currentSrc || video.src,
+            err ? `code=${err.code} message=${err.message}` : "(no error info)",
+          );
+        });
+
+        // Race-safe play. play() called before the decoder has any
+        // frame ready can resolve but then stall. If readyState is
+        // < HAVE_FUTURE_DATA we wait for loadedmetadata (cheapest
+        // event that means the file's playable) then try once more.
+        const tryPlay = () =>
+          video.play().catch((reason) => {
+            console.warn(
+              "Terrain popup video play() rejected:",
+              video.currentSrc || video.src,
+              reason,
+            );
+          });
+        if (video.readyState >= 2) {
+          tryPlay();
+        } else {
+          video.addEventListener("loadedmetadata", tryPlay, { once: true });
+          // Some browsers stall the loaded event entirely on first
+          // hover; call load() to kick the pipeline. Idempotent.
+          video.load();
+        }
       });
     }
   };
