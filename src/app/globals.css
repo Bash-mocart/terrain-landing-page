@@ -77,12 +77,18 @@ body {
   cursor: pointer;
   filter: drop-shadow(0 2px 4px rgba(9, 5, 3, 0.22));
   transition: filter 140ms cubic-bezier(0.2, 0.6, 0.2, 1);
+  /* Default z-index for marker stacking. Mapbox sorts markers by
+     latitude on render; hover raises this so the hovered pin always
+     comes to the top of the cluster regardless of its lat order. */
+  position: relative;
+  z-index: 1;
 }
 
 .terrain-pin-marker:hover,
 .terrain-pin-marker:focus-visible {
   outline: none;
-  filter: drop-shadow(0 3px 6px rgba(9, 5, 3, 0.32));
+  filter: drop-shadow(0 4px 8px rgba(9, 5, 3, 0.38));
+  z-index: 10;
 }
 
 .terrain-pin-body {

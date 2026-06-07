@@ -96,7 +96,51 @@ the bounds check (lat / lng must be inside FCT) naturally drops
 
 ---
 
-## 3. `verified=true` filter passes through to `/v1/listings/map`
+## 3. No pin clustering when verified plots cluster geographically
+
+**Symptom.** Once the bounds-check filter unlocked real Abuja
+inventory, the hero map started showing four to six pins stacking
+on top of each other in the Maitama / Wuse / Asokoro corridor. Pin
+labels overlap, prices become unreadable, and the visual reads as
+"messy" rather than "this place has real inventory depth."
+
+**Where we band-aided it.** `src/app/globals.css`. Added a
+`z-index: 10` hover state on the pin marker so the targeted pin
+comes to the top of the cluster regardless of latitude sort order.
+Solves the readability issue when the user hovers a specific pin
+but the cluster still looks dense at rest.
+
+**Why this is not the right answer long-term.**
+
+- Real geographic clustering is a known feature of Mapbox GL (via
+  GeoJSON source `cluster: true` and `clusterRadius`). The native
+  approach renders a numeric badge ("4 plots") that expands on
+  click. Buyers see "depth" instead of "mess."
+- Switching to a clustered GeoJSON source breaks the current
+  DOM-based marker / hover-popup-with-image rendering path. A real
+  implementation needs either (a) `supercluster` on the client to
+  cluster while keeping HTML markers, or (b) a hybrid: GeoJSON
+  cluster layer for the badge + DOM markers per leaf at high zoom.
+
+**Recommended fix.**
+
+1. Add `supercluster` (~5 KB gz) and cluster the listings array
+   client-side before constructing markers.
+2. For cluster points (count > 1), render a single circular Late-
+   Night Boardroom badge with the count in Inter caps. Click should
+   programmatically `easeTo` the cluster's expansion zoom.
+3. For leaf points (count = 1), keep the existing price-pill marker
+   chrome and the hover popup with image.
+4. Above zoom ~14, render every plot as a leaf (cluster radius
+   approaches zero), so a buyer who zooms in to a neighbourhood
+   sees individual prices.
+
+Tracked separately because it's ~50-100 lines of new code and
+deserves its own PR, not a side-effect of a docs update.
+
+---
+
+## 4. `verified=true` filter passes through to `/v1/listings/map`
 
 **Symptom.** Not observed yet, just flagged for awareness. The
 `/v1/listings` endpoint accepts `verified=true`. The Flutter app's
