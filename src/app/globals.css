@@ -108,6 +108,18 @@ body {
   letter-spacing: 0;
   line-height: 1.2;
   white-space: nowrap;
+  /* Hover lift on the inner pill rather than the outer marker —
+     Mapbox sets a transform on the marker itself for positioning, so
+     animating the parent would dislodge the pin from its lat/lng.
+     The inner body has no positioning transform of its own and
+     scales freely. */
+  transition: transform 140ms cubic-bezier(0.2, 0.6, 0.2, 1);
+  transform-origin: 50% 100%;
+}
+
+.terrain-pin-marker:hover .terrain-pin-body,
+.terrain-pin-marker:focus-visible .terrain-pin-body {
+  transform: scale(1.08);
 }
 
 .terrain-pin-tail {
@@ -128,10 +140,50 @@ body {
   box-shadow: 0 12px 28px rgba(9, 5, 3, 0.18);
   overflow: hidden; /* keeps the image's top corners rounded with the card */
   min-width: 240px;
+  /* Entrance animation: subtle scale-up from the tail of the popup.
+     transform-origin matches the popup's anchor (bottom or top via
+     Mapbox's auto-anchor) so the card appears to grow out of the
+     pin. Mapbox sets a transform on the popup parent for positioning;
+     animating .mapboxgl-popup-content lets us scale without breaking
+     that positioning transform. */
+  animation: terrain-popup-enter 180ms cubic-bezier(0.2, 0.6, 0.2, 1) both;
+  transform-origin: 50% 100%;
+}
+
+/* When Mapbox auto-anchors the popup BELOW the pin (pin near top of
+   map), flip the transform-origin so the card grows downward from
+   the tip. The popup container gains class names like
+   "mapboxgl-popup-anchor-top" in that case. */
+.mapboxgl-popup-anchor-top .terrain-popup .mapboxgl-popup-content,
+.terrain-popup.mapboxgl-popup-anchor-top .mapboxgl-popup-content {
+  transform-origin: 50% 0%;
+}
+
+@keyframes terrain-popup-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .terrain-popup .mapboxgl-popup-tip {
   border-top-color: var(--color-canvas);
+  /* Fade the tip in alongside the card so they don't appear in two
+     separate beats. Same duration + curve as the content. */
+  animation: terrain-popup-tip-enter 180ms cubic-bezier(0.2, 0.6, 0.2, 1) both;
+}
+
+@keyframes terrain-popup-tip-enter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .terrain-popup-inner {
@@ -139,16 +191,25 @@ body {
   flex-direction: column;
 }
 
-/* Hero image at the top of the popup card. background-image rather
-   than <img> so the image keeps the same crop behaviour across all
-   listings and we don't need to handle per-image dimensions. Cover +
-   centre positions the most informative part of a typical plot
-   photo (sky and ground frame the subject; cover crops to the
-   middle band). */
-.terrain-popup-image {
+/* Media block at the top of the popup card. Same 16:10 box whether
+   the listing's first media is an image or a video so the popup
+   chrome doesn't shift between media types. Cover crop centres the
+   most informative part of typical plot photography / drone video
+   (sky and ground frame the subject; cover crops to the middle
+   band). Videos play silently on loop; images use background-image
+   so we don't need per-image dimension handling. */
+.terrain-popup-media {
+  display: block;
   width: 100%;
   aspect-ratio: 16 / 10;
+  object-fit: cover; /* applies when the element is <video> */
   background-color: var(--color-border-rule);
+}
+
+.terrain-popup-image {
+  /* Image variant of the media block — uses background-image so the
+     same .terrain-popup-media box covers both video and image with
+     identical layout. */
   background-size: cover;
   background-position: center;
 }
@@ -189,17 +250,11 @@ body {
   color: var(--color-secondary);
 }
 
-.terrain-popup-cta {
-  margin-top: 10px;
-  padding-top: 8px;
-  border-top: 1px solid var(--color-border-rule);
-  font-family: var(--font-interactive);
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--color-verified);
-}
+/* .terrain-popup-cta rule retired alongside its DOM node — the popup
+   no longer carries a "Get the app to view the record" footer. The
+   popup is now a quiet inspection card: price, title, meta. The
+   install CTA lives in the hero store buttons, not on every pin
+   tooltip. */
 
 .mapboxgl-ctrl-bottom-right .mapboxgl-ctrl-attrib {
   background: rgba(253, 252, 251, 0.85);

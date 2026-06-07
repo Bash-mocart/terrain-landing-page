@@ -131,21 +131,31 @@ function createPinForListing(
     <span class="terrain-pin-tail" aria-hidden="true"></span>
   `;
 
-  // Pick the first http(s) image url if any. The Flutter app uploads
+  // Pick the first usable http(s) media url. The Flutter app uploads
   // images to media.lunor.money; backend ships them verbatim. Videos
-  // (.mp4 / .mov) are filtered out so the popup never gets a broken
-  // video-as-image render.
-  const heroImage = (listing.image_urls ?? []).find((u) => {
-    if (typeof u !== "string" || !u.startsWith("http")) return false;
-    const lower = u.toLowerCase();
-    return !lower.endsWith(".mp4") && !lower.endsWith(".mov");
-  });
+  // (.mp4 / .mov) and images render side by side here: whichever is
+  // first in image_urls wins. Video listings get an autoplay loop
+  // (muted, playsinline) so the popup shows motion; image listings
+  // get the static background-image card.
+  const firstMedia = (listing.image_urls ?? []).find(
+    (u) => typeof u === "string" && u.startsWith("http"),
+  );
+  const isVideo = firstMedia ? /\.(mp4|mov)$/i.test(firstMedia) : false;
   const escapeHtml = (s: string) =>
     s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
   const sizeLine =
     listing.size_sqm && Number.isFinite(listing.size_sqm)
       ? `<div class="terrain-popup-meta">${listing.size_sqm.toLocaleString("en-NG")} sqm · ${listing.city ?? "Abuja"}</div>`
       : `<div class="terrain-popup-meta">${listing.city ?? "Abuja"}</div>`;
+  // Renders either a <video> (autoplay loop) or a background-image
+  // div depending on whether the first media is a video file. Both
+  // share .terrain-popup-media for layout so the popup chrome doesn't
+  // shift between media types.
+  const mediaBlock = !firstMedia
+    ? ""
+    : isVideo
+      ? `<video class="terrain-popup-media" src="${escapeHtml(firstMedia)}" autoplay muted loop playsinline preload="metadata"></video>`
+      : `<div class="terrain-popup-media terrain-popup-image" style="background-image: url('${escapeHtml(firstMedia)}')"></div>`;
 
   const popup = new mapboxgl.Popup({
     offset: 14,
@@ -157,16 +167,11 @@ function createPinForListing(
     maxWidth: "280px",
   }).setHTML(
     `<div class="terrain-popup-inner">
-       ${
-         heroImage
-           ? `<div class="terrain-popup-image" style="background-image: url('${escapeHtml(heroImage)}')"></div>`
-           : ""
-       }
+       ${mediaBlock}
        <div class="terrain-popup-content">
          <div class="terrain-popup-price">${formatPrice(listing.price)}</div>
          <div class="terrain-popup-title">${escapeHtml(listing.title ?? "Verified plot")}</div>
          ${sizeLine}
-         <div class="terrain-popup-cta">Get the app to view the record</div>
        </div>
      </div>`,
   );
