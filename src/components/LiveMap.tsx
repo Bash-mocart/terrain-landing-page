@@ -207,6 +207,15 @@ export function LiveMap() {
         for (const m of markersRef.current) m.remove();
         markersRef.current = [];
 
+        // Track which popup is currently visible across all markers
+        // so opening a new one closes the previous. Without this the
+        // hover state can pile up multiple popups if the close buffer
+        // hasn't fired yet, and visually the page looks broken (and
+        // for pins that happen to share a DOM stacking order, the
+        // "older" popup can block the new one from receiving its
+        // hover-popup attachment).
+        let activePopup: mapboxgl.Popup | null = null;
+
         for (const listing of listings) {
           if (!Number.isFinite(listing.latitude) || !Number.isFinite(listing.longitude)) continue;
           const pin = document.createElement("button");
@@ -307,6 +316,14 @@ export function LiveMap() {
           const openPopup = () => {
             cancelClose();
             if (popup.isOpen()) return;
+            // Close whatever popup was previously open. Single-popup-
+            // at-a-time keeps the page calm and unblocks pins whose
+            // hover trigger fires before the previous pin's close
+            // buffer has elapsed.
+            if (activePopup && activePopup !== popup && activePopup.isOpen()) {
+              activePopup.remove();
+            }
+            activePopup = popup;
             popup.setLngLat([listing.longitude, listing.latitude]).addTo(map);
             // The popup element only exists after addTo. Attach the
             // mouse handlers once it's mounted so cursor-over-popup
