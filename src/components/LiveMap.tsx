@@ -150,13 +150,14 @@ export function LiveMap() {
       let listings: Listing[] = [];
       try {
         // Two parallel calls so both verified lands AND verified houses
-        // surface on the hero map. The backend's /v1/listings without
-        // a type_slug filter does return both kinds, but the dev DB
-        // skewed land-only and we want the call shape to make our
-        // intent explicit. If either call fails the other still
-        // contributes; only a total miss falls through to the empty
-        // array (which triggers the FALLBACK_LISTINGS path below).
-        const baseUrl = `${API_URL}/v1/listings?city=Abuja&verified=true&limit=25`;
+        // surface on the hero map. Notably NO city=Abuja filter on the
+        // query: sellers in the FCT routinely save the city field as
+        // the district (Gwarinpa, Maitama, Wuse, Asokoro, Wuye) instead
+        // of "Abuja", and we'd miss them. Instead we filter on the
+        // client by lat/lng bounding box (ABUJA_MAX_BOUNDS, the same
+        // FCT envelope the map locks to). Anything geographically in
+        // FCT shows up regardless of how the city field is shaped.
+        const baseUrl = `${API_URL}/v1/listings?verified=true&limit=50`;
         const [landRes, houseRes] = await Promise.all([
           fetch(`${baseUrl}&type_slug=land`),
           fetch(`${baseUrl}&type_slug=house`),
@@ -167,7 +168,19 @@ export function LiveMap() {
         const house = houseRes.ok
           ? ((await houseRes.json()) as { results?: Listing[] }).results ?? []
           : [];
-        listings = [...land, ...house];
+        const [[minLng, minLat], [maxLng, maxLat]] = ABUJA_MAX_BOUNDS;
+        listings = [...land, ...house].filter((l) => {
+          const lat = Number(l.latitude);
+          const lng = Number(l.longitude);
+          return (
+            Number.isFinite(lat) &&
+            Number.isFinite(lng) &&
+            lat >= minLat &&
+            lat <= maxLat &&
+            lng >= minLng &&
+            lng <= maxLng
+          );
+        });
       } catch (e) {
         // CORS, network, cold start. Log for debugging; fall through to
         // the empty listings array so the fallback path below renders.
