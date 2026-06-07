@@ -547,21 +547,33 @@ export function LiveMap({ isExploring = false }: LiveMapProps = {}) {
         // every time the map is idle (post-fitBounds settle, post-
         // initial-load). Idempotent: clear existing markers, recompute
         // clusters at the current zoom + visible bounds, render.
+        // Cluster bbox is the full FCT envelope, NOT the current
+        // visible viewport. Supercluster's bbox filter is there to
+        // skip points you can't see when you have thousands of them;
+        // we have <50, so the perf savings are zero and the cost is
+        // real: if we filtered by the visible viewport, panning even
+        // a little would shift pins off the bbox edge, dropping them
+        // from the next render. Users reported pins disappearing
+        // after they tapped "explore" and panned. Pinning the bbox
+        // to ABUJA_MAX_BOUNDS means every pin in FCT is always
+        // evaluated, regardless of where the camera sits. Mapbox
+        // clips the markers visually for free; we don't need
+        // supercluster to do it again.
+        const [[bbWest, bbSouth], [bbEast, bbNorth]] = ABUJA_MAX_BOUNDS;
+        const fullBbox: [number, number, number, number] = [
+          bbWest,
+          bbSouth,
+          bbEast,
+          bbNorth,
+        ];
+
         const renderClusters = () => {
           if (cancelled) return;
           for (const m of markersRef.current) m.remove();
           markersRef.current = [];
 
-          const bounds = map.getBounds();
-          if (!bounds) return;
-          const bbox: [number, number, number, number] = [
-            bounds.getWest(),
-            bounds.getSouth(),
-            bounds.getEast(),
-            bounds.getNorth(),
-          ];
           const zoom = Math.round(map.getZoom());
-          const items = cluster.getClusters(bbox, zoom);
+          const items = cluster.getClusters(fullBbox, zoom);
 
           for (const item of items) {
             const [lng, lat] = item.geometry.coordinates as [number, number];
