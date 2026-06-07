@@ -73,7 +73,7 @@ export function Hero() {
           >
             Own a Property
             <br />
-            Without Fear.
+            With Confidence.
           </h1>
           {/* Subhead reframed: Terrain is a marketplace, not an escrow.
              Trust signal is the agent vetting (CAC-registered + reviewed
