@@ -109,18 +109,20 @@ export function Hero() {
              label) rather than as a floating control on top of the map.
              Desktop already has cooperative-gestures + ⌘+wheel, so the
              link is hidden via sm:hidden. */}
+          {/* Caps text only — no glyph box. Impeccable critique flagged
+             that the dark Late-Night Boardroom glyph square visually
+             competed with the pin pills (also dark, also rounded) and
+             the cluster badge; three categories of dark elements in
+             the same horizontal band. Plain caps text + inline arrow
+             reads as a typographic link, not as another map control.
+             Hover/focus shifts to Forest Verification + underline. */}
           <button
             type="button"
             onClick={() => setIsExploring((prev) => !prev)}
             aria-pressed={isExploring}
             className="terrain-map-link sm:hidden"
           >
-            <span className="terrain-map-link-arrow" aria-hidden>
-              {isExploring ? "×" : "→"}
-            </span>
-            <span>
-              {isExploring ? "Done exploring" : "Tap to explore the map"}
-            </span>
+            {isExploring ? "Done exploring ×" : "Tap to explore the map →"}
           </button>
         </div>
       </div>

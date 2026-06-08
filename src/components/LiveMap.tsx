@@ -666,13 +666,17 @@ export function LiveMap({ isExploring = false }: LiveMapProps = {}) {
           const padding =
             w < 640
               ? {
-                  // ~70% of hero height keeps the pin pill (which
-                  // extends 30-40px ABOVE its lat/lng anchor) clear
-                  // of the CTA button bottom edge. The earlier 62%
-                  // value put pill labels touching the buttons.
-                  // Capped at 560 for foldables / unusually tall
-                  // viewports so there's still room for actual map.
-                  top: Math.min(560, Math.round(h * 0.7)),
+                  // ~80% of hero height to clear BOTH the CTA stack
+                  // and the "Tap to explore the map" caps link that
+                  // lives beneath the CTAs in the same column. The
+                  // earlier 70% put pill labels right at the link's
+                  // y position, which made the cluster badge clip the
+                  // link text and pin pills overlap with the link
+                  // glyph (impeccable critique P0 / P1). 80% gives
+                  // ~50-70px of clean breathing space between the
+                  // link row and the pin cluster. Capped at 600 for
+                  // foldables / unusually tall viewports.
+                  top: Math.min(600, Math.round(h * 0.8)),
                   bottom: 64,
                   left: 24,
                   right: 24,
