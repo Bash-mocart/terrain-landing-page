@@ -330,7 +330,14 @@ body {
    affordance hint. Keyboard focus also rings the glyph box in
    Forest Verification. */
 .terrain-map-link {
-  display: inline-flex;
+  /* Default to hidden. The JSX tags this button with `sm:hidden` to
+     suppress it from sm+ viewports, but the cascade order put our
+     `display: inline-flex` rule AFTER Tailwind's utility, so on
+     desktop our default leaked through and the link appeared.
+     Inverting the default — hidden everywhere, enabled only inside
+     the mobile-width media query below — makes the desktop case
+     unambiguous without depending on utility specificity. */
+  display: none;
   align-items: center;
   gap: 10px;
   margin-top: 28px;
@@ -345,6 +352,12 @@ body {
   text-transform: uppercase;
   color: var(--color-primary);
   transition: color 180ms cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+@media (max-width: 639.99px) {
+  .terrain-map-link {
+    display: inline-flex;
+  }
 }
 
 .terrain-map-link:hover,
