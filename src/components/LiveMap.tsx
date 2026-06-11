@@ -418,7 +418,12 @@ export function LiveMap({ isExploring = false }: LiveMapProps = {}) {
     // Either way: cluster badges + pin pills stay clickable, since
     // their handlers are DOM listeners outside Mapbox's interaction
     // system and call map.easeTo() / popup.addTo() programmatically.
-    const isMobileVal = container.clientWidth < 640;
+    // Use window.innerWidth, NOT container.clientWidth: inside this
+    // effect the absolutely-positioned container can still measure 0
+    // before layout settles, and 0 < 640 would wrongly flag desktop as
+    // mobile, building the map non-interactive (no drag-pan) with no
+    // desktop toggle to undo it. window.innerWidth is always real.
+    const isMobileVal = window.innerWidth < 640;
     setIsMobile(isMobileVal);
     const map = new mapboxgl.Map({
       container,
@@ -437,11 +442,14 @@ export function LiveMap({ isExploring = false }: LiveMapProps = {}) {
       touchPitch: false,
     });
 
-    // Desktop keeps drag-pan but must never hijack the page scroll:
-    // disabling scrollZoom means a wheel / two-finger scroll over the
-    // map bubbles up to the page. With cooperativeGestures already off,
-    // no blocker tip ever shows.
+    // Desktop: drag-pan + double-click zoom on (explicitly, so a stray
+    // construction race can't leave them off), but scroll-zoom OFF so a
+    // wheel / two-finger scroll over the map bubbles up to scroll the
+    // page instead of being captured. With cooperativeGestures already
+    // off, no blocker tip ever shows.
     if (!isMobileVal) {
+      map.dragPan.enable();
+      map.doubleClickZoom.enable();
       map.scrollZoom.disable();
     }
     map.addControl(
