@@ -47,9 +47,9 @@ const STEPS: Step[] = [
   },
   {
     number: "05",
-    title: "Only then do they reach you",
+    title: "Only then can they post",
     detail:
-      "Vetted agents list, and every listing carries verifiable media: photos, video, drone aerials, and 3D tours.",
+      "Approved agents are allowed onto Terrain to publish their business and properties. Every listing carries verifiable media: photos, video, drone aerials, and 3D tours, so you can judge it before you reach out.",
     terminal: true,
   },
 ];
