@@ -2,6 +2,7 @@ import { TopNav } from "@/components/TopNav";
 import { Hero } from "@/components/Hero";
 import { OwnBuildGrow } from "@/components/OwnBuildGrow";
 import { AgentVetting } from "@/components/AgentVetting";
+import { BuyerJourney } from "@/components/BuyerJourney";
 import { WhatsOnMarket } from "@/components/WhatsOnMarket";
 import { Testimonials } from "@/components/Testimonials";
 import { FAQ } from "@/components/FAQ";
@@ -28,6 +29,7 @@ export default function Home() {
       <Hero />
       <OwnBuildGrow />
       <AgentVetting />
+      <BuyerJourney />
       <WhatsOnMarket />
       <Testimonials />
       <FAQ />
