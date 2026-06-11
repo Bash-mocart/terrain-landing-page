@@ -10,28 +10,34 @@ import { FAQ } from "@/components/FAQ";
 import { ClosingCTA } from "@/components/ClosingCTA";
 import { Footer } from "@/components/Footer";
 
-// Landing composition, full-page craft. Deliberate Warm Canvas / Late-
-// Night Boardroom heartbeat instead of a flat stack of canvas
-// sections: the dark surfaces (AgentVetting, FAQ, Footer) land between
-// light ones so the page breathes.
+// Landing composition, ordered as a story: name the problem, then
+// answer it immediately, before getting to the product lineup.
 //
-//   Hero (map)        L   the interactive Mapbox hero
-//   OwnBuildGrow      L   product family, dark flagship card within
-//   AgentVetting      D   the trust anchor: how every agent is vetted
-//   WhatsOnMarket     L   live inventory + immersive media
-//   Testimonials      L   featured diaspora quote + two supporting
-//   FAQ               D   objection handling
-//   ClosingCTA        L   conversion peak, faint Abuja map bookend
-//   Footer            D   sign-off
+//   Hero (map)     L   hook: own property in Nigeria, with confidence
+//   WhyTerrain     D   the problem: the fear is rational
+//   AgentVetting   D   the answer: how we check every agent
+//   BuyerJourney   L   how you buy, end to end
+//   OwnBuildGrow   L   what you can do with Terrain (Own/Build/Grow)
+//   WhatsOnMarket  L   what's available, by city
+//   Testimonials   L   proof
+//   FAQ            D   objections
+//   ClosingCTA     L   conversion peak, faint Nigeria map bookend
+//   Footer         D   sign-off
+//
+// WhyTerrain + AgentVetting are a deliberate back-to-back dark passage:
+// the problem and how we close it, one continuous serious beat (the
+// Why turn line hands straight into the vetting steps), after which the
+// page opens to light. Their layouts differ (risk list vs numbered
+// ledger) so the two darks don't read as a repeat.
 export default function Home() {
   return (
     <>
       <TopNav />
       <Hero />
       <WhyTerrain />
-      <OwnBuildGrow />
       <AgentVetting />
       <BuyerJourney />
+      <OwnBuildGrow />
       <WhatsOnMarket />
       <Testimonials />
       <FAQ />
