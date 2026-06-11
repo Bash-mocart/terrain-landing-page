@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { Reveal } from "./Reveal";
+import { Coordinate, ContourField, SurveyRule } from "./cartographic";
 
 // Common questions accordion. Client component because the open
 // state lives in React. Single-open behaviour (opening question N
@@ -22,7 +24,7 @@ const FAQS: Q[] = [
   {
     q: "How do I view a property in person?",
     a:
-      "Every listing shows the agent's contact details. Reach out directly through call or message in the app to arrange a site visit. The visit is between you and the agent; Terrain does not coordinate it.",
+      "Every listing shows the agent's contact details, so you can reach them directly to arrange a visit. Terrain can also help: we assist with site visits, property inspection, and document checks, so you are not verifying a property on your own.",
   },
   {
     q: "How does Terrain decide which agents are allowed to list?",
@@ -37,30 +39,27 @@ const FAQS: Q[] = [
   {
     q: "What protects me if a deal goes wrong?",
     a:
-      "Terrain's protection is upstream of the deal. We only allow CAC-registered, vetted real estate companies on the platform, so you start from a position of dealing with a legitimate business. Once you and the agent agree on a price, follow standard practice: visit the property, run your own title due diligence (or hire a lawyer), and document the transaction.",
+      "Two things. First, we only allow CAC-registered, vetted companies to list, so you start by dealing with a real business. Second, we can help you check the property before you pay, with site visits, inspection, and document verification. You still make the final call, and payment goes directly to the agent, not through Terrain.",
   },
 ];
 
 export function FAQ() {
   const [open, setOpen] = useState<number | null>(0);
   return (
-    <section className="bg-primary py-16 sm:py-24 lg:py-32 text-canvas">
-      <div className="mx-auto grid max-w-[1440px] grid-cols-1 gap-10 px-6 sm:gap-12 sm:px-8 lg:grid-cols-12 lg:px-10">
+    <section className="survey-grid-dark relative overflow-hidden bg-primary py-16 text-canvas sm:py-24 lg:py-32">
+      <ContourField tone="canvas" />
+      <Reveal className="relative mx-auto grid max-w-[1440px] grid-cols-1 gap-10 px-6 sm:gap-12 sm:px-8 lg:grid-cols-12 lg:px-10">
         <div className="lg:col-span-5">
-          {/* Eyebrow without pill chrome: caps Inter + Border Rule
-             hairline above the headline. Same pattern across every
-             section so the rhythm reads as registry-document, not
-             marketing-template. */}
-          <span
-            className="text-[11px] uppercase tracking-[0.18em] text-canvas/70"
-            style={{ fontFamily: "var(--font-interactive)" }}
-          >
-            FAQ
-          </span>
-          <span
-            aria-hidden
-            className="mt-3 inline-block h-px w-12 bg-canvas/30 align-middle"
-          />
+          <div className="flex items-center gap-3">
+            <span
+              className="text-[11px] uppercase tracking-[0.18em] text-canvas/70"
+              style={{ fontFamily: "var(--font-interactive)" }}
+            >
+              FAQ
+            </span>
+            <Coordinate tone="canvas">6&nbsp;ENTRIES</Coordinate>
+          </div>
+          <SurveyRule tone="canvas" className="mt-4 max-w-[200px]" />
           <h2
             className="mt-6 text-[clamp(36px,5vw,64px)] leading-[1.0] tracking-tight"
             style={{ fontFamily: "var(--font-display)", fontWeight: 700 }}
@@ -98,14 +97,25 @@ export function FAQ() {
                   onClick={() => setOpen(isOpen ? null : i)}
                   className="flex w-full items-center justify-between gap-3 py-5 text-left transition-colors hover:text-verified/90 sm:gap-4 sm:py-6"
                 >
-                  <span
-                    className="text-base leading-snug text-canvas sm:text-lg"
-                    style={{
-                      fontFamily: "var(--font-body)",
-                      fontWeight: 600,
-                    }}
-                  >
-                    {item.q}
+                  <span className="flex items-baseline gap-4">
+                    {/* Registry-style numbering ties the FAQ to the
+                       vetting section's numbered language. */}
+                    <span
+                      aria-hidden
+                      className="hidden text-[12px] tracking-[0.08em] text-canvas/40 sm:inline"
+                      style={{ fontFamily: "var(--font-interactive)", fontWeight: 700 }}
+                    >
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span
+                      className="text-base leading-snug text-canvas sm:text-lg"
+                      style={{
+                        fontFamily: "var(--font-body)",
+                        fontWeight: 600,
+                      }}
+                    >
+                      {item.q}
+                    </span>
                   </span>
                   <span
                     aria-hidden
@@ -135,7 +145,7 @@ export function FAQ() {
             );
           })}
         </ul>
-      </div>
+      </Reveal>
     </section>
   );
 }

@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { TerrainLogo } from "./TerrainLogo";
+import { Coordinate } from "./cartographic";
 
 // Footer. Dark surface with the wordmark, three nav columns, and a
 // thin legal line. Social icons land alongside the wordmark; copy
@@ -8,8 +10,8 @@ const NAV = [
     heading: "Explore",
     links: [
       { label: "Available Listings", href: "#listings" },
-      { label: "How it Works", href: "#how-it-works" },
-      { label: "Start Browsing", href: "#download" },
+      { label: "How We Vet", href: "#vetting" },
+      { label: "Get the App", href: "#download" },
       { label: "Sample Agent Profile", href: "/agents/sample" },
       { label: "List as an Agent", href: "mailto:agents@terrain.ng" },
     ],
@@ -40,12 +42,8 @@ export function Footer() {
       <div className="mx-auto max-w-[1440px] px-6 sm:px-8 lg:px-10">
         <div className="grid grid-cols-1 gap-10 sm:gap-12 sm:grid-cols-2 lg:grid-cols-12">
           <div className="sm:col-span-2 lg:col-span-4">
-            <Link
-              href="/"
-              className="text-3xl tracking-tight"
-              style={{ fontFamily: "var(--font-display)", fontWeight: 700 }}
-            >
-              TERRAIN
+            <Link href="/" aria-label="Terrain home">
+              <TerrainLogo markSize={32} tone="onDark" wordClassName="text-3xl" />
             </Link>
             <p
               className="mt-6 max-w-sm text-base leading-relaxed text-canvas/70"
@@ -106,9 +104,12 @@ export function Footer() {
             © {new Date().getFullYear()} Terrain Technologies Ltd. All rights
             reserved.
           </p>
-          <p style={{ fontFamily: "var(--font-interactive)" }}>
-            Built in Nigeria for buyers at home and in the diaspora.
-          </p>
+          <div className="flex items-center gap-4">
+            <Coordinate tone="canvas">9.0820&deg; N &middot; 8.6753&deg; E</Coordinate>
+            <p style={{ fontFamily: "var(--font-interactive)" }}>
+              Built in Nigeria for buyers at home and in the diaspora.
+            </p>
+          </div>
         </div>
       </div>
     </footer>
