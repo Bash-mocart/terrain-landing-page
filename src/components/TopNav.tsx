@@ -1,20 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { TerrainLogo } from "./TerrainLogo";
 
 // Top navigation. Fixed over the interactive hero map, so legibility
 // has to be guaranteed against whatever map content sits beneath it.
-// Two states:
 //   - At rest over the hero: transparent bar with a Warm Canvas scrim
-//     gradient behind the content, so the dark wordmark + links always
-//     have a light base without boxing the map in.
-//   - Scrolled (or mobile menu open): a solid Warm Canvas bar with a
-//     Border Rule hairline and light blur, the conventional legible
-//     treatment for the rest of the page.
-// Mobile gains a menu button + Warm Canvas sheet (the links were
-// previously invisible on small screens).
+//     gradient behind the content (dark wordmark + links always have a
+//     light base) without boxing the map in.
+//   - Scrolled: a solid Warm Canvas bar with a Border Rule hairline
+//     and light blur.
+//   - Mobile menu: a FULL-SCREEN Warm Canvas overlay (not a dropdown),
+//     so the busy hero never bleeds through behind the links. Large
+//     Zain link typography, numbered, with a Get the App action and a
+//     registry-voice sign-off.
 
 const LINKS = [
   { label: "Products", href: "#the-terrain-way" },
@@ -25,6 +25,7 @@ const LINKS = [
 export function TopNav() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const closeButtonRef = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 48);
@@ -33,23 +34,34 @@ export function TopNav() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // A solid background applies when the page is scrolled OR the mobile
-  // sheet is open (so the sheet reads as one surface with the bar).
-  const solid = scrolled || menuOpen;
+  // When the full-screen menu is open: lock body scroll, close on
+  // Escape, and move focus to the close button.
+  useEffect(() => {
+    if (!menuOpen) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMenuOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    closeButtonRef.current?.focus();
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [menuOpen]);
 
   return (
     <nav
       id="top"
       className={`fixed inset-x-0 top-0 z-40 border-b transition-colors duration-300 ${
-        solid
+        scrolled
           ? "border-[--color-border-rule] bg-canvas/85 backdrop-blur-md"
           : "border-transparent"
       }`}
       aria-label="Primary"
     >
-      {/* Resting scrim over the hero map. Removed once the bar goes
-         solid so it never doubles up. */}
-      {!solid && (
+      {!scrolled && (
         <div
           aria-hidden
           className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-28 bg-gradient-to-b from-canvas/95 via-canvas/55 to-transparent"
@@ -79,40 +91,93 @@ export function TopNav() {
         <button
           type="button"
           className="-mr-2 inline-flex h-10 w-10 items-center justify-center text-primary md:hidden"
-          aria-label={menuOpen ? "Close menu" : "Open menu"}
+          aria-label="Open menu"
           aria-expanded={menuOpen}
-          aria-controls="mobile-nav"
-          onClick={() => setMenuOpen((v) => !v)}
+          aria-controls="mobile-menu"
+          onClick={() => setMenuOpen(true)}
         >
-          <MenuGlyph open={menuOpen} />
+          <HamburgerGlyph />
         </button>
       </div>
 
       {menuOpen && (
         <div
-          id="mobile-nav"
-          className="border-t border-[--color-border-rule] bg-canvas md:hidden"
+          id="mobile-menu"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Menu"
+          className="terrain-menu-overlay fixed inset-0 z-50 flex flex-col bg-canvas md:hidden"
         >
-          <div className="flex flex-col px-6 py-2">
-            {LINKS.map((l) => (
+          <div className="flex items-center justify-between px-6 py-4">
+            <Link
+              href="/"
+              aria-label="Terrain home"
+              onClick={() => setMenuOpen(false)}
+            >
+              <TerrainLogo markSize={36} tone="onLight" wordClassName="text-[36px]" />
+            </Link>
+            <button
+              ref={closeButtonRef}
+              type="button"
+              className="-mr-2 inline-flex h-10 w-10 items-center justify-center text-primary"
+              aria-label="Close menu"
+              onClick={() => setMenuOpen(false)}
+            >
+              <CloseGlyph />
+            </button>
+          </div>
+
+          <nav
+            aria-label="Mobile"
+            className="flex flex-1 flex-col justify-center px-6"
+          >
+            {LINKS.map((l, i) => (
               <Link
                 key={l.href}
                 href={l.href}
                 onClick={() => setMenuOpen(false)}
-                className="border-b border-[--color-border-rule] py-4 text-base text-primary"
-                style={{ fontFamily: "var(--font-body)", fontWeight: 600 }}
+                className="group flex items-center justify-between border-b border-[--color-border-rule] py-6 first:border-t"
               >
-                {l.label}
+                <span className="flex items-baseline gap-4">
+                  <span
+                    aria-hidden
+                    className="text-[11px] tracking-[0.16em] text-secondary"
+                    style={{ fontFamily: "var(--font-interactive)", fontWeight: 600 }}
+                  >
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span
+                    className="text-[clamp(30px,9vw,40px)] leading-none tracking-tight text-primary"
+                    style={{ fontFamily: "var(--font-display)", fontWeight: 700 }}
+                  >
+                    {l.label}
+                  </span>
+                </span>
+                <span
+                  aria-hidden
+                  className="text-secondary transition-transform group-active:translate-x-1"
+                >
+                  <ArrowGlyph />
+                </span>
               </Link>
             ))}
+          </nav>
+
+          <div className="px-6 pb-10">
             <Link
               href="#download"
               onClick={() => setMenuOpen(false)}
-              className="mt-4 mb-2 inline-flex items-center justify-center rounded-full bg-primary px-6 py-3 text-canvas"
+              className="flex w-full items-center justify-center rounded-full bg-primary px-6 py-4 text-canvas"
               style={{ fontFamily: "var(--font-interactive)", fontWeight: 600 }}
             >
-              Get the App
+              Get the app
             </Link>
+            <p
+              className="mt-5 text-center text-[11px] uppercase tracking-[0.16em] text-secondary"
+              style={{ fontFamily: "var(--font-interactive)" }}
+            >
+              Verified agents, across Nigeria
+            </p>
           </div>
         </div>
       )}
@@ -120,20 +185,28 @@ export function TopNav() {
   );
 }
 
-function MenuGlyph({ open }: { open: boolean }) {
+function HamburgerGlyph() {
   return (
     <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden>
-      {open ? (
-        <>
-          <line x1="5" y1="5" x2="17" y2="17" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-          <line x1="17" y1="5" x2="5" y2="17" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-        </>
-      ) : (
-        <>
-          <line x1="3" y1="7" x2="19" y2="7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-          <line x1="3" y1="13" x2="19" y2="13" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-        </>
-      )}
+      <line x1="3" y1="7" x2="19" y2="7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      <line x1="3" y1="13" x2="19" y2="13" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function CloseGlyph() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden>
+      <line x1="5" y1="5" x2="17" y2="17" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      <line x1="17" y1="5" x2="5" y2="17" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function ArrowGlyph() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path d="M5 12h14m0 0l-6-6m6 6l-6 6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
