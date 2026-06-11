@@ -66,7 +66,7 @@ export function AgentVetting() {
             className="text-[11px] uppercase tracking-[0.18em] text-canvas/60"
             style={{ fontFamily: "var(--font-interactive)" }}
           >
-            Before an agent can list
+            How we check agents
           </span>
           <span
             aria-hidden
@@ -83,9 +83,9 @@ export function AgentVetting() {
             className="mt-6 max-w-md text-base leading-relaxed text-canvas/70 sm:text-lg"
             style={{ fontFamily: "var(--font-body)" }}
           >
-            Terrain is a register, not a noticeboard. The vetting happens
-            upstream of you, so the first agent you meet is already a
-            real, CAC-verified business.
+            We check every agent and their company before they are allowed
+            to list. So everyone you find on Terrain is a real, CAC-registered
+            business, not just a name and a phone number.
           </p>
         </div>
 
