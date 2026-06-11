@@ -50,10 +50,10 @@ const ROADMAP: Product[] = [
   {
     number: "02",
     name: "Terrain Build",
-    claim: "Build on the land you own, finish a stalled project, or furnish what is bare.",
+    claim: "We help you build on the land you own, finish a stalled project, or furnish what is bare.",
     points: [
-      "Build from the ground up with vetted developers",
-      "Complete an unfinished or abandoned building",
+      "Build from the ground up with developers we have vetted",
+      "Finish an unfinished or abandoned building",
       "Furnish and fit out, ready to live in or let",
     ],
     icon: "build",
@@ -61,11 +61,11 @@ const ROADMAP: Product[] = [
   {
     number: "03",
     name: "Terrain Grow",
-    claim: "After you buy, build a portfolio, track its value, and sell or rent when you are ready.",
+    claim: "After you buy, we help you grow a portfolio, track its value, and sell or rent when you are ready.",
     points: [
       "Hold every property you own in one portfolio",
       "Track worth and appreciation over time",
-      "Sell or rent through vetted agents when ready",
+      "Sell or rent through agents we have vetted",
     ],
     icon: "grow",
   },
