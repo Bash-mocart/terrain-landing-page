@@ -98,14 +98,14 @@ export function OwnBuildGrow() {
             className="mt-6 text-[clamp(34px,5vw,60px)] leading-[1.02] tracking-tight text-primary"
             style={{ fontFamily: "var(--font-display)", fontWeight: 700 }}
           >
-            Three products.
-            <br className="hidden sm:block" /> One title you can trust.
+            Own it. Build on it.
+            <br className="hidden sm:block" /> Grow it.
           </h2>
           <p
             className="mt-5 max-w-md text-base leading-relaxed text-secondary sm:text-lg"
             style={{ fontFamily: "var(--font-body)" }}
           >
-            Own the land, build on it, and grow what it is worth. Terrain Own
+            Three products for the whole life of a property. Terrain Own
             ships today; Build and Grow are on the way.
           </p>
         </header>
