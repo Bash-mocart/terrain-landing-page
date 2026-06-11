@@ -38,6 +38,11 @@ type Pillar = {
   linkHref: string;
   icon: "own" | "build" | "grow";
   image?: { src: string; alt: string };
+  // Roadmap marker. Own ships today (the marketplace); Build and Grow
+  // are stated product direction, not live features. The tag tells
+  // the buyer the thinner pillars are intentional roadmap, not
+  // neglected content.
+  tag?: string;
 };
 
 const PILLARS: Pillar[] = [
@@ -74,6 +79,7 @@ const PILLARS: Pillar[] = [
     linkLabel: "See houses on Terrain",
     linkHref: "#listings",
     icon: "build",
+    tag: "In rollout",
   },
   {
     number: "03",
@@ -89,18 +95,28 @@ const PILLARS: Pillar[] = [
     linkLabel: "List as an agent",
     linkHref: "mailto:agents@terrain.ng",
     icon: "grow",
+    tag: "In rollout",
   },
 ];
 
 export function OwnBuildGrow() {
-  // Single-open accordion. Own (index 0) is open on arrival so the
-  // section never lands fully collapsed.
+  // openIndex drives the MOBILE accordion only — Own (index 0) open
+  // on arrival so the section never lands fully collapsed on a phone.
+  // On desktop (lg+) the panels are CSS-forced open regardless of
+  // this state (vertical space is free there, and a marketing page
+  // shouldn't hide two-thirds of the pitch behind a tap). See the
+  // panel + toggle visibility classes in PillarItem.
   const [openIndex, setOpenIndex] = useState<number>(0);
 
   return (
     <section id="the-terrain-way" className="relative bg-canvas py-16 sm:py-24 lg:py-32">
       <div className="mx-auto max-w-[1040px] px-6 sm:px-8 lg:px-10">
-        <div className="mb-12 flex flex-col items-center text-center sm:mb-16">
+        {/* Left-aligned header. ThreeSteps directly below this section
+           uses a CENTERED header on the same Warm Canvas; ranging this
+           one left breaks the back-to-back same-composition rhythm and
+           suits the accordion, which is a left-anchored reading column
+           rather than a centered display. */}
+        <div className="mb-12 flex max-w-xl flex-col items-start text-left sm:mb-16">
           <span
             className="text-[11px] uppercase tracking-[0.18em] text-secondary"
             style={{ fontFamily: "var(--font-interactive)" }}
@@ -118,7 +134,7 @@ export function OwnBuildGrow() {
             Own. Build. Grow.
           </h2>
           <p
-            className="mt-5 max-w-xl text-base leading-relaxed text-secondary sm:text-lg"
+            className="mt-5 text-base leading-relaxed text-secondary sm:text-lg"
             style={{ fontFamily: "var(--font-body)" }}
           >
             A three-step philosophy rooted in generations of African wisdom
@@ -155,7 +171,12 @@ function PillarItem({
   return (
     <div
       className={`overflow-hidden rounded-[20px] border bg-canvas transition-colors duration-200 ${
-        isOpen ? "border-primary" : "border-[--color-border-rule]"
+        // Mobile: open pillar gets a Late-Night Boardroom border, others
+        // Border Rule. Desktop: every panel is shown, so the border
+        // distinction is meaningless — keep them all uniform Border Rule.
+        isOpen
+          ? "border-primary lg:border-[--color-border-rule]"
+          : "border-[--color-border-rule]"
       }`}
     >
       <button
@@ -164,14 +185,14 @@ function PillarItem({
         aria-expanded={isOpen}
         aria-controls={panelId}
         onClick={onToggle}
-        className="flex w-full items-center justify-between gap-4 p-5 text-left sm:p-7"
+        className="flex w-full items-center justify-between gap-4 p-5 text-left sm:p-7 lg:cursor-default"
       >
         <span className="flex items-center gap-4 sm:gap-5">
           <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[14px] bg-primary text-canvas sm:h-14 sm:w-14">
             <PillarGlyph icon={pillar.icon} />
           </span>
           <span className="flex flex-col gap-0.5">
-            <span className="flex items-center gap-3">
+            <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
               <span
                 className="text-[11px] tracking-[0.14em] text-secondary"
                 style={{ fontFamily: "var(--font-interactive)", fontWeight: 600 }}
@@ -184,6 +205,18 @@ function PillarItem({
               >
                 {pillar.name}
               </span>
+              {pillar.tag && (
+                <span
+                  className="rounded-full border border-[--color-border-rule] px-2 py-0.5 text-[10px] tracking-[0.14em] text-secondary"
+                  style={{
+                    fontFamily: "var(--font-interactive)",
+                    fontWeight: 600,
+                    textTransform: "uppercase",
+                  }}
+                >
+                  {pillar.tag}
+                </span>
+              )}
             </span>
             <span
               className="text-sm text-secondary"
@@ -193,9 +226,11 @@ function PillarItem({
             </span>
           </span>
         </span>
+        {/* Accordion toggle — mobile only. On desktop every panel is
+           open, so the +/- control would be a lie; hide it there. */}
         <span
           aria-hidden
-          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border transition-colors duration-200 ${
+          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border transition-colors duration-200 lg:hidden ${
             isOpen
               ? "border-primary bg-primary text-canvas"
               : "border-[--color-border-rule] bg-canvas text-primary"
@@ -205,13 +240,17 @@ function PillarItem({
         </span>
       </button>
 
-      {isOpen && (
-        <div
-          id={panelId}
-          role="region"
-          aria-labelledby={buttonId}
-          className="border-t border-[--color-border-rule] p-5 sm:p-7"
-        >
+      {/* Panel always rendered. Mobile: shown only when this pillar is
+         the open one (hidden otherwise). Desktop: always shown, so the
+         whole pitch is visible at once without tapping. */}
+      <div
+        id={panelId}
+        role="region"
+        aria-labelledby={buttonId}
+        className={`border-t border-[--color-border-rule] p-5 sm:p-7 lg:block ${
+          isOpen ? "block" : "hidden"
+        }`}
+      >
           <div
             className={`grid gap-8 ${
               pillar.image ? "lg:grid-cols-2 lg:items-center" : "lg:grid-cols-1"
@@ -268,7 +307,6 @@ function PillarItem({
             )}
           </div>
         </div>
-      )}
     </div>
   );
 }
