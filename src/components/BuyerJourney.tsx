@@ -38,9 +38,9 @@ const STEPS: Step[] = [
   },
   {
     number: "04",
-    title: "Visit and verify",
+    title: "Verify the property",
     detail:
-      "Arrange a site visit, see it in person, and run your own title checks, or hand it to your lawyer.",
+      "We can help with the site visit, property inspection, and document checks, so you know exactly what you are buying.",
   },
   {
     number: "05",
@@ -72,8 +72,8 @@ export function BuyerJourney() {
             className="mt-5 text-base leading-relaxed text-secondary sm:text-lg"
             style={{ fontFamily: "var(--font-body)" }}
           >
-            Five steps, and you stay in control of every one. Terrain points
-            you to a vetted agent; the rest of the deal is yours.
+            Five steps from the map to the keys. We point you to a vetted
+            agent, and we can help you check the property before you pay.
           </p>
         </div>
 
