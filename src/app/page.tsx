@@ -16,9 +16,9 @@ import { Footer } from "@/components/Footer";
 //   Hero (map)     L   hook: own property in Nigeria, with confidence
 //   WhyTerrain     D   the problem: the fear is rational
 //   AgentVetting   D   the answer: how we check every agent
-//   BuyerJourney   L   how you buy, end to end
+//   BuyerJourney   L   how you buy, end to end (airy 2-col steps)
 //   OwnBuildGrow   L   what you can do with Terrain (Own/Build/Grow)
-//   WhatsOnMarket  L   what's available, by city
+//   WhatsOnMarket  D   what's available, by city (dark, breaks the run)
 //   Testimonials   L   proof
 //   FAQ            D   objections
 //   ClosingCTA     L   conversion peak, faint Nigeria map bookend

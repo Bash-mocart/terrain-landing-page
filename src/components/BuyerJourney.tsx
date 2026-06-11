@@ -1,15 +1,17 @@
 import { Reveal } from "./Reveal";
 
-// How you buy. A buyer-facing numbered journey, distinct from the
-// agent-vetting timeline (which is the seller-side trust story) and
-// from the Terrain Own checklist (which is the product framing). This
-// is the buyer's actual path, told plainly, so a first-timer knows
-// exactly what happens. Reads like a ledger: a row of numbered
-// entries, each with a top hairline. Warm Canvas surface.
+// How you buy. The buyer-facing journey. Re-crafted away from the
+// 5-across ledger (which mirrored the agent-vetting section sitting
+// just above it) into an airier two-column layout: a sticky header on
+// the left, and large numbered steps stacked on the right with room to
+// breathe. Same numbered-step type family as vetting, deliberately
+// different spatial signature, so the two read as a call-and-response
+// pair rather than the same module twice. The buyer journey is the
+// emotional one, so it earns the extra air.
 //
-// Accurate to the marketplace model: Terrain introduces buyers to
-// vetted agents and never holds funds, takes commission, or sits in
-// the transaction.
+// Accurate to the model: Terrain introduces buyers to vetted agents
+// and now also helps verify the property; it holds no funds and takes
+// no commission.
 
 type Step = {
   number: string;
@@ -53,51 +55,61 @@ const STEPS: Step[] = [
 export function BuyerJourney() {
   return (
     <section id="how-to-buy" className="bg-canvas py-16 sm:py-24 lg:py-32">
-      <Reveal className="mx-auto max-w-[1440px] px-6 sm:px-8 lg:px-10">
-        <div className="flex max-w-xl flex-col items-start">
-          <span
-            className="text-[11px] uppercase tracking-[0.18em] text-primary"
-            style={{ fontFamily: "var(--font-interactive)" }}
-          >
-            For buyers
-          </span>
-          <span aria-hidden className="mt-3 inline-block h-px w-12 bg-[--color-border-rule]" />
-          <h2
-            className="mt-6 text-[clamp(36px,5vw,64px)] leading-[1.0] tracking-tight text-primary"
-            style={{ fontFamily: "var(--font-display)", fontWeight: 700 }}
-          >
-            From the map to the keys.
-          </h2>
-          <p
-            className="mt-5 text-base leading-relaxed text-secondary sm:text-lg"
-            style={{ fontFamily: "var(--font-body)" }}
-          >
-            Five steps from the map to the keys. We point you to a vetted
-            agent, and we can help you check the property before you pay.
-          </p>
+      <Reveal className="mx-auto grid max-w-[1440px] grid-cols-1 gap-10 px-6 sm:px-8 lg:grid-cols-12 lg:gap-16 lg:px-10">
+        <div className="lg:col-span-4">
+          <div className="lg:sticky lg:top-28">
+            <span
+              className="text-[11px] uppercase tracking-[0.18em] text-primary"
+              style={{ fontFamily: "var(--font-interactive)" }}
+            >
+              For buyers
+            </span>
+            <span aria-hidden className="mt-3 inline-block h-px w-12 bg-[--color-border-rule]" />
+            <h2
+              className="mt-6 text-[clamp(36px,5vw,60px)] leading-[1.0] tracking-tight text-primary"
+              style={{ fontFamily: "var(--font-display)", fontWeight: 700 }}
+            >
+              From the map
+              <br className="hidden sm:block" /> to the keys.
+            </h2>
+            <p
+              className="mt-5 max-w-sm text-base leading-relaxed text-secondary sm:text-lg"
+              style={{ fontFamily: "var(--font-body)" }}
+            >
+              Five steps from the map to the keys. We point you to a vetted
+              agent, and we can help you check the property before you pay.
+            </p>
+          </div>
         </div>
 
-        <ol className="mt-12 grid grid-cols-1 gap-x-6 gap-y-8 sm:mt-14 sm:grid-cols-2 lg:grid-cols-5 lg:gap-x-8">
-          {STEPS.map((step) => (
-            <li key={step.number} className="border-t border-primary/15 pt-5">
+        <ol className="lg:col-span-8">
+          {STEPS.map((step, i) => (
+            <li
+              key={step.number}
+              className={`flex gap-5 border-t border-[--color-border-rule] py-7 sm:gap-8 sm:py-9 ${
+                i === 0 ? "lg:border-t-0 lg:pt-0" : ""
+              }`}
+            >
               <span
-                className="text-[34px] leading-none tracking-tight text-primary/25"
+                className="shrink-0 text-[clamp(40px,5vw,56px)] leading-none tracking-tight text-primary/20"
                 style={{ fontFamily: "var(--font-display)", fontWeight: 700 }}
               >
                 {step.number}
               </span>
-              <h3
-                className="mt-4 text-lg text-primary"
-                style={{ fontFamily: "var(--font-body)", fontWeight: 700 }}
-              >
-                {step.title}
-              </h3>
-              <p
-                className="mt-2 text-sm leading-relaxed text-secondary"
-                style={{ fontFamily: "var(--font-body)" }}
-              >
-                {step.detail}
-              </p>
+              <div className="pt-1 sm:pt-2">
+                <h3
+                  className="text-xl text-primary sm:text-2xl"
+                  style={{ fontFamily: "var(--font-body)", fontWeight: 700 }}
+                >
+                  {step.title}
+                </h3>
+                <p
+                  className="mt-2 max-w-md text-[15px] leading-relaxed text-secondary sm:text-base"
+                  style={{ fontFamily: "var(--font-body)" }}
+                >
+                  {step.detail}
+                </p>
+              </div>
             </li>
           ))}
         </ol>
