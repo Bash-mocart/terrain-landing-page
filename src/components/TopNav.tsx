@@ -58,7 +58,7 @@ export function TopNav() {
 
       <div className="mx-auto flex max-w-[1440px] items-center justify-between px-6 py-4 sm:px-8 sm:py-5 lg:px-10">
         <Link href="/" aria-label="Terrain home">
-          <TerrainLogo markSize={28} tone="onLight" wordClassName="text-2xl" />
+          <TerrainLogo markSize={34} tone="onLight" wordClassName="text-[30px]" />
         </Link>
 
         <div
