@@ -50,7 +50,7 @@ export function ThreeSteps() {
             className="text-[11px] uppercase tracking-[0.18em] text-primary"
             style={{ fontFamily: "var(--font-interactive)" }}
           >
-            How it works
+            How a purchase works
           </span>
           <span
             aria-hidden

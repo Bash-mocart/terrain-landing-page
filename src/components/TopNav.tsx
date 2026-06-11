@@ -22,6 +22,9 @@ export function TopNav() {
         className="hidden md:flex items-center gap-8 text-sm text-primary"
         style={{ fontFamily: "var(--font-interactive)" }}
       >
+        <Link href="#the-terrain-way" className="hover:text-verified transition-colors">
+          Own. Build. Grow.
+        </Link>
         <Link href="#how-it-works" className="hover:text-verified transition-colors">
           How it Works
         </Link>
