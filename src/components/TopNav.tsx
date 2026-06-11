@@ -25,11 +25,11 @@ export function TopNav() {
         <Link href="#the-terrain-way" className="hover:text-verified transition-colors">
           Products
         </Link>
+        <Link href="#vetting" className="hover:text-verified transition-colors">
+          How we vet
+        </Link>
         <Link href="#listings" className="hover:text-verified transition-colors">
           Available Plots
-        </Link>
-        <Link href="#testimonials" className="hover:text-verified transition-colors">
-          Customers
         </Link>
       </div>
       {/* Spacer to balance the right side so the anchor links stay

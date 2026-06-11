@@ -98,14 +98,25 @@ export function FAQ() {
                   onClick={() => setOpen(isOpen ? null : i)}
                   className="flex w-full items-center justify-between gap-3 py-5 text-left transition-colors hover:text-verified/90 sm:gap-4 sm:py-6"
                 >
-                  <span
-                    className="text-base leading-snug text-canvas sm:text-lg"
-                    style={{
-                      fontFamily: "var(--font-body)",
-                      fontWeight: 600,
-                    }}
-                  >
-                    {item.q}
+                  <span className="flex items-baseline gap-4">
+                    {/* Registry-style numbering ties the FAQ to the
+                       vetting section's numbered language. */}
+                    <span
+                      aria-hidden
+                      className="hidden text-[12px] tracking-[0.08em] text-canvas/40 sm:inline"
+                      style={{ fontFamily: "var(--font-interactive)", fontWeight: 700 }}
+                    >
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span
+                      className="text-base leading-snug text-canvas sm:text-lg"
+                      style={{
+                        fontFamily: "var(--font-body)",
+                        fontWeight: 600,
+                      }}
+                    >
+                      {item.q}
+                    </span>
                   </span>
                   <span
                     aria-hidden
