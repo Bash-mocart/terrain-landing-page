@@ -23,10 +23,7 @@ export function TopNav() {
         style={{ fontFamily: "var(--font-interactive)" }}
       >
         <Link href="#the-terrain-way" className="hover:text-verified transition-colors">
-          Own. Build. Grow.
-        </Link>
-        <Link href="#how-it-works" className="hover:text-verified transition-colors">
-          How it Works
+          Products
         </Link>
         <Link href="#listings" className="hover:text-verified transition-colors">
           Available Plots

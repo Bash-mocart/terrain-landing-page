@@ -1,24 +1,22 @@
 import { TopNav } from "@/components/TopNav";
 import { Hero } from "@/components/Hero";
 import { OwnBuildGrow } from "@/components/OwnBuildGrow";
-import { ThreeSteps } from "@/components/ThreeSteps";
 import { WhatsOnMarket } from "@/components/WhatsOnMarket";
 import { Testimonials } from "@/components/Testimonials";
 import { FAQ } from "@/components/FAQ";
 import { Footer } from "@/components/Footer";
 
-// Landing page composition. OwnBuildGrow (the three Terrain product
-// pillars) sits right after the hero, framing WHAT Terrain lets you
-// do before ThreeSteps explains HOW a purchase works. Mirrors the
-// TERRA Figma flow (philosophy -> how-it-works -> listings) while
-// staying on the restrained Terrain token system.
+// Landing page composition. OwnBuildGrow (the Terrain product family:
+// Own / Build / Grow) sits right after the hero and now carries the
+// "how a purchase works" content too, folded into Terrain Own. The
+// separate ThreeSteps section was removed as redundant once the
+// flagship absorbed the buying flow.
 export default function Home() {
   return (
     <>
       <TopNav />
       <Hero />
       <OwnBuildGrow />
-      <ThreeSteps />
       <WhatsOnMarket />
       <Testimonials />
       <FAQ />

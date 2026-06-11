@@ -1,125 +1,91 @@
-"use client";
-
-import { useState } from "react";
 import Image from "next/image";
 
-// "Own. Build. Grow." pillars — the three Terrain product features,
-// adapted from the TERRA Figma (node 2845:18) into Terrain's existing
-// five-token system (Warm Canvas / Late-Night Boardroom / Forest
-// Verification / Survey Gray / Border Rule) with Zain display, Nunito
-// body, Inter caps grammar.
+// The Terrain product family. Three named products presented as a
+// lineup with one shipped flagship (Terrain Own) and two on the
+// roadmap (Terrain Build, Terrain Grow). Replaces the earlier
+// accordion: the dark-flagship / light-roadmap hierarchy now does the
+// work the accordion did, and the whole pitch is visible at once on
+// every viewport. The separate "Three Steps to Verified Ownership"
+// section was removed; its content (browse, connect with the agent,
+// visit and buy) is folded into Terrain Own's checklist here.
 //
-// The Figma rendered this in a cream + terracotta + Fraunces serif
-// aesthetic; that palette is deliberately NOT carried over. The page
-// stays on the restrained Terrain tokens we use everywhere else, the
-// same call we made dropping the ochre from the agent profile.
+// Composition (impeccable craft brief, confirmed):
+//   - Flagship Terrain Own = a full-width Late-Night Boardroom card,
+//     the one place this section commits to a saturated surface, so
+//     the live product carries real gravity.
+//   - Terrain Build + Terrain Grow = two quieter Warm Canvas cards in
+//     a 2-up row, tagged "In rollout", reading as siblings-in-waiting.
 //
-// Accordion: one pillar open at a time, "Own" open by default. Each
-// header toggles; the open pillar reveals body copy, a verified
-// checklist, a deep link, and (for Own) a supporting image.
+// Stays inside the five-token Terrain palette. No "use client" — the
+// section is fully static; hierarchy and hover are pure CSS.
 //
-// Copy integrity note: the Figma's Own checklist claimed "Escrow-
-// protected payment processing" and "Multi-party legal review before
-// purchase." Both contradict what Terrain actually does (it holds no
-// funds, runs no legal review, and is not a party to the
-// transaction). Those lines are replaced here with accurate claims
-// rooted in the agent-vetting + immersive-media value props. Build
-// and Grow were collapsed in the Figma with no specced body; their
-// expanded content is written to match the philosophy without
-// overclaiming.
+// Copy integrity: Terrain is a marketplace only (holds no funds, no
+// escrow, no legal review, not a party to the transaction). Every
+// claim below stays on the agent-vetting + immersive-media truth from
+// the honesty sweep.
 
-type Pillar = {
+type Product = {
   number: string;
   name: string;
-  tagline: string;
-  body: string;
-  checklist: string[];
-  linkLabel: string;
-  linkHref: string;
+  claim: string;
+  points: string[];
   icon: "own" | "build" | "grow";
-  image?: { src: string; alt: string };
-  // Roadmap marker. Own ships today (the marketplace); Build and Grow
-  // are stated product direction, not live features. The tag tells
-  // the buyer the thinner pillars are intentional roadmap, not
-  // neglected content.
-  tag?: string;
 };
 
-const PILLARS: Pillar[] = [
-  {
-    number: "01",
-    name: "Own",
-    tagline: "Secure verified land ownership across Nigeria",
-    body: "Land in Nigeria is more than an asset. It is heritage, identity, and security. Terrain helps you find and secure land through agents we have vetted, with the documentation surfaced so nothing about a plot stays hidden.",
-    checklist: [
-      "CAC-registered agents, vetted before they list",
-      "Title documents surfaced for your lawyer's review",
-      "Immersive media on every plot: photos, video, drone aerials, 3D tours",
-      "Contact and transact with the agent directly, no middle layer",
-    ],
-    linkLabel: "Browse verified plots",
-    linkHref: "#listings",
-    icon: "own",
-    image: {
-      src: "/figma/own-pillar.png",
-      alt: "A landowner holding their land document on a verified plot",
-    },
-  },
+const OWN: Product = {
+  number: "01",
+  name: "Terrain Own",
+  claim: "Buy verified land and houses, direct from the agents we have vetted.",
+  points: [
+    "Browse vetted listings on a live map",
+    "Walk every plot through photos, video, drone aerials, and 3D tours",
+    "Connect with the CAC-verified agent directly",
+    "Visit and buy on their terms, with no middle layer",
+  ],
+  icon: "own",
+};
+
+const ROADMAP: Product[] = [
   {
     number: "02",
-    name: "Build",
-    tagline: "Turn your land into a home or an income property",
-    body: "Owning the ground is the first step. Terrain carries house listings beside the land, so you can move from a bare plot to a finished home, or buy one already standing, through the same vetted agents.",
-    checklist: [
-      "Houses and land listed side by side",
+    name: "Terrain Build",
+    claim: "Turn the land you own into a home or an income property.",
+    points: [
+      "Houses and land in one place",
       "Filter by bedrooms, condition, and price",
-      "Walk finished homes through video and 3D tours before you visit",
-      "Every listing from a CAC-verified agent",
+      "Tour finished homes before you visit",
     ],
-    linkLabel: "See houses on Terrain",
-    linkHref: "#listings",
     icon: "build",
-    tag: "In rollout",
   },
   {
     number: "03",
-    name: "Grow",
-    tagline: "Generate income and watch your investment appreciate",
-    body: "Land in the right corridor appreciates. When you are ready, Terrain helps you reach the buyers most likely to act, including the diaspora browsing from abroad, with the media and documents that let them buy with confidence.",
-    checklist: [
+    name: "Terrain Grow",
+    claim: "Track value, resell when you are ready, and reach buyers who can act.",
+    points: [
       "List your plot for resale to vetted buyers",
       "Reach diaspora buyers browsing from abroad",
-      "Showcase with drone aerials and 3D virtual tours",
-      "Transparent, agent-led negotiations",
+      "Showcase with drone aerials and 3D tours",
     ],
-    linkLabel: "List as an agent",
-    linkHref: "mailto:agents@terrain.ng",
     icon: "grow",
-    tag: "In rollout",
   },
 ];
 
-export function OwnBuildGrow() {
-  // openIndex drives the MOBILE accordion only — Own (index 0) open
-  // on arrival so the section never lands fully collapsed on a phone.
-  // On desktop (lg+) the panels are CSS-forced open regardless of
-  // this state (vertical space is free there, and a marketing page
-  // shouldn't hide two-thirds of the pitch behind a tap). See the
-  // panel + toggle visibility classes in PillarItem.
-  const [openIndex, setOpenIndex] = useState<number>(0);
+const capsStyle: React.CSSProperties = {
+  fontFamily: "var(--font-interactive)",
+  textTransform: "uppercase",
+};
 
+export function OwnBuildGrow() {
   return (
     <section id="the-terrain-way" className="relative bg-canvas py-16 sm:py-24 lg:py-32">
-      <div className="mx-auto max-w-[1040px] px-6 sm:px-8 lg:px-10">
-        {/* Left-aligned header. ThreeSteps directly below this section
-           uses a CENTERED header on the same Warm Canvas; ranging this
-           one left breaks the back-to-back same-composition rhythm and
-           suits the accordion, which is a left-anchored reading column
-           rather than a centered display. */}
-        <div className="mb-12 flex max-w-xl flex-col items-start text-left sm:mb-16">
+      <div className="mx-auto max-w-[1100px] px-6 sm:px-8 lg:px-10">
+        {/* Left-aligned header — distinct from the centered headers
+           elsewhere on the page, and the natural anchor for a
+           left-reading product lineup. */}
+        <header className="flex max-w-2xl flex-col items-start">
           <span
-            className="text-[11px] uppercase tracking-[0.18em] text-secondary"
-            style={{ fontFamily: "var(--font-interactive)" }}
+            className="text-[11px] tracking-[0.18em] text-secondary"
+            style={capsStyle}
           >
             The Terrain way
           </span>
@@ -128,212 +94,245 @@ export function OwnBuildGrow() {
             className="mt-3 inline-block h-px w-12 bg-[--color-border-rule]"
           />
           <h2
-            className="mt-6 text-[clamp(36px,5vw,64px)] leading-[1.0] tracking-tight text-primary"
+            className="mt-6 text-[clamp(34px,5vw,60px)] leading-[1.02] tracking-tight text-primary"
             style={{ fontFamily: "var(--font-display)", fontWeight: 700 }}
           >
-            Own. Build. Grow.
+            Three products.
+            <br className="hidden sm:block" /> One title you can trust.
           </h2>
           <p
-            className="mt-5 text-base leading-relaxed text-secondary sm:text-lg"
+            className="mt-5 max-w-md text-base leading-relaxed text-secondary sm:text-lg"
             style={{ fontFamily: "var(--font-body)" }}
           >
-            A three-step philosophy rooted in generations of African wisdom
-            about land ownership and building wealth that lasts.
+            Own the land, build on it, and grow what it is worth. Terrain Own
+            ships today; Build and Grow are on the way.
           </p>
-        </div>
+        </header>
 
-        <div className="flex flex-col gap-4">
-          {PILLARS.map((pillar, i) => (
-            <PillarItem
-              key={pillar.name}
-              pillar={pillar}
-              isOpen={openIndex === i}
-              onToggle={() => setOpenIndex(openIndex === i ? -1 : i)}
-            />
-          ))}
+        <div className="mt-12 flex flex-col gap-5 sm:mt-14 sm:gap-6">
+          <FlagshipCard product={OWN} />
+          <div className="grid gap-5 sm:gap-6 lg:grid-cols-2">
+            {ROADMAP.map((p) => (
+              <RoadmapCard key={p.name} product={p} />
+            ))}
+          </div>
         </div>
       </div>
     </section>
   );
 }
 
-function PillarItem({
-  pillar,
-  isOpen,
-  onToggle,
-}: {
-  pillar: Pillar;
-  isOpen: boolean;
-  onToggle: () => void;
-}) {
-  const panelId = `pillar-panel-${pillar.number}`;
-  const buttonId = `pillar-button-${pillar.number}`;
+function FlagshipCard({ product }: { product: Product }) {
   return (
-    <div
-      className={`overflow-hidden rounded-[20px] border bg-canvas transition-colors duration-200 ${
-        // Mobile: open pillar gets a Late-Night Boardroom border, others
-        // Border Rule. Desktop: every panel is shown, so the border
-        // distinction is meaningless — keep them all uniform Border Rule.
-        isOpen
-          ? "border-primary lg:border-[--color-border-rule]"
-          : "border-[--color-border-rule]"
-      }`}
-    >
-      <button
-        type="button"
-        id={buttonId}
-        aria-expanded={isOpen}
-        aria-controls={panelId}
-        onClick={onToggle}
-        className="flex w-full items-center justify-between gap-4 p-5 text-left sm:p-7 lg:cursor-default"
-      >
-        <span className="flex items-center gap-4 sm:gap-5">
-          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[14px] bg-primary text-canvas sm:h-14 sm:w-14">
-            <PillarGlyph icon={pillar.icon} />
-          </span>
-          <span className="flex flex-col gap-0.5">
-            <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
-              <span
-                className="text-[11px] tracking-[0.14em] text-secondary"
-                style={{ fontFamily: "var(--font-interactive)", fontWeight: 600 }}
-              >
-                {pillar.number}
-              </span>
-              <span
-                className="text-[clamp(22px,3vw,30px)] leading-none tracking-tight text-primary"
-                style={{ fontFamily: "var(--font-display)", fontWeight: 700 }}
-              >
-                {pillar.name}
-              </span>
-              {pillar.tag && (
-                <span
-                  className="rounded-full border border-[--color-border-rule] px-2 py-0.5 text-[10px] tracking-[0.14em] text-secondary"
-                  style={{
-                    fontFamily: "var(--font-interactive)",
-                    fontWeight: 600,
-                    textTransform: "uppercase",
-                  }}
-                >
-                  {pillar.tag}
-                </span>
-              )}
-            </span>
+    <article className="overflow-hidden rounded-[24px] bg-primary text-canvas">
+      <div className="grid lg:grid-cols-[1.05fr_0.95fr]">
+        {/* Content column. Light-on-dark type compensation per the
+           typography reference: body weight stepped up (Nunito reads
+           at 400 on canvas, so the dark card leans on /90 opacity +
+           relaxed leading), caps get a touch more tracking. */}
+        <div className="flex flex-col gap-7 p-7 sm:p-10 lg:p-12">
+          <div className="flex items-center gap-3">
+            <ProductGlyph icon={product.icon} tone="onDark" />
             <span
-              className="text-sm text-secondary"
+              className="text-[11px] tracking-[0.16em] text-canvas/60"
+              style={capsStyle}
+            >
+              {product.number}
+            </span>
+            <StatusTag kind="live" />
+          </div>
+
+          <div className="flex flex-col gap-3">
+            <h3
+              className="text-[clamp(30px,4vw,44px)] leading-[1.0] tracking-tight"
+              style={{ fontFamily: "var(--font-display)", fontWeight: 700 }}
+            >
+              {product.name}
+            </h3>
+            <p
+              className="max-w-sm text-lg leading-relaxed text-canvas/90"
               style={{ fontFamily: "var(--font-body)" }}
             >
-              {pillar.tagline}
-            </span>
-          </span>
-        </span>
-        {/* Accordion toggle — mobile only. On desktop every panel is
-           open, so the +/- control would be a lie; hide it there. */}
-        <span
-          aria-hidden
-          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border transition-colors duration-200 lg:hidden ${
-            isOpen
-              ? "border-primary bg-primary text-canvas"
-              : "border-[--color-border-rule] bg-canvas text-primary"
-          }`}
-        >
-          <PlusMinus isOpen={isOpen} />
-        </span>
-      </button>
+              {product.claim}
+            </p>
+          </div>
 
-      {/* Panel always rendered. Mobile: shown only when this pillar is
-         the open one (hidden otherwise). Desktop: always shown, so the
-         whole pitch is visible at once without tapping. */}
-      <div
-        id={panelId}
-        role="region"
-        aria-labelledby={buttonId}
-        className={`border-t border-[--color-border-rule] p-5 sm:p-7 lg:block ${
-          isOpen ? "block" : "hidden"
-        }`}
-      >
-          <div
-            className={`grid gap-8 ${
-              pillar.image ? "lg:grid-cols-2 lg:items-center" : "lg:grid-cols-1"
-            }`}
-          >
-            <div className="flex flex-col gap-6">
-              <p
-                className="max-w-prose text-base leading-relaxed text-primary/85"
-                style={{ fontFamily: "var(--font-body)" }}
-              >
-                {pillar.body}
-              </p>
-              <ul className="flex flex-col gap-3">
-                {pillar.checklist.map((item) => (
-                  <li key={item} className="flex items-start gap-3">
-                    <span
-                      aria-hidden
-                      className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full"
-                      style={{ background: "rgba(74, 124, 89, 0.14)" }}
-                    >
-                      <CheckGlyph />
-                    </span>
-                    <span
-                      className="text-sm leading-relaxed text-primary/85"
-                      style={{ fontFamily: "var(--font-body)" }}
-                    >
-                      {item}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-              <a
-                href={pillar.linkHref}
-                className="group inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.14em] text-primary transition-colors hover:text-verified"
-                style={{ fontFamily: "var(--font-interactive)", fontWeight: 600 }}
-              >
-                {pillar.linkLabel}
-                <span aria-hidden className="transition-transform group-hover:translate-x-0.5">
-                  →
+          <ul className="flex flex-col gap-3">
+            {product.points.map((point) => (
+              <li key={point} className="flex items-start gap-3">
+                <span
+                  aria-hidden
+                  className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-verified"
+                >
+                  <CheckGlyph />
                 </span>
-              </a>
-            </div>
+                <span
+                  className="text-[15px] leading-relaxed text-canvas/85"
+                  style={{ fontFamily: "var(--font-body)" }}
+                >
+                  {point}
+                </span>
+              </li>
+            ))}
+          </ul>
 
-            {pillar.image && (
-              <div className="relative h-[220px] w-full overflow-hidden rounded-[16px] border border-[--color-border-rule] bg-[--color-border-rule] lg:h-[288px]">
-                <Image
-                  src={pillar.image.src}
-                  alt={pillar.image.alt}
-                  fill
-                  className="object-cover"
-                  sizes="(min-width: 1024px) 480px, 100vw"
-                />
-              </div>
-            )}
+          <div className="pt-1">
+            <a
+              href="#listings"
+              className="group inline-flex items-center gap-2 rounded-full bg-canvas px-6 py-3 text-sm text-primary transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-verified focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
+              style={{ fontFamily: "var(--font-interactive)", fontWeight: 600 }}
+            >
+              Browse verified plots
+              <span aria-hidden className="transition-transform group-hover:translate-x-0.5">
+                →
+              </span>
+            </a>
           </div>
         </div>
-    </div>
+
+        {/* Image column. On mobile it sits above a comfortable height;
+           on desktop it fills the card's full height beside the
+           content. */}
+        <div className="relative order-first h-56 w-full overflow-hidden sm:h-72 lg:order-last lg:h-auto lg:min-h-[420px]">
+          <Image
+            src="/figma/own-pillar.png"
+            alt="A landowner holding their land document on a verified plot"
+            fill
+            className="object-cover"
+            sizes="(min-width: 1024px) 520px, 100vw"
+          />
+          {/* A whisper of Late-Night Boardroom along the seam so the
+             image marries the dark card instead of butting against it. */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 lg:bg-gradient-to-r lg:from-primary/40 lg:to-transparent"
+          />
+        </div>
+      </div>
+    </article>
   );
 }
 
-function PlusMinus({ isOpen }: { isOpen: boolean }) {
+function RoadmapCard({ product }: { product: Product }) {
   return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
-      <line
-        x1="1"
-        y1="7"
-        x2="13"
-        y2="7"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-      />
-      {!isOpen && (
-        <line
-          x1="7"
-          y1="1"
-          x2="7"
-          y2="13"
-          stroke="currentColor"
-          strokeWidth="1.6"
-          strokeLinecap="round"
-        />
-      )}
+    <article className="group flex flex-col gap-5 rounded-[24px] border border-[--color-border-rule] bg-canvas p-7 transition-colors duration-200 hover:border-primary sm:p-8">
+      <div className="flex items-center gap-3">
+        <ProductGlyph icon={product.icon} tone="onLight" />
+        <span
+          className="text-[11px] tracking-[0.16em] text-secondary"
+          style={capsStyle}
+        >
+          {product.number}
+        </span>
+        <StatusTag kind="rollout" />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <h3
+          className="text-[clamp(24px,3vw,30px)] leading-none tracking-tight text-primary"
+          style={{ fontFamily: "var(--font-display)", fontWeight: 700 }}
+        >
+          {product.name}
+        </h3>
+        <p
+          className="text-[15px] leading-relaxed text-secondary"
+          style={{ fontFamily: "var(--font-body)" }}
+        >
+          {product.claim}
+        </p>
+      </div>
+
+      {/* Roadmap previews use a Survey Gray dash marker, NOT the
+         Forest Verification check. The check means "live / verified";
+         these features are not live yet, so they must not borrow its
+         signal. */}
+      <ul className="mt-1 flex flex-col gap-2.5">
+        {product.points.map((point) => (
+          <li key={point} className="flex items-start gap-3">
+            <span
+              aria-hidden
+              className="mt-2 h-px w-3 shrink-0 bg-secondary/50"
+            />
+            <span
+              className="text-sm leading-relaxed text-primary/80"
+              style={{ fontFamily: "var(--font-body)" }}
+            >
+              {point}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </article>
+  );
+}
+
+function StatusTag({ kind }: { kind: "live" | "rollout" }) {
+  if (kind === "live") {
+    // Late-Night Boardroom text on Forest Verification (4.6:1, clears
+    // AA for this 10px badge; Warm Canvas text on the same green is
+    // ~4.2:1 and would fail).
+    return (
+      <span
+        className="inline-flex items-center gap-1.5 rounded-full bg-verified px-2.5 py-1 text-[10px] tracking-[0.14em] text-primary"
+        style={{ ...capsStyle, fontWeight: 700 }}
+      >
+        <span aria-hidden className="inline-block h-1.5 w-1.5 rounded-full bg-primary" />
+        Live
+      </span>
+    );
+  }
+  return (
+    <span
+      className="inline-flex items-center rounded-full border border-[--color-border-rule] px-2.5 py-1 text-[10px] tracking-[0.14em] text-secondary"
+      style={{ ...capsStyle, fontWeight: 600 }}
+    >
+      In rollout
+    </span>
+  );
+}
+
+function ProductGlyph({
+  icon,
+  tone,
+}: {
+  icon: "own" | "build" | "grow";
+  tone: "onDark" | "onLight";
+}) {
+  // Small product mark. On the dark flagship it inverts (canvas chip,
+  // primary glyph); on the light roadmap cards it is a primary chip
+  // with a canvas glyph, echoing the flagship's contrast in reverse.
+  const chip =
+    tone === "onDark"
+      ? "bg-canvas text-primary"
+      : "bg-primary text-canvas";
+  return (
+    <span
+      className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] ${chip}`}
+      aria-hidden
+    >
+      <GlyphPath icon={icon} />
+    </span>
+  );
+}
+
+function GlyphPath({ icon }: { icon: "own" | "build" | "grow" }) {
+  if (icon === "own") {
+    return (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+        <path d="M14.5 3a6.5 6.5 0 00-6.3 8.2L3 16.4V21h4.6v-2.3h2.3v-2.3h2.3l1.2-1.2A6.5 6.5 0 1014.5 3zm2.5 5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
+      </svg>
+    );
+  }
+  if (icon === "build") {
+    return (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+        <path d="M3 3h8l-1.2 6.4a3 3 0 01-.86 1.62l-1.1 1.1 4.04 4.04a1.5 1.5 0 010 2.12l-.71.71a1.5 1.5 0 01-2.12 0l-4.04-4.04-1.1 1.1a3 3 0 01-1.62.86L3 18z" />
+      </svg>
+    );
+  }
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M12 21v-7m0 0c0-3 2-5 5-5h2v1c0 3-2 5-5 5h-2zm0 0c0-3.2-2-5-5-5H5v1c0 3 2 5 5 5h2z" />
     </svg>
   );
 }
@@ -343,36 +342,11 @@ function CheckGlyph() {
     <svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden>
       <path
         d="M2.5 6.2l2.2 2.2 4.8-4.8"
-        stroke="#4a7c59"
+        stroke="#fdfcfb"
         strokeWidth="1.8"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-    </svg>
-  );
-}
-
-function PillarGlyph({ icon }: { icon: "own" | "build" | "grow" }) {
-  if (icon === "own") {
-    // Key — ownership.
-    return (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-        <path d="M14.5 3a6.5 6.5 0 00-6.3 8.2L3 16.4V21h4.6v-2.3h2.3v-2.3h2.3l1.2-1.2A6.5 6.5 0 1014.5 3zm2.5 5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
-      </svg>
-    );
-  }
-  if (icon === "build") {
-    // Trowel / build.
-    return (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-        <path d="M3 3h8l-1.2 6.4a3 3 0 01-.86 1.62l-1.1 1.1 4.04 4.04a1.5 1.5 0 010 2.12l-.71.71a1.5 1.5 0 01-2.12 0l-4.04-4.04-1.1 1.1a3 3 0 01-1.62.86L3 18z" />
-      </svg>
-    );
-  }
-  // Sprout / grow.
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-      <path d="M12 22v-7m0 0c0-3 2-5 5-5h3v1c0 3-2 5-5 5h-3zm0 0c0-3.3-2.2-6-5-6H4v1c0 3.3 2.2 5 5 5h3z" />
     </svg>
   );
 }
