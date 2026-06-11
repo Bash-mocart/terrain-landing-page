@@ -28,6 +28,12 @@
   --font-display: var(--font-zain), system-ui, sans-serif;
   --font-body: var(--font-nunito), system-ui, sans-serif;
   --font-interactive: var(--font-inter), system-ui, sans-serif;
+  /* Cartographic redesign: a system monospace, used ONLY for
+     coordinates and technical survey annotations. Zero load cost.
+     Coordinates are monospace in the real world; this one role sells
+     the survey feel. */
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, "Cascadia Code",
+    "Segoe UI Mono", "Roboto Mono", monospace;
 }
 
 @theme inline {
@@ -51,6 +57,41 @@ body {
 ::selection {
   background: color-mix(in oklch, var(--color-verified) 14%, transparent);
   color: var(--color-primary);
+}
+
+/* ============================================================
+ * Cartographic survey kit
+ *
+ * Faint graph/survey-paper textures applied to section backgrounds.
+ * Kept very low contrast so they read as paper, not noise. The light
+ * variant uses Border Rule lines on Warm Canvas; the dark variant uses
+ * a whisper of Warm Canvas on Late-Night Boardroom. 40px grid with a
+ * heavier line every 5th cell, like real survey paper.
+ * ============================================================ */
+.survey-grid {
+  background-image:
+    linear-gradient(to right, rgba(9, 5, 3, 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(9, 5, 3, 0.035) 1px, transparent 1px),
+    linear-gradient(to right, rgba(9, 5, 3, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(9, 5, 3, 0.05) 1px, transparent 1px);
+  background-size:
+    40px 40px,
+    40px 40px,
+    200px 200px,
+    200px 200px;
+}
+
+.survey-grid-dark {
+  background-image:
+    linear-gradient(to right, rgba(253, 252, 251, 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(253, 252, 251, 0.035) 1px, transparent 1px),
+    linear-gradient(to right, rgba(253, 252, 251, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(253, 252, 251, 0.05) 1px, transparent 1px);
+  background-size:
+    40px 40px,
+    40px 40px,
+    200px 200px,
+    200px 200px;
 }
 
 /* Scroll-in reveal, driven by the Reveal client component. Fade + a

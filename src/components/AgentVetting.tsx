@@ -1,20 +1,17 @@
 import { Reveal } from "./Reveal";
+import { Coordinate, ContourField, SurveyRule, VerifiedSeal } from "./cartographic";
 
-// How we check agents. The seller-side trust story, told as a numbered
-// process that mirrors the buyer-side "How you buy" ledger so the two
-// read as a matched pair: same flow, two sides of the marketplace,
-// distinguished by surface (this one Late-Night Boardroom dark, the
-// buyer one Warm Canvas light). It is also the page's first full dark
-// section, breaking the canvas run.
-//
-// Copy is honest to what Terrain actually does (CAC registration +
-// business review before listing). No inflated protocol; five real
-// steps.
+// How we check agents, in the survey language. The seller-side trust
+// story as a numbered survey procedure on a dark plate: each step a
+// logged check, the final one stamped with the verified seal. Mirrors
+// the buyer journey's content family but reads as an official checklist
+// rather than a marketing list.
 
 type Step = {
   number: string;
   title: string;
   detail: string;
+  sealed?: boolean;
 };
 
 const STEPS: Step[] = [
@@ -47,23 +44,32 @@ const STEPS: Step[] = [
     title: "Only then can they post",
     detail:
       "Approved agents publish, and every listing carries verifiable media: photos, video, drone aerials, and 3D tours.",
+    sealed: true,
   },
 ];
 
 export function AgentVetting() {
   return (
-    <section id="vetting" className="bg-primary py-16 text-canvas sm:py-24 lg:py-32">
-      <Reveal className="mx-auto max-w-[1440px] px-6 sm:px-8 lg:px-10">
-        <div className="flex max-w-xl flex-col items-start">
-          <span
-            className="text-[11px] uppercase tracking-[0.18em] text-canvas/60"
-            style={{ fontFamily: "var(--font-interactive)" }}
-          >
-            How we check agents
-          </span>
-          <span aria-hidden className="mt-3 inline-block h-px w-12 bg-canvas/30" />
+    <section
+      id="vetting"
+      className="survey-grid-dark relative overflow-hidden bg-primary py-16 text-canvas sm:py-24 lg:py-32"
+    >
+      <ContourField tone="canvas" />
+
+      <Reveal className="relative mx-auto max-w-[1440px] px-6 sm:px-8 lg:px-10">
+        <div className="flex max-w-2xl flex-col items-start">
+          <div className="flex items-center gap-3">
+            <span
+              className="text-[11px] uppercase tracking-[0.18em] text-canvas/60"
+              style={{ fontFamily: "var(--font-interactive)" }}
+            >
+              How we check agents
+            </span>
+            <Coordinate tone="canvas">PROC&nbsp;/&nbsp;5&nbsp;CHECKS</Coordinate>
+          </div>
+          <SurveyRule tone="canvas" className="mt-4 max-w-[220px]" />
           <h2
-            className="mt-6 text-[clamp(36px,5vw,64px)] leading-[1.0] tracking-tight"
+            className="mt-7 text-[clamp(36px,5vw,64px)] leading-[1.0] tracking-tight"
             style={{ fontFamily: "var(--font-display)", fontWeight: 700 }}
           >
             Checked before
@@ -79,15 +85,13 @@ export function AgentVetting() {
           </p>
         </div>
 
-        <ol className="mt-12 grid grid-cols-1 gap-x-6 gap-y-8 sm:mt-14 sm:grid-cols-2 lg:grid-cols-5 lg:gap-x-8">
+        <ol className="mt-12 grid grid-cols-1 gap-x-6 gap-y-8 sm:mt-16 sm:grid-cols-2 lg:grid-cols-5 lg:gap-x-8">
           {STEPS.map((step) => (
-            <li key={step.number} className="border-t border-canvas/20 pt-5">
-              <span
-                className="text-[34px] leading-none tracking-tight text-canvas/30"
-                style={{ fontFamily: "var(--font-display)", fontWeight: 700 }}
-              >
-                {step.number}
-              </span>
+            <li key={step.number} className="relative border-t border-canvas/20 pt-5">
+              <div className="flex items-center justify-between">
+                <Coordinate tone="canvas">CHK&nbsp;{step.number}</Coordinate>
+                {step.sealed && <VerifiedSeal size={34} />}
+              </div>
               <h3
                 className="mt-4 text-lg text-canvas"
                 style={{ fontFamily: "var(--font-body)", fontWeight: 700 }}
