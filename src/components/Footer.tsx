@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { TerrainLogo } from "./TerrainLogo";
+import { Coordinate } from "./cartographic";
 
 // Footer. Dark surface with the wordmark, three nav columns, and a
 // thin legal line. Social icons land alongside the wordmark; copy
@@ -103,9 +104,12 @@ export function Footer() {
             © {new Date().getFullYear()} Terrain Technologies Ltd. All rights
             reserved.
           </p>
-          <p style={{ fontFamily: "var(--font-interactive)" }}>
-            Built in Nigeria for buyers at home and in the diaspora.
-          </p>
+          <div className="flex items-center gap-4">
+            <Coordinate tone="canvas">9.0820&deg; N &middot; 8.6753&deg; E</Coordinate>
+            <p style={{ fontFamily: "var(--font-interactive)" }}>
+              Built in Nigeria for buyers at home and in the diaspora.
+            </p>
+          </div>
         </div>
       </div>
     </footer>

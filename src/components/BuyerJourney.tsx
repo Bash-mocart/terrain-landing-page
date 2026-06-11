@@ -1,4 +1,5 @@
 import { Reveal } from "./Reveal";
+import { Coordinate, SurveyRule } from "./cartographic";
 
 // How you buy. The buyer-facing journey. Re-crafted away from the
 // 5-across ledger (which mirrored the agent-vetting section sitting
@@ -54,17 +55,20 @@ const STEPS: Step[] = [
 
 export function BuyerJourney() {
   return (
-    <section id="how-to-buy" className="bg-canvas py-16 sm:py-24 lg:py-32">
+    <section id="how-to-buy" className="survey-grid bg-canvas py-16 sm:py-24 lg:py-32">
       <Reveal className="mx-auto grid max-w-[1440px] grid-cols-1 gap-10 px-6 sm:px-8 lg:grid-cols-12 lg:gap-16 lg:px-10">
         <div className="lg:col-span-4">
           <div className="lg:sticky lg:top-28">
-            <span
-              className="text-[11px] uppercase tracking-[0.18em] text-primary"
-              style={{ fontFamily: "var(--font-interactive)" }}
-            >
-              For buyers
-            </span>
-            <span aria-hidden className="mt-3 inline-block h-px w-12 bg-[--color-border-rule]" />
+            <div className="flex items-center gap-3">
+              <span
+                className="text-[11px] uppercase tracking-[0.18em] text-primary"
+                style={{ fontFamily: "var(--font-interactive)" }}
+              >
+                For buyers
+              </span>
+              <Coordinate>ROUTE&nbsp;/&nbsp;5&nbsp;STEPS</Coordinate>
+            </div>
+            <SurveyRule className="mt-4 max-w-[200px]" />
             <h2
               className="mt-6 text-[clamp(36px,5vw,60px)] leading-[1.0] tracking-tight text-primary"
               style={{ fontFamily: "var(--font-display)", fontWeight: 700 }}

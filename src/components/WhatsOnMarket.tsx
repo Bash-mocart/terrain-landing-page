@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Reveal } from "./Reveal";
+import { Coordinate, ContourField, PlotCorners, SurveyRule } from "./cartographic";
 
 // Live inventory. Re-crafted to a Late-Night Boardroom surface: it
 // breaks the four-light run through the middle of the page, the city
@@ -31,16 +32,23 @@ function cityMapUrl(c: City, w: number, h: number) {
 
 export function WhatsOnMarket() {
   return (
-    <section id="listings" className="bg-primary py-16 text-canvas sm:py-24 lg:py-32">
-      <Reveal className="mx-auto max-w-[1440px] px-6 sm:px-8 lg:px-10">
+    <section
+      id="listings"
+      className="survey-grid-dark relative overflow-hidden bg-primary py-16 text-canvas sm:py-24 lg:py-32"
+    >
+      <ContourField tone="canvas" />
+      <Reveal className="relative mx-auto max-w-[1440px] px-6 sm:px-8 lg:px-10">
         <div className="flex max-w-xl flex-col items-start">
-          <span
-            className="text-[11px] uppercase tracking-[0.18em] text-canvas/60"
-            style={{ fontFamily: "var(--font-interactive)" }}
-          >
-            Live inventory
-          </span>
-          <span aria-hidden className="mt-3 inline-block h-px w-12 bg-canvas/30" />
+          <div className="flex items-center gap-3">
+            <span
+              className="text-[11px] uppercase tracking-[0.18em] text-canvas/60"
+              style={{ fontFamily: "var(--font-interactive)" }}
+            >
+              Live inventory
+            </span>
+            <Coordinate tone="canvas">6&nbsp;CITIES</Coordinate>
+          </div>
+          <SurveyRule tone="canvas" className="mt-4 max-w-[200px]" />
           <h2
             className="mt-6 text-[clamp(36px,5vw,64px)] leading-[1.0] tracking-tight"
             style={{ fontFamily: "var(--font-display)", fontWeight: 700 }}
@@ -115,6 +123,12 @@ function FeaturedTile({ city }: { city: City }) {
           aria-hidden
           className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/10 to-transparent"
         />
+        <PlotCorners tone="canvas" inset={12} size={14} />
+        <div className="absolute right-4 top-3 sm:right-5 sm:top-4">
+          <Coordinate tone="canvas">
+            {city.lat.toFixed(4)}&deg; N &middot; {city.lng.toFixed(4)}&deg; E
+          </Coordinate>
+        </div>
         <div className="absolute bottom-4 left-5 sm:bottom-6 sm:left-7">
           <span
             className="text-[11px] uppercase tracking-[0.16em] text-canvas/70"

@@ -11,6 +11,7 @@
 // "On record" caps tag is the citation.
 
 import { Reveal } from "./Reveal";
+import { Coordinate, PlotCorners, SurveyRule } from "./cartographic";
 
 type Testimonial = {
   name: string;
@@ -52,16 +53,19 @@ function initials(name: string): string {
 
 export function Testimonials() {
   return (
-    <section id="testimonials" className="bg-canvas py-16 text-primary sm:py-24 lg:py-32">
+    <section id="testimonials" className="survey-grid bg-canvas py-16 text-primary sm:py-24 lg:py-32">
       <Reveal className="mx-auto max-w-[1440px] px-6 sm:px-8 lg:px-10">
         <div className="flex max-w-xl flex-col items-start">
-          <span
-            className="text-[11px] uppercase tracking-[0.18em] text-primary"
-            style={{ fontFamily: "var(--font-interactive)" }}
-          >
-            Trust on record
-          </span>
-          <span aria-hidden className="mt-3 inline-block h-px w-12 bg-[--color-border-rule]" />
+          <div className="flex items-center gap-3">
+            <span
+              className="text-[11px] uppercase tracking-[0.18em] text-primary"
+              style={{ fontFamily: "var(--font-interactive)" }}
+            >
+              Trust on record
+            </span>
+            <Coordinate>3&nbsp;CLOSINGS</Coordinate>
+          </div>
+          <SurveyRule className="mt-4 max-w-[200px]" />
           <h2
             className="mt-6 text-[clamp(36px,5vw,64px)] leading-[1.0] tracking-tight text-primary"
             style={{ fontFamily: "var(--font-display)", fontWeight: 700 }}
@@ -85,7 +89,8 @@ export function Testimonials() {
 
 function FeaturedQuote({ t }: { t: Testimonial }) {
   return (
-    <article className="rounded-[24px] border border-[--color-border-rule] bg-canvas p-7 sm:p-10 lg:p-12">
+    <article className="relative rounded-[24px] border border-[--color-border-rule] bg-canvas p-7 sm:p-10 lg:p-12">
+      <PlotCorners inset={12} size={14} />
       <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
         <blockquote
           className="max-w-2xl text-[clamp(22px,2.6vw,32px)] leading-[1.32] tracking-tight text-primary"

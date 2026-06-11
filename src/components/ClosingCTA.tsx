@@ -1,5 +1,6 @@
 import { StoreButtons } from "./StoreButtons";
 import { Reveal } from "./Reveal";
+import { Coordinate, VerifiedSeal } from "./cartographic";
 
 // Closing CTA — the conversion peak, and a deliberate bookend to the
 // hero. A faint Nigeria street map sits behind the content at low
@@ -47,13 +48,16 @@ export function ClosingCTA() {
       )}
 
       <Reveal className="relative mx-auto flex max-w-[760px] flex-col items-center px-6 text-center sm:px-8">
-        <span
-          className="text-[11px] uppercase tracking-[0.18em] text-secondary"
-          style={{ fontFamily: "var(--font-interactive)" }}
-        >
-          Property, on record
-        </span>
-        <span aria-hidden className="mt-3 inline-block h-px w-12 bg-[--color-border-rule]" />
+        <VerifiedSeal size={56} />
+        <div className="mt-6 flex items-center gap-3">
+          <span
+            className="text-[11px] uppercase tracking-[0.18em] text-secondary"
+            style={{ fontFamily: "var(--font-interactive)" }}
+          >
+            Property, on record
+          </span>
+          <Coordinate>9.0820&deg; N &middot; 8.6753&deg; E</Coordinate>
+        </div>
         <h2
           className="mt-6 text-[clamp(38px,6vw,72px)] leading-[0.98] tracking-tight text-primary"
           style={{ fontFamily: "var(--font-display)", fontWeight: 700 }}
@@ -65,9 +69,9 @@ export function ClosingCTA() {
           className="mt-6 max-w-md text-base leading-relaxed text-secondary sm:text-lg"
           style={{ fontFamily: "var(--font-body)" }}
         >
-          Browse verified land, houses, and commercial property from
-          CAC-vetted agents, see every listing before you visit, and deal
-          with them directly. The app is where it all happens.
+          Inspect verified land, houses, and commercial property from
+          wherever you are in the world, deal with CAC-vetted agents
+          directly, and let us help you check it before you pay.
         </p>
         <div className="mt-10">
           <StoreButtons tone="onLight" />

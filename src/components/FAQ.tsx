@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Reveal } from "./Reveal";
+import { Coordinate, ContourField, SurveyRule } from "./cartographic";
 
 // Common questions accordion. Client component because the open
 // state lives in React. Single-open behaviour (opening question N
@@ -45,23 +46,20 @@ const FAQS: Q[] = [
 export function FAQ() {
   const [open, setOpen] = useState<number | null>(0);
   return (
-    <section className="bg-primary py-16 sm:py-24 lg:py-32 text-canvas">
-      <Reveal className="mx-auto grid max-w-[1440px] grid-cols-1 gap-10 px-6 sm:gap-12 sm:px-8 lg:grid-cols-12 lg:px-10">
+    <section className="survey-grid-dark relative overflow-hidden bg-primary py-16 text-canvas sm:py-24 lg:py-32">
+      <ContourField tone="canvas" />
+      <Reveal className="relative mx-auto grid max-w-[1440px] grid-cols-1 gap-10 px-6 sm:gap-12 sm:px-8 lg:grid-cols-12 lg:px-10">
         <div className="lg:col-span-5">
-          {/* Eyebrow without pill chrome: caps Inter + Border Rule
-             hairline above the headline. Same pattern across every
-             section so the rhythm reads as registry-document, not
-             marketing-template. */}
-          <span
-            className="text-[11px] uppercase tracking-[0.18em] text-canvas/70"
-            style={{ fontFamily: "var(--font-interactive)" }}
-          >
-            FAQ
-          </span>
-          <span
-            aria-hidden
-            className="mt-3 inline-block h-px w-12 bg-canvas/30 align-middle"
-          />
+          <div className="flex items-center gap-3">
+            <span
+              className="text-[11px] uppercase tracking-[0.18em] text-canvas/70"
+              style={{ fontFamily: "var(--font-interactive)" }}
+            >
+              FAQ
+            </span>
+            <Coordinate tone="canvas">6&nbsp;ENTRIES</Coordinate>
+          </div>
+          <SurveyRule tone="canvas" className="mt-4 max-w-[200px]" />
           <h2
             className="mt-6 text-[clamp(36px,5vw,64px)] leading-[1.0] tracking-tight"
             style={{ fontFamily: "var(--font-display)", fontWeight: 700 }}

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Reveal } from "./Reveal";
+import { Coordinate, PlotCorners, SurveyRule } from "./cartographic";
 
 // The Terrain product family. Three named products presented as a
 // lineup with one shipped flagship (Terrain Own) and two on the
@@ -78,22 +79,22 @@ const capsStyle: React.CSSProperties = {
 
 export function OwnBuildGrow() {
   return (
-    <section id="the-terrain-way" className="relative bg-canvas py-16 sm:py-24 lg:py-32">
+    <section id="the-terrain-way" className="survey-grid relative bg-canvas py-16 sm:py-24 lg:py-32">
       <Reveal className="mx-auto max-w-[1100px] px-6 sm:px-8 lg:px-10">
         {/* Left-aligned header — distinct from the centered headers
            elsewhere on the page, and the natural anchor for a
            left-reading product lineup. */}
         <header className="flex max-w-2xl flex-col items-start">
-          <span
-            className="text-[11px] tracking-[0.18em] text-secondary"
-            style={capsStyle}
-          >
-            The Terrain way
-          </span>
-          <span
-            aria-hidden
-            className="mt-3 inline-block h-px w-12 bg-[--color-border-rule]"
-          />
+          <div className="flex items-center gap-3">
+            <span
+              className="text-[11px] tracking-[0.18em] text-secondary"
+              style={capsStyle}
+            >
+              The Terrain way
+            </span>
+            <Coordinate>3&nbsp;PRODUCTS</Coordinate>
+          </div>
+          <SurveyRule className="mt-4 max-w-[200px]" />
           <h2
             className="mt-6 text-[clamp(34px,5vw,60px)] leading-[1.02] tracking-tight text-primary"
             style={{ fontFamily: "var(--font-display)", fontWeight: 700 }}
@@ -125,7 +126,8 @@ export function OwnBuildGrow() {
 
 function FlagshipCard({ product }: { product: Product }) {
   return (
-    <article className="overflow-hidden rounded-[24px] bg-primary text-canvas">
+    <article className="relative overflow-hidden rounded-[24px] bg-primary text-canvas">
+      <PlotCorners tone="canvas" inset={14} size={16} />
       <div className="grid lg:grid-cols-[1.05fr_0.95fr]">
         {/* Content column. Light-on-dark type compensation per the
            typography reference: body weight stepped up (Nunito reads
