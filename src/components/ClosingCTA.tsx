@@ -32,8 +32,13 @@ export function ClosingCTA() {
           <img
             src={mapUrl}
             alt=""
-            className="h-full w-full object-cover opacity-20"
+            className="h-full w-full object-cover opacity-[0.42]"
           />
+          {/* Map clearly reads as Nigeria now. The streets style is
+             light-toned (beige/grey roads on near-white), so the dark
+             headline keeps very high contrast over it; the mask only
+             needs to fade the top/bottom edges into solid Warm Canvas
+             and hold a light veil through the centre. */}
           <div className="absolute inset-0 bg-gradient-to-b from-canvas via-canvas/35 to-canvas" />
         </div>
       )}
