@@ -31,13 +31,13 @@ function StoreButton({
 }) {
   const chrome =
     tone === "onLight"
-      ? "border-primary bg-primary text-canvas"
-      : "border-canvas bg-canvas text-primary";
+      ? "border-primary bg-primary text-canvas focus-visible:ring-offset-canvas"
+      : "border-canvas bg-canvas text-primary focus-visible:ring-offset-primary";
   const sub = tone === "onLight" ? "text-canvas/70" : "text-primary/60";
   return (
     <Link
       href={href}
-      className={`inline-flex items-center gap-3 rounded-full border px-5 py-3 transition-opacity hover:opacity-90 ${chrome}`}
+      className={`inline-flex items-center gap-3 rounded-full border px-5 py-3 transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-verified focus-visible:ring-offset-2 ${chrome}`}
     >
       {platform === "ios" ? <AppleGlyph /> : <PlayGlyph />}
       <span className="flex flex-col leading-tight">

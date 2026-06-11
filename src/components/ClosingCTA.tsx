@@ -31,9 +31,9 @@ export function ClosingCTA() {
           <img
             src={mapUrl}
             alt=""
-            className="h-full w-full object-cover opacity-[0.10]"
+            className="h-full w-full object-cover opacity-20"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-canvas via-canvas/55 to-canvas" />
+          <div className="absolute inset-0 bg-gradient-to-b from-canvas via-canvas/35 to-canvas" />
         </div>
       )}
 

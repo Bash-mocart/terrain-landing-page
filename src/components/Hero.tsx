@@ -50,9 +50,9 @@ export function Hero() {
         aria-hidden
       />
       {/* Bottom fade: dissolves the sharp horizontal line between the
-         map and the next section (ThreeSteps' Warm Canvas surface) into
-         a gradual gradient. Shorter on mobile so it does not eat the
-         already-cramped hero vertical real estate. */}
+         map and the next section (the product-family Warm Canvas
+         surface) into a gradual gradient. Shorter on mobile so it does
+         not eat the already-cramped hero vertical real estate. */}
       <div
         className="pointer-events-none absolute inset-x-0 bottom-0 z-[2] h-20 bg-gradient-to-b from-transparent to-canvas sm:h-32"
         aria-hidden
