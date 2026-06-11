@@ -1,5 +1,6 @@
 import { TopNav } from "@/components/TopNav";
 import { Hero } from "@/components/Hero";
+import { WhyTerrain } from "@/components/WhyTerrain";
 import { OwnBuildGrow } from "@/components/OwnBuildGrow";
 import { AgentVetting } from "@/components/AgentVetting";
 import { BuyerJourney } from "@/components/BuyerJourney";
@@ -27,6 +28,7 @@ export default function Home() {
     <>
       <TopNav />
       <Hero />
+      <WhyTerrain />
       <OwnBuildGrow />
       <AgentVetting />
       <BuyerJourney />
