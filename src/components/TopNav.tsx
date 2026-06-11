@@ -4,17 +4,16 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { TerrainLogo } from "./TerrainLogo";
 
-// Top navigation. Fixed over the interactive hero map, so legibility
-// has to be guaranteed against whatever map content sits beneath it.
-//   - At rest over the hero: transparent bar with a Warm Canvas scrim
-//     gradient behind the content (dark wordmark + links always have a
-//     light base) without boxing the map in.
-//   - Scrolled: a solid Warm Canvas bar with a Border Rule hairline
-//     and light blur.
-//   - Mobile menu: a FULL-SCREEN Warm Canvas overlay (not a dropdown),
-//     so the busy hero never bleeds through behind the links. Large
-//     Zain link typography, numbered, with a Get the App action and a
-//     registry-voice sign-off.
+// Top navigation, "floating pill" design. A detached rounded Warm
+// Canvas pill floats near the top over the hero map. Because the pill
+// is its own surface (Warm Canvas + hairline + blur + soft shadow),
+// the wordmark and links are always legible regardless of the map
+// beneath, no scrim needed. It firms up subtly on scroll.
+//
+// Desktop: the pill hugs its content, centered, logo + inline links.
+// Mobile: the pill spans the width with the logo left and a menu
+// button right; tapping opens the full-screen Warm Canvas overlay so
+// the busy hero never bleeds through behind the links.
 
 const LINKS = [
   { label: "Products", href: "#the-terrain-way" },
@@ -28,14 +27,12 @@ export function TopNav() {
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 48);
+    const onScroll = () => setScrolled(window.scrollY > 24);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // When the full-screen menu is open: lock body scroll, close on
-  // Escape, and move focus to the close button.
   useEffect(() => {
     if (!menuOpen) return;
     const prevOverflow = document.body.style.overflow;
@@ -52,25 +49,20 @@ export function TopNav() {
   }, [menuOpen]);
 
   return (
-    <nav
+    <div
       id="top"
-      className={`fixed inset-x-0 top-0 z-40 border-b transition-colors duration-300 ${
-        scrolled
-          ? "border-[--color-border-rule] bg-canvas/85 backdrop-blur-md"
-          : "border-transparent"
-      }`}
-      aria-label="Primary"
+      className="fixed inset-x-0 top-0 z-40 flex justify-center px-4 pt-4 sm:pt-5"
     >
-      {!scrolled && (
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-28 bg-gradient-to-b from-canvas/95 via-canvas/55 to-transparent"
-        />
-      )}
-
-      <div className="mx-auto flex max-w-[1440px] items-center justify-between px-6 py-4 sm:px-8 sm:py-5 lg:px-10">
+      <nav
+        aria-label="Primary"
+        className={`flex w-full max-w-[760px] items-center justify-between gap-6 rounded-full border px-5 py-2.5 transition-all duration-300 md:w-auto md:gap-9 md:px-7 md:py-3 ${
+          scrolled
+            ? "border-[--color-border-rule] bg-canvas/95 shadow-[0_10px_34px_rgba(9,5,3,0.16)] backdrop-blur-md"
+            : "border-[--color-border-rule] bg-canvas/80 shadow-[0_8px_28px_rgba(9,5,3,0.10)] backdrop-blur-md"
+        }`}
+      >
         <Link href="/" aria-label="Terrain home">
-          <TerrainLogo markSize={36} tone="onLight" wordClassName="text-[36px]" />
+          <TerrainLogo markSize={26} tone="onLight" wordClassName="text-2xl" />
         </Link>
 
         <div
@@ -90,7 +82,7 @@ export function TopNav() {
 
         <button
           type="button"
-          className="-mr-2 inline-flex h-10 w-10 items-center justify-center text-primary md:hidden"
+          className="-mr-1 inline-flex h-9 w-9 items-center justify-center text-primary md:hidden"
           aria-label="Open menu"
           aria-expanded={menuOpen}
           aria-controls="mobile-menu"
@@ -98,7 +90,7 @@ export function TopNav() {
         >
           <HamburgerGlyph />
         </button>
-      </div>
+      </nav>
 
       {menuOpen && (
         <div
@@ -114,7 +106,7 @@ export function TopNav() {
               aria-label="Terrain home"
               onClick={() => setMenuOpen(false)}
             >
-              <TerrainLogo markSize={36} tone="onLight" wordClassName="text-[36px]" />
+              <TerrainLogo markSize={32} tone="onLight" wordClassName="text-[30px]" />
             </Link>
             <button
               ref={closeButtonRef}
@@ -181,7 +173,7 @@ export function TopNav() {
           </div>
         </div>
       )}
-    </nav>
+    </div>
   );
 }
 
