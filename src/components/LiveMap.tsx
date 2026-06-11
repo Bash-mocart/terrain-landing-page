@@ -401,23 +401,24 @@ export function LiveMap({ isExploring = false }: LiveMapProps = {}) {
     container.replaceChildren();
     mapboxgl.accessToken = MAPBOX_TOKEN;
 
-    // Mobile vs desktop interactivity split. The cooperative-gestures
-    // overlay was reported by users as firing constantly on mobile —
-    // every incidental touch during page scroll landed on the map
-    // (full-bleed inset-0) and Mapbox's blocker assumes "the user is
-    // trying to use the map" instead of "the user is trying to scroll
-    // past it." On a long-scroll landing page hero, the latter is
-    // by far the more common intent. We turn the map non-interactive
-    // on mobile so single-finger touches pass straight through to
-    // page scroll with no overlay flash. Cluster badges + pin pills
-    // remain tappable: their click handlers are DOM listeners outside
-    // Mapbox's interaction system, and they call map.easeTo() /
-    // popup.addTo() programmatically — those work fine when user
-    // pan/zoom is disabled.
+    // The map is a NON-INTERACTIVE backdrop on every viewport. It was
+    // built interactive on desktop with cooperative-gestures so a
+    // trackpad user could ⌘+scroll to zoom, but that meant an ordinary
+    // two-finger scroll over the full-bleed hero map fired Mapbox's
+    // "Hold ⌘ + scroll" blocker overlay constantly while the user was
+    // just trying to scroll the page. The overlay was more annoying
+    // than the zoom was useful, so it is gone on all viewports.
     //
-    // Desktop keeps interactive + cooperativeGestures because wheel-
-    // zoom is a real exploration win on a trackpad/mouse and the
-    // overlay rarely fires (a deliberate ⌘+wheel is the common case).
+    // Consequences, all intended:
+    //   - Wheel / two-finger scroll over the map scrolls the PAGE, no
+    //     overlay, no scroll-jacking.
+    //   - Cluster badges + pin pills stay clickable on every viewport:
+    //     their handlers are DOM listeners outside Mapbox's interaction
+    //     system and call map.easeTo() / popup.addTo() programmatically,
+    //     which work regardless of `interactive`.
+    //   - Mobile keeps the "tap to explore" toggle (Hero passes
+    //     isExploring), which re-enables dragPan / pinch-zoom at
+    //     runtime for users who deliberately opt in.
     const isMobileVal = container.clientWidth < 640;
     setIsMobile(isMobileVal);
     const map = new mapboxgl.Map({
@@ -427,27 +428,14 @@ export function LiveMap({ isExploring = false }: LiveMapProps = {}) {
       zoom: ABUJA_ZOOM,
       maxBounds: ABUJA_MAX_BOUNDS,
       attributionControl: false,
-      interactive: !isMobileVal,
-      cooperativeGestures: !isMobileVal,
+      interactive: false,
+      cooperativeGestures: false,
       // 2D inventory map — rotation and pitch would only confuse the
-      // top-down lat/lng reading; disable them so a user who two-
-      // fingers can pan + zoom but never tilt or twist.
+      // top-down lat/lng reading; keep them off even when the mobile
+      // explore toggle re-enables pan + zoom.
       dragRotate: false,
       pitchWithRotate: false,
       touchPitch: false,
-      // Override Mapbox's default cooperative-gestures help text so
-      // the overlay reads in Terrain's registry voice instead of the
-      // mechanical "move the map" default. Visual chrome of the
-      // overlay is restyled in globals.css to Warm Canvas + Inter
-      // caps so the whole affordance matches the rest of the page.
-      locale: {
-        "ScrollZoomBlocker.CtrlMessage":
-          "Hold ctrl + scroll to explore the registry",
-        "ScrollZoomBlocker.CmdMessage":
-          "Hold ⌘ + scroll to explore the registry",
-        "TouchPanBlocker.Message":
-          "Two fingers to explore the registry",
-      },
     });
     map.addControl(
       new mapboxgl.AttributionControl({ compact: true }),
