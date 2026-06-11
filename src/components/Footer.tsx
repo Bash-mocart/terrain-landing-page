@@ -8,8 +8,8 @@ const NAV = [
     heading: "Explore",
     links: [
       { label: "Available Listings", href: "#listings" },
-      { label: "How it Works", href: "#how-it-works" },
-      { label: "Start Browsing", href: "#download" },
+      { label: "How We Vet", href: "#vetting" },
+      { label: "Get the App", href: "#download" },
       { label: "Sample Agent Profile", href: "/agents/sample" },
       { label: "List as an Agent", href: "mailto:agents@terrain.ng" },
     ],
