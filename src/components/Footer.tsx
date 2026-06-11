@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { TerrainLogo } from "./TerrainLogo";
 
 // Footer. Dark surface with the wordmark, three nav columns, and a
 // thin legal line. Social icons land alongside the wordmark; copy
@@ -40,12 +41,8 @@ export function Footer() {
       <div className="mx-auto max-w-[1440px] px-6 sm:px-8 lg:px-10">
         <div className="grid grid-cols-1 gap-10 sm:gap-12 sm:grid-cols-2 lg:grid-cols-12">
           <div className="sm:col-span-2 lg:col-span-4">
-            <Link
-              href="/"
-              className="text-3xl tracking-tight"
-              style={{ fontFamily: "var(--font-display)", fontWeight: 700 }}
-            >
-              TERRAIN
+            <Link href="/" aria-label="Terrain home">
+              <TerrainLogo markSize={32} tone="onDark" wordClassName="text-3xl" />
             </Link>
             <p
               className="mt-6 max-w-sm text-base leading-relaxed text-canvas/70"

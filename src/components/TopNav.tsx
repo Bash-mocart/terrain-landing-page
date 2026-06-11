@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { TerrainLogo } from "./TerrainLogo";
 
 // Top navigation. Fixed over the interactive hero map, so legibility
 // has to be guaranteed against whatever map content sits beneath it.
@@ -56,12 +57,8 @@ export function TopNav() {
       )}
 
       <div className="mx-auto flex max-w-[1440px] items-center justify-between px-6 py-4 sm:px-8 sm:py-5 lg:px-10">
-        <Link
-          href="/"
-          className="text-2xl tracking-tight text-primary"
-          style={{ fontFamily: "var(--font-display)", fontWeight: 700 }}
-        >
-          TERRAIN
+        <Link href="/" aria-label="Terrain home">
+          <TerrainLogo markSize={28} tone="onLight" wordClassName="text-2xl" />
         </Link>
 
         <div
