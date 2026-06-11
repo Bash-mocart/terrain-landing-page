@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { Reveal } from "./Reveal";
 
 // The Terrain product family. Three named products presented as a
 // lineup with one shipped flagship (Terrain Own) and two on the
@@ -78,7 +79,7 @@ const capsStyle: React.CSSProperties = {
 export function OwnBuildGrow() {
   return (
     <section id="the-terrain-way" className="relative bg-canvas py-16 sm:py-24 lg:py-32">
-      <div className="mx-auto max-w-[1100px] px-6 sm:px-8 lg:px-10">
+      <Reveal className="mx-auto max-w-[1100px] px-6 sm:px-8 lg:px-10">
         {/* Left-aligned header — distinct from the centered headers
            elsewhere on the page, and the natural anchor for a
            left-reading product lineup. */}
@@ -117,7 +118,7 @@ export function OwnBuildGrow() {
             ))}
           </div>
         </div>
-      </div>
+      </Reveal>
     </section>
   );
 }

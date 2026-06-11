@@ -10,6 +10,8 @@
 // (Terrain vets agents, not buyers); the monogram is identity, the
 // "On record" caps tag is the citation.
 
+import { Reveal } from "./Reveal";
+
 type Testimonial = {
   name: string;
   role: string;
@@ -51,7 +53,7 @@ function initials(name: string): string {
 export function Testimonials() {
   return (
     <section id="testimonials" className="bg-canvas py-16 text-primary sm:py-24 lg:py-32">
-      <div className="mx-auto max-w-[1440px] px-6 sm:px-8 lg:px-10">
+      <Reveal className="mx-auto max-w-[1440px] px-6 sm:px-8 lg:px-10">
         <div className="flex max-w-xl flex-col items-start">
           <span
             className="text-[11px] uppercase tracking-[0.18em] text-primary"
@@ -76,7 +78,7 @@ export function Testimonials() {
             ))}
           </div>
         </div>
-      </div>
+      </Reveal>
     </section>
   );
 }

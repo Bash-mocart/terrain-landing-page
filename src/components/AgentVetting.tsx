@@ -11,6 +11,8 @@
 // five real steps. Only the terminal step carries the Forest
 // Verification check, so the trust mark stays scarce.
 
+import { Reveal } from "./Reveal";
+
 type Step = {
   number: string;
   title: string;
@@ -47,7 +49,7 @@ const STEPS: Step[] = [
     number: "05",
     title: "Only then do they reach you",
     detail:
-      "Vetted agents list, and every plot carries verifiable media: photos, video, drone aerials, and 3D tours.",
+      "Vetted agents list, and every listing carries verifiable media: photos, video, drone aerials, and 3D tours.",
     terminal: true,
   },
 ];
@@ -58,7 +60,7 @@ export function AgentVetting() {
       id="vetting"
       className="bg-primary py-16 text-canvas sm:py-24 lg:py-32"
     >
-      <div className="mx-auto grid max-w-[1440px] grid-cols-1 gap-12 px-6 sm:px-8 lg:grid-cols-12 lg:gap-16 lg:px-10">
+      <Reveal className="mx-auto grid max-w-[1440px] grid-cols-1 gap-12 px-6 sm:px-8 lg:grid-cols-12 lg:gap-16 lg:px-10">
         <div className="lg:col-span-5">
           <span
             className="text-[11px] uppercase tracking-[0.18em] text-canvas/60"
@@ -92,7 +94,7 @@ export function AgentVetting() {
             <StepRow key={step.number} step={step} isLast={i === STEPS.length - 1} />
           ))}
         </ol>
-      </div>
+      </Reveal>
     </section>
   );
 }

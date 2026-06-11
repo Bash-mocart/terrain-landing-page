@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { Reveal } from "./Reveal";
 
 // Common questions accordion. Client component because the open
 // state lives in React. Single-open behaviour (opening question N
@@ -45,7 +46,7 @@ export function FAQ() {
   const [open, setOpen] = useState<number | null>(0);
   return (
     <section className="bg-primary py-16 sm:py-24 lg:py-32 text-canvas">
-      <div className="mx-auto grid max-w-[1440px] grid-cols-1 gap-10 px-6 sm:gap-12 sm:px-8 lg:grid-cols-12 lg:px-10">
+      <Reveal className="mx-auto grid max-w-[1440px] grid-cols-1 gap-10 px-6 sm:gap-12 sm:px-8 lg:grid-cols-12 lg:px-10">
         <div className="lg:col-span-5">
           {/* Eyebrow without pill chrome: caps Inter + Border Rule
              hairline above the headline. Same pattern across every
@@ -146,7 +147,7 @@ export function FAQ() {
             );
           })}
         </ul>
-      </div>
+      </Reveal>
     </section>
   );
 }

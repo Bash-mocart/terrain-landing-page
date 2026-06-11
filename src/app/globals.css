@@ -53,6 +53,31 @@ body {
   color: var(--color-primary);
 }
 
+/* Scroll-in reveal, driven by the Reveal client component. Fade + a
+   small rise, ease-out-expo, transform/opacity only. The component
+   toggles -in once the block enters the viewport. */
+.terrain-reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 700ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.terrain-reveal-in {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .terrain-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
 /* ============================================================
  * Mapbox plot pin + popup chrome
  *

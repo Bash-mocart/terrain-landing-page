@@ -87,14 +87,15 @@ export function Hero() {
           {/* Subhead reframed: Terrain is a marketplace, not an escrow.
              Trust signal is the agent vetting (CAC-registered + reviewed
              before listing), not "title confirmed before funds move."
-             Lagos line dropped because the map currently filters to FCT
-             bounds. Add Lagos back when the dev DB has Lagos inventory
-             and the map widens to cover both cities. */}
+             NOTE: copy says "across Nigeria" but the LiveMap below is
+             still hard-locked to Abuja (ABUJA_MAX_BOUNDS / pins are FCT
+             only). Widen the map bounds + camera once inventory exists
+             beyond the FCT so the hero map matches this claim. */}
           <p
             className="mt-6 max-w-xl text-lg leading-relaxed text-secondary"
             style={{ fontFamily: "var(--font-body)" }}
           >
-            Walk every plot and house in Abuja through videos, drone
+            Walk every property across Nigeria through videos, drone
             aerials, and 3D tours before you visit. Listed by real
             estate agents we have CAC-verified and vetted.
           </p>
