@@ -37,8 +37,8 @@ export function WhatsOnMarket() {
       className="survey-grid-dark relative overflow-hidden bg-primary py-16 text-canvas sm:py-24 lg:py-32"
     >
       <ContourField tone="canvas" />
-      <Reveal className="relative mx-auto max-w-[1440px] px-6 sm:px-8 lg:px-10">
-        <div className="flex max-w-xl flex-col items-start">
+      <div className="relative mx-auto max-w-[1440px] px-6 sm:px-8 lg:px-10">
+        <Reveal className="flex max-w-xl flex-col items-start">
           <div className="flex items-center gap-3">
             <span
               className="text-[11px] uppercase tracking-[0.18em] text-canvas/60"
@@ -75,21 +75,26 @@ export function WhatsOnMarket() {
               </li>
             ))}
           </ul>
-        </div>
+        </Reveal>
 
-        {/* Featured Lagos banner over a row of the other five cities. */}
+        {/* Featured Lagos banner over a row of the other five cities,
+           each tile revealing with a small per-tile stagger. */}
         <div className="mt-12 flex flex-col gap-4 sm:mt-14 sm:gap-5">
-          <FeaturedTile city={FEATURED} />
+          <Reveal>
+            <FeaturedTile city={FEATURED} />
+          </Reveal>
           <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5 lg:grid-cols-5">
-            {CITIES.map((c) => (
+            {CITIES.map((c, i) => (
               <li key={c.name}>
-                <CityTile city={c} />
+                <Reveal delay={i * 70}>
+                  <CityTile city={c} />
+                </Reveal>
               </li>
             ))}
           </ul>
         </div>
 
-        <div className="mt-10 sm:mt-12">
+        <Reveal className="mt-10 sm:mt-12">
           <Link
             href="#download"
             className="inline-flex items-center justify-center rounded-full bg-canvas px-7 py-3.5 text-primary transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-verified focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
@@ -97,8 +102,8 @@ export function WhatsOnMarket() {
           >
             Browse the map in the app
           </Link>
-        </div>
-      </Reveal>
+        </Reveal>
+      </div>
     </section>
   );
 }

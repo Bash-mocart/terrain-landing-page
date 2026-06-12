@@ -80,10 +80,10 @@ const capsStyle: React.CSSProperties = {
 export function OwnBuildGrow() {
   return (
     <section id="the-terrain-way" className="survey-grid relative bg-canvas py-16 sm:py-24 lg:py-32">
-      <Reveal className="mx-auto max-w-[1100px] px-6 sm:px-8 lg:px-10">
-        {/* Left-aligned header — distinct from the centered headers
-           elsewhere on the page, and the natural anchor for a
-           left-reading product lineup. */}
+      <div className="mx-auto max-w-[1100px] px-6 sm:px-8 lg:px-10">
+        {/* Each box reveals on its own as it scrolls into view, with a
+           small per-card stagger, instead of the whole block at once. */}
+        <Reveal>
         <header className="flex max-w-2xl flex-col items-start">
           <div className="flex items-center gap-3">
             <span
@@ -110,16 +110,21 @@ export function OwnBuildGrow() {
             ships today; Build and Grow are on the way.
           </p>
         </header>
+        </Reveal>
 
         <div className="mt-12 flex flex-col gap-5 sm:mt-14 sm:gap-6">
-          <FlagshipCard product={OWN} />
+          <Reveal>
+            <FlagshipCard product={OWN} />
+          </Reveal>
           <div className="grid gap-5 sm:gap-6 lg:grid-cols-2">
-            {ROADMAP.map((p) => (
-              <RoadmapCard key={p.name} product={p} />
+            {ROADMAP.map((p, i) => (
+              <Reveal key={p.name} delay={i * 110} className="h-full">
+                <RoadmapCard product={p} />
+              </Reveal>
             ))}
           </div>
         </div>
-      </Reveal>
+      </div>
     </section>
   );
 }
@@ -218,7 +223,7 @@ function FlagshipCard({ product }: { product: Product }) {
 
 function RoadmapCard({ product }: { product: Product }) {
   return (
-    <article className="group flex flex-col gap-5 rounded-[24px] border border-[--color-border-rule] bg-canvas p-7 transition-colors duration-200 hover:border-primary sm:p-8">
+    <article className="group flex h-full flex-col gap-5 rounded-[24px] border border-[--color-border-rule] bg-canvas p-7 transition-colors duration-200 hover:border-primary sm:p-8">
       <div className="flex items-center gap-3">
         <ProductGlyph icon={product.icon} tone="onLight" />
         <span
