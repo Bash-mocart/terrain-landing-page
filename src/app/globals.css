@@ -271,6 +271,33 @@ body {
   line-height: 1;
 }
 
+/* Mobile: smaller, MUTED pins. On a phone the full-bleed hero map sits
+   directly under the headline, so Late-Night Boardroom pins read as
+   the focal point and fight the copy. Survey Gray + smaller makes them
+   recede as unfocused backdrop markers; the price is still legible but
+   the eye lands on the headline first. */
+@media (max-width: 639px) {
+  .terrain-pin-body {
+    background: #717171;
+    border-color: #717171;
+    font-size: 10px;
+    padding: 3px 8px 4px;
+  }
+  .terrain-pin-tail {
+    border-top: 5px solid #717171;
+    border-left-width: 4px;
+    border-right-width: 4px;
+  }
+  .terrain-cluster-badge {
+    width: 34px;
+    height: 34px;
+    background: #717171;
+  }
+  .terrain-cluster-count {
+    font-size: 11px;
+  }
+}
+
 /* Wrapper z-index. Mapbox does not assign one by default, so the
    popup relies on DOM order — and our pin hover sets z-index: 10 on
    the hovered marker, which can stack on top of a sibling pin's open

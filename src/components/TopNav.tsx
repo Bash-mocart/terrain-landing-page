@@ -15,10 +15,12 @@ import { TerrainLogo } from "./TerrainLogo";
 // button right; tapping opens the full-screen Warm Canvas overlay so
 // the busy hero never bleeds through behind the links.
 
+// Absolute hrefs so the same nav works on the landing and on
+// /how-it-works (an anchor like "/#listings" routes home, then scrolls).
 const LINKS = [
-  { label: "Products", href: "#the-terrain-way" },
-  { label: "How we vet", href: "#vetting" },
-  { label: "Available Plots", href: "#listings" },
+  { label: "Products", href: "/#the-terrain-way" },
+  { label: "How it works", href: "/how-it-works" },
+  { label: "Properties", href: "/#listings" },
 ];
 
 export function TopNav() {
@@ -157,7 +159,7 @@ export function TopNav() {
 
           <div className="px-6 pb-10">
             <Link
-              href="#download"
+              href="/#download"
               onClick={() => setMenuOpen(false)}
               className="flex w-full items-center justify-center rounded-full bg-primary px-6 py-4 text-canvas"
               style={{ fontFamily: "var(--font-interactive)", fontWeight: 600 }}
