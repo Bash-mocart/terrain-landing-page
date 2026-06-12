@@ -59,6 +59,18 @@ body {
   color: var(--color-primary);
 }
 
+/* Jump links: smooth scroll (motion-permitting) and an offset so an
+   anchored section doesn't land under the fixed floating nav. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+[id] {
+  scroll-margin-top: 6rem;
+}
+
 /* ============================================================
  * Cartographic survey kit
  *

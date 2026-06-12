@@ -48,7 +48,7 @@ const STEPS: Step[] = [
   },
 ];
 
-export function AgentVetting() {
+export function AgentVetting({ chapter }: { chapter?: string }) {
   return (
     <section
       id="vetting"
@@ -59,6 +59,7 @@ export function AgentVetting() {
       <Reveal className="relative mx-auto max-w-[1440px] px-6 sm:px-8 lg:px-10">
         <div className="flex max-w-2xl flex-col items-start">
           <div className="flex items-center gap-3">
+            {chapter && <Coordinate tone="canvas">{chapter}</Coordinate>}
             <span
               className="text-[11px] uppercase tracking-[0.18em] text-canvas/60"
               style={{ fontFamily: "var(--font-interactive)" }}

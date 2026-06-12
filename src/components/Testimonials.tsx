@@ -51,12 +51,13 @@ function initials(name: string): string {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
-export function Testimonials() {
+export function Testimonials({ chapter }: { chapter?: string }) {
   return (
     <section id="testimonials" className="survey-grid bg-canvas py-16 text-primary sm:py-24 lg:py-32">
       <Reveal className="mx-auto max-w-[1440px] px-6 sm:px-8 lg:px-10">
         <div className="flex max-w-xl flex-col items-start">
           <div className="flex items-center gap-3">
+            {chapter && <Coordinate>{chapter}</Coordinate>}
             <span
               className="text-[11px] uppercase tracking-[0.18em] text-primary"
               style={{ fontFamily: "var(--font-interactive)" }}

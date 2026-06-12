@@ -53,13 +53,14 @@ const STEPS: Step[] = [
   },
 ];
 
-export function BuyerJourney() {
+export function BuyerJourney({ chapter }: { chapter?: string }) {
   return (
     <section id="how-to-buy" className="survey-grid bg-canvas py-16 sm:py-24 lg:py-32">
       <Reveal className="mx-auto grid max-w-[1440px] grid-cols-1 gap-10 px-6 sm:px-8 lg:grid-cols-12 lg:gap-16 lg:px-10">
         <div className="lg:col-span-4">
           <div className="lg:sticky lg:top-28">
             <div className="flex items-center gap-3">
+              {chapter && <Coordinate>{chapter}</Coordinate>}
               <span
                 className="text-[11px] uppercase tracking-[0.18em] text-primary"
                 style={{ fontFamily: "var(--font-interactive)" }}
