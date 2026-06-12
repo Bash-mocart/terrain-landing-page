@@ -279,7 +279,12 @@ function StatusTag({ kind }: { kind: "live" | "rollout" }) {
         className="inline-flex items-center gap-1.5 rounded-full bg-verified px-2.5 py-1 text-[10px] tracking-[0.14em] text-primary"
         style={{ ...capsStyle, fontWeight: 700 }}
       >
-        <span aria-hidden className="inline-block h-1.5 w-1.5 rounded-full bg-primary" />
+        {/* Radar-ping "beep": an expanding ring around the dot signals a
+           live status. motion-safe so it stays still for reduced-motion. */}
+        <span aria-hidden className="relative inline-flex h-1.5 w-1.5 items-center justify-center">
+          <span className="absolute inline-flex h-full w-full rounded-full bg-primary opacity-60 motion-safe:animate-ping" />
+          <span className="relative inline-block h-1.5 w-1.5 rounded-full bg-primary" />
+        </span>
         Live
       </span>
     );
