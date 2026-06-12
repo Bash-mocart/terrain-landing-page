@@ -198,8 +198,8 @@ function FlagshipCard({ product }: { product: Product }) {
            content. */}
         <div className="relative order-first h-56 w-full overflow-hidden sm:h-72 lg:order-last lg:h-auto lg:min-h-[420px]">
           <Image
-            src="/figma/own-pillar.png"
-            alt="A landowner holding their land document on a verified plot"
+            src="/figma/family-home.jpg"
+            alt="A family at home together in their living room"
             fill
             className="object-cover"
             sizes="(min-width: 1024px) 520px, 100vw"
