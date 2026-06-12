@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Reveal } from "./Reveal";
 import { Coordinate, ContourField, SurveyRule } from "./cartographic";
 
@@ -72,9 +73,19 @@ export function WhyTerrain() {
             className="mt-8 max-w-xl text-base leading-relaxed text-canvas sm:text-lg"
             style={{ fontFamily: "var(--font-body)", fontWeight: 600 }}
           >
-            Terrain is built to take that risk off the table, starting with
-            who is even allowed to sell to you.
+            That is why Terrain lists only CAC-certified real estate companies
+            and agents, every one checked before they can post.
           </p>
+          <Link
+            href="/how-it-works"
+            className="group mt-5 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.16em] text-canvas transition-colors hover:text-verified"
+            style={{ fontFamily: "var(--font-interactive)", fontWeight: 600 }}
+          >
+            See how we vet them
+            <span aria-hidden className="transition-transform group-hover:translate-x-0.5">
+              →
+            </span>
+          </Link>
         </div>
       </Reveal>
     </section>
