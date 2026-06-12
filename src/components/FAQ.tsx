@@ -43,14 +43,18 @@ const FAQS: Q[] = [
   },
 ];
 
-export function FAQ() {
+export function FAQ({ chapter }: { chapter?: string }) {
   const [open, setOpen] = useState<number | null>(0);
   return (
-    <section className="survey-grid-dark relative overflow-hidden bg-primary py-16 text-canvas sm:py-24 lg:py-32">
+    <section
+      id="questions"
+      className="survey-grid-dark relative overflow-hidden bg-primary py-16 text-canvas sm:py-24 lg:py-32"
+    >
       <ContourField tone="canvas" />
       <Reveal className="relative mx-auto grid max-w-[1440px] grid-cols-1 gap-10 px-6 sm:gap-12 sm:px-8 lg:grid-cols-12 lg:px-10">
         <div className="lg:col-span-5">
           <div className="flex items-center gap-3">
+            {chapter && <Coordinate tone="canvas">{chapter}</Coordinate>}
             <span
               className="text-[11px] uppercase tracking-[0.18em] text-canvas/70"
               style={{ fontFamily: "var(--font-interactive)" }}
