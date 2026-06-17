@@ -170,7 +170,7 @@ export function TopNav() {
               className="mt-5 text-center text-[11px] uppercase tracking-[0.16em] text-secondary"
               style={{ fontFamily: "var(--font-interactive)" }}
             >
-              Verified agents, across Nigeria
+              Verified agents and companies, across Nigeria
             </p>
           </div>
         </div>

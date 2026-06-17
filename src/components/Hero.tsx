@@ -74,15 +74,15 @@ export function Hero() {
             className="inline-block rounded-full bg-canvas/85 px-3 py-1.5 text-xs uppercase tracking-[0.18em] text-primary backdrop-blur-sm"
             style={{ fontFamily: "var(--font-interactive)" }}
           >
-            CAC-verified agents
+            CAC-verified agents &amp; companies
           </span>
           <h1
             className="mt-5 text-[clamp(40px,9vw,80px)] leading-[0.95] tracking-tight text-primary sm:mt-6"
             style={{ fontFamily: "var(--font-display)", fontWeight: 700 }}
           >
-            Own a Property
+            Own property
             <br />
-            With Confidence.
+            you can trust.
           </h1>
           {/* Subhead reframed: Terrain is a marketplace, not an escrow.
              Trust signal is the agent vetting (CAC-registered + reviewed
@@ -97,7 +97,7 @@ export function Hero() {
           >
             Walk every property across Nigeria through videos, drone
             aerials, and 3D tours before you visit. Listed by real
-            estate agents we have CAC-verified and vetted.
+            estate agents and companies we have CAC-verified and vetted.
           </p>
           <div className="mt-10 flex flex-wrap items-center gap-3">
             <StoreButton href="https://apps.apple.com" platform="ios" />

@@ -37,11 +37,11 @@ type Product = {
 const OWN: Product = {
   number: "01",
   name: "Terrain Own",
-  claim: "Buy verified land and houses, direct from the agents we have vetted.",
+  claim: "Buy verified land and houses, direct from the agents and companies we have vetted.",
   points: [
     "Browse vetted listings on a live map",
     "Walk every plot through photos, video, drone aerials, and 3D tours",
-    "Connect with the CAC-verified agent directly",
+    "Connect with the CAC-verified agent or company directly",
     "Visit and buy on their terms, with no middle layer",
   ],
   icon: "own",
@@ -51,9 +51,9 @@ const ROADMAP: Product[] = [
   {
     number: "02",
     name: "Terrain Build",
-    claim: "We help you build on the land you own, finish a stalled project, or furnish what is bare.",
+    claim: "Our Terrain developers build on the land you own, finish a stalled project, or furnish what is bare.",
     points: [
-      "Build from the ground up with developers we have vetted",
+      "Build from the ground up with our Terrain developers",
       "Finish an unfinished or abandoned building",
       "Furnish and fit out, ready to live in or let",
     ],
@@ -62,11 +62,11 @@ const ROADMAP: Product[] = [
   {
     number: "03",
     name: "Terrain Grow",
-    claim: "After you buy, we help you grow a portfolio, track its value, and sell or rent when you are ready.",
+    claim: "Our Terrain portfolio managers grow the value of what you own, and help you sell or rent when you are ready.",
     points: [
-      "Hold every property you own in one portfolio",
-      "Track worth and appreciation over time",
-      "Sell or rent through agents we have vetted",
+      "Terrain portfolio managers grow each property's value",
+      "Hold every property in one portfolio, track its worth over time",
+      "Sell or rent through agents and companies we have vetted",
     ],
     icon: "grow",
   },
@@ -103,11 +103,18 @@ export function OwnBuildGrow() {
             <br className="hidden sm:block" /> Grow it.
           </h2>
           <p
-            className="mt-5 max-w-md text-base leading-relaxed text-secondary sm:text-lg"
+            className="mt-5 max-w-xl text-base leading-relaxed text-secondary sm:text-lg"
             style={{ fontFamily: "var(--font-body)" }}
           >
-            Three products for the whole life of a property. Terrain Own
-            ships today; Build and Grow are on the way.
+            Buying is only the beginning. Terrain is with you for the whole life
+            of a property:{" "}
+            <span className="font-semibold text-primary">own</span> verified
+            land or a home,{" "}
+            <span className="font-semibold text-primary">build</span> it with our
+            Terrain developers, then{" "}
+            <span className="font-semibold text-primary">grow</span> its value
+            with our Terrain portfolio managers. Terrain Own ships today; Build
+            and Grow are on the way.
           </p>
         </header>
         </Reveal>

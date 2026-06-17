@@ -2,17 +2,10 @@ import Link from "next/link";
 import { Reveal } from "./Reveal";
 import { Coordinate, ContourField, SurveyRule } from "./cartographic";
 
-// The problem, in the cartographic survey language. A dark plate with a
-// faint contour field and survey grid behind it, the risks plotted like
-// survey findings flagged on a parcel. Names the fear every Nigerian
-// property buyer knows, calmly, then hands off to the vetting answer.
-
-const RISKS = [
-  "Titles that turn out forged, duplicated, or already sold to someone else.",
-  "Omo onile and family claims that resurface long after you have paid.",
-  "Agents with no company, no record, and no one to hold responsible.",
-  "Land under government acquisition or dispute that was never theirs to sell.",
-];
+// Why Terrain exists — the MISSION beat. No fear, no relisting the problems
+// (those live in ProblemSolution above): this is the positive "why we built
+// this / what we believe" statement. Kept on the dark survey plate so it
+// still breaks the run of light sections and reads as the brand's voice.
 
 export function WhyTerrain() {
   return (
@@ -38,52 +31,39 @@ export function WhyTerrain() {
             className="mt-7 text-[clamp(36px,5vw,64px)] leading-[1.0] tracking-tight"
             style={{ fontFamily: "var(--font-display)", fontWeight: 700 }}
           >
-            The fear is rational.
+            We built Terrain for certainty.
           </h2>
-          <p
-            className="mt-6 max-w-md text-base leading-relaxed text-canvas/70 sm:text-lg"
-            style={{ fontFamily: "var(--font-body)" }}
-          >
-            Across Nigeria, buying land or a house too often means handing
-            your savings to a stranger and hoping. The risks are real, and
-            everyone has heard the stories.
-          </p>
         </div>
 
         <div className="lg:col-span-7 lg:pt-1">
-          <ul className="flex flex-col">
-            {RISKS.map((risk, i) => (
-              <li
-                key={risk}
-                className="flex items-start gap-4 border-t border-canvas/15 py-5 first:border-t-0 first:pt-0 sm:gap-5 sm:py-6"
-              >
-                <Coordinate tone="canvas" className="mt-1 shrink-0">
-                  R-{String(i + 1).padStart(2, "0")}
-                </Coordinate>
-                <span
-                  className="text-base leading-relaxed text-canvas/80 sm:text-lg"
-                  style={{ fontFamily: "var(--font-body)" }}
-                >
-                  {risk}
-                </span>
-              </li>
-            ))}
-          </ul>
           <p
-            className="mt-8 max-w-xl text-base leading-relaxed text-canvas sm:text-lg"
+            className="max-w-xl text-lg leading-relaxed text-canvas/80 sm:text-xl"
+            style={{ fontFamily: "var(--font-body)" }}
+          >
+            Property is how Nigerians build wealth that lasts. Owning it should
+            feel as certain as a stamped registry record, not a leap of faith.
+          </p>
+          <p
+            className="mt-6 max-w-xl text-lg leading-relaxed text-canvas sm:text-xl"
             style={{ fontFamily: "var(--font-body)", fontWeight: 600 }}
           >
-            That is why Terrain lists only CAC-certified real estate companies
-            and agents, every one checked before they can post.
+            That is the whole reason Terrain exists: to make every property
+            checkable, every agent and company accountable, and every buyer
+            secure. Find it,
+            confirm it is real, and own it, with no fear and no middleman taking
+            a cut.
           </p>
           <Link
             href="/how-it-works"
-            className="group mt-5 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.16em] text-canvas transition-colors hover:text-verified"
+            className="group mt-8 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.16em] text-canvas transition-colors hover:text-verified"
             style={{ fontFamily: "var(--font-interactive)", fontWeight: 600 }}
           >
-            See how we vet them
-            <span aria-hidden className="transition-transform group-hover:translate-x-0.5">
-              →
+            See how we vet every property
+            <span
+              aria-hidden
+              className="transition-transform group-hover:translate-x-0.5"
+            >
+              &rarr;
             </span>
           </Link>
         </div>

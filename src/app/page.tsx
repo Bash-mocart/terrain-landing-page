@@ -1,5 +1,8 @@
 import { TopNav } from "@/components/TopNav";
 import { Hero } from "@/components/Hero";
+import { ProblemSolution } from "@/components/ProblemSolution";
+import { VerifyAndRequest } from "@/components/VerifyAndRequest";
+import { HowWeVerify } from "@/components/HowWeVerify";
 import { WhyTerrain } from "@/components/WhyTerrain";
 import { OwnBuildGrow } from "@/components/OwnBuildGrow";
 import { WhatsOnMarket } from "@/components/WhatsOnMarket";
@@ -22,6 +25,9 @@ export default function Home() {
     <>
       <TopNav />
       <Hero />
+      <ProblemSolution />
+      <VerifyAndRequest />
+      <HowWeVerify />
       <WhyTerrain />
       <OwnBuildGrow />
       <WhatsOnMarket />

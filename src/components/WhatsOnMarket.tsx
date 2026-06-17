@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Reveal } from "./Reveal";
+import { AppPhone } from "./VerifyAndRequest";
 import { Coordinate, ContourField, PlotCorners, SurveyRule } from "./cartographic";
 
 // Live inventory. Re-crafted to a Late-Night Boardroom surface: it
@@ -38,7 +39,8 @@ export function WhatsOnMarket() {
     >
       <ContourField tone="canvas" />
       <div className="relative mx-auto max-w-[1440px] px-6 sm:px-8 lg:px-10">
-        <Reveal className="flex max-w-xl flex-col items-start">
+        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-12">
+        <Reveal className="flex max-w-xl flex-col items-start lg:col-span-7">
           <div className="flex items-center gap-3">
             <span
               className="text-[11px] uppercase tracking-[0.18em] text-canvas/60"
@@ -76,6 +78,17 @@ export function WhatsOnMarket() {
             ))}
           </ul>
         </Reveal>
+          <Reveal
+            delay={120}
+            className="flex justify-center lg:col-span-5 lg:justify-end"
+          >
+            <AppPhone
+              src="/app/explore.png"
+              alt="Browse the market on a map in the Terrain app"
+              className="ring-1 ring-canvas/15"
+            />
+          </Reveal>
+        </div>
 
         {/* Featured Lagos banner over a row of the other five cities,
            each tile revealing with a small per-tile stagger. */}

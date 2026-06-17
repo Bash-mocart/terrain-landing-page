@@ -49,9 +49,9 @@ export function Footer() {
               className="mt-6 max-w-sm text-base leading-relaxed text-canvas/70"
               style={{ fontFamily: "var(--font-body)" }}
             >
-              Nigeria&rsquo;s directory of CAC-verified real estate agents.
-              Vetted before they list, so you start every search with
-              a registered company.
+              Nigeria&rsquo;s directory of CAC-verified real estate agents and
+              companies. Vetted before they list, so you start every search
+              with a registered company.
             </p>
             <div className="mt-8 flex items-center gap-4 text-sm">
               <SocialLink href="https://wa.me/" label="WhatsApp">
