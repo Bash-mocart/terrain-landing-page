@@ -11,17 +11,23 @@ import { Coordinate, VerifiedSeal } from "./cartographic";
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? "";
 
-// Nigeria, centred so Lagos through Kano sit in frame.
+// Nigeria, centred so Lagos through Kano sit in frame. Two crops: the
+// landscape frame for sm+ and a portrait frame for phones, because a
+// single 2:1 image object-covered into a tall narrow section crops to
+// the Gulf of Guinea and the neighbours (Douala, Niamey), not Nigeria.
+// The zoom is tuned so the country fills the frame's height; at the
+// old 5.1 Nigeria was ~20% of the width and the neighbours dominated.
 // NOTE: the Mapbox Static Images API caps {width}x{height} at 1280 each.
 // The previous 1600 wide silently 422'd and rendered nothing; keep both
 // dimensions <= 1280. @2x still returns a retina-resolution image.
-function nigeriaMapUrl(w = 1280, h = 640) {
+function nigeriaMapUrl(w: number, h: number, zoom: number) {
   if (!MAPBOX_TOKEN) return null;
-  return `https://api.mapbox.com/styles/v1/mapbox/streets-v12/static/8.0,9.2,5.1,0/${w}x${h}@2x?access_token=${MAPBOX_TOKEN}`;
+  return `https://api.mapbox.com/styles/v1/mapbox/streets-v12/static/8.7,9.15,${zoom},0/${w}x${h}@2x?access_token=${MAPBOX_TOKEN}`;
 }
 
 export function ClosingCTA() {
-  const mapUrl = nigeriaMapUrl();
+  const mapUrl = nigeriaMapUrl(1280, 640, 5.85);
+  const mapUrlPortrait = nigeriaMapUrl(640, 960, 6);
   return (
     <section
       id="download"
@@ -30,13 +36,19 @@ export function ClosingCTA() {
       {/* Faint map echo. Held low and masked top/bottom into Warm Canvas
          so it reads as a watermark of the country the buyer is here for,
          never as a foreground image. */}
-      {mapUrl && (
+      {mapUrl && mapUrlPortrait && (
         <div aria-hidden className="pointer-events-none absolute inset-0">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={mapUrlPortrait}
+            alt=""
+            className="h-full w-full object-cover opacity-[0.42] sm:hidden"
+          />
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={mapUrl}
             alt=""
-            className="h-full w-full object-cover opacity-[0.42]"
+            className="hidden h-full w-full object-cover opacity-[0.42] sm:block"
           />
           {/* Map clearly reads as Nigeria now. The streets style is
              light-toned (beige/grey roads on near-white), so the dark
@@ -49,7 +61,7 @@ export function ClosingCTA() {
 
       <Reveal className="relative mx-auto flex max-w-[760px] flex-col items-center px-6 text-center sm:px-8">
         <VerifiedSeal size={56} />
-        <div className="mt-6 flex items-center gap-3">
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
           <span
             className="text-[11px] uppercase tracking-[0.18em] text-secondary"
             style={{ fontFamily: "var(--font-interactive)" }}

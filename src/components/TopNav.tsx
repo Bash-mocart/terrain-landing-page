@@ -26,11 +26,24 @@ const LINKS = [
 
 export function TopNav() {
   const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
+    // Hide on scroll down, reveal on scroll up. On a page this long
+    // (especially mobile, where the pill spans the width) a permanently
+    // floating white pill sits on every dark plate; retreating while
+    // the reader descends gives the sections back their full canvas,
+    // and any upward flick brings the nav straight back.
+    let lastY = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      setScrolled(y > 24);
+      if (y > lastY + 4 && y > 160) setHidden(true);
+      else if (y < lastY - 4 || y <= 160) setHidden(false);
+      lastY = y;
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -54,7 +67,9 @@ export function TopNav() {
   return (
     <div
       id="top"
-      className="fixed inset-x-0 top-0 z-40 flex justify-center px-4 pt-4 sm:pt-5"
+      className={`fixed inset-x-0 top-0 z-40 flex justify-center px-4 pt-4 transition-transform duration-300 ease-out motion-reduce:transition-none sm:pt-5 ${
+        hidden && !menuOpen ? "-translate-y-[130%]" : ""
+      }`}
     >
       <nav
         aria-label="Primary"

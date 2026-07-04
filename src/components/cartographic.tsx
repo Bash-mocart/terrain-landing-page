@@ -25,7 +25,7 @@ export function Coordinate({
 }) {
   return (
     <span
-      className={`inline-flex items-center gap-1.5 text-[11px] tracking-[0.08em] ${
+      className={`inline-flex items-center gap-1.5 whitespace-nowrap text-[11px] tracking-[0.08em] ${
         tone === "canvas" ? "text-canvas/55" : "text-secondary"
       } ${className}`}
       style={{ fontFamily: "var(--font-mono)" }}
