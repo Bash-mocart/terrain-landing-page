@@ -54,7 +54,7 @@ export function WhyTerrain() {
             a cut.
           </p>
           <Link
-            href="/how-it-works"
+            href="/#verification"
             className="group mt-8 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.16em] text-canvas transition-colors hover:text-verified"
             style={{ fontFamily: "var(--font-interactive)", fontWeight: 600 }}
           >

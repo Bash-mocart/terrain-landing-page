@@ -1,13 +1,15 @@
 import { Reveal } from "./Reveal";
 import { Coordinate, PlotCorners, SurveyRule, VerifiedSeal } from "./cartographic";
 
-// How verification works — crafted (impeccable, "claim + record" lane) as a
-// two-up: the narrative claim on the left, and on the right the ARTEFACT the
-// verification produces, a field report. Showing the receipt is more
-// convincing than listing the steps, and folds the whole process into one
-// compact, on-brand survey document. No card grid, no tall traverse.
+// Verification — the single chapter that used to be two overlapping
+// sections (VerifyAndRequest + HowWeVerify, both opening on "we verify
+// every property"). One claim, told once: someone goes to the plot in
+// person, writes the check down, and the check becomes the property's
+// Terrain Record. The field report card on the right is the artefact
+// that proves it; showing the receipt beats listing the steps. Closes
+// on the request-any-property promise, the section's one CTA.
 
-// What a Terrain reviewer confirms on the ground (steps 01–02, folded in).
+// What a Terrain reviewer confirms on the ground.
 const CHECKS = [
   "Reviewer on the ground, in person",
   "Title and document confirmed",
@@ -15,7 +17,7 @@ const CHECKS = [
   "Ownership verified",
 ];
 
-// What they field-test on site (step 03), the realities you live with.
+// What they field-test on site, the realities you live with.
 const SIGNALS = [
   { label: "Power", detail: "how steady it is" },
   { label: "Water", detail: "whether it runs" },
@@ -23,9 +25,9 @@ const SIGNALS = [
   { label: "Network", detail: "which networks reach" },
 ];
 
-export function HowWeVerify() {
+export function Verification() {
   return (
-    <section className="survey-grid relative bg-canvas py-24 sm:py-32">
+    <section id="verification" className="survey-grid relative bg-canvas py-24 sm:py-32">
       <div className="mx-auto grid max-w-[1100px] grid-cols-1 items-center gap-12 px-6 sm:px-8 lg:grid-cols-[1fr_minmax(0,460px)] lg:gap-16 lg:px-10">
         {/* Left: the claim */}
         <Reveal>
@@ -58,12 +60,20 @@ export function HowWeVerify() {
             history you read before you ever pay.
           </p>
           <p
-            className="mt-3 max-w-md text-sm leading-relaxed text-secondary"
+            className="mt-6 max-w-md text-base leading-relaxed text-secondary"
             style={{ fontFamily: "var(--font-body)" }}
           >
-            Terrain is a registered Nigerian company. Nothing lists until it
-            passes.
+            Found a property somewhere else? Request it, and we&rsquo;ll verify
+            it for you.
           </p>
+          <a
+            href="#download"
+            className="mt-8 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 text-canvas transition-opacity hover:opacity-90"
+            style={{ fontFamily: "var(--font-interactive)", fontWeight: 600 }}
+          >
+            Request a property
+            <span aria-hidden>&rarr;</span>
+          </a>
         </Reveal>
 
         {/* Right: the record it produces */}

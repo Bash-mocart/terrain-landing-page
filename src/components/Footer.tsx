@@ -10,7 +10,7 @@ const NAV = [
     heading: "Explore",
     links: [
       { label: "Available Listings", href: "/#listings" },
-      { label: "How it Works", href: "/how-it-works" },
+      { label: "How it Works", href: "/#how-it-works" },
       { label: "Get the App", href: "/#download" },
       { label: "Sample Agent Profile", href: "/agents/sample" },
       { label: "List as an Agent", href: "mailto:agents@terrain.ng" },
@@ -19,9 +19,9 @@ const NAV = [
   {
     heading: "Company",
     links: [
-      { label: "About Us", href: "#" },
-      { label: "For Real Estate Agents", href: "#" },
-      { label: "Vetting Process", href: "#" },
+      { label: "About Us", href: "/#why" },
+      { label: "For Real Estate Agents", href: "/#for-agents" },
+      { label: "Vetting Process", href: "/#vetting" },
       { label: "Privacy", href: "#" },
       { label: "Terms", href: "#" },
     ],

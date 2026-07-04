@@ -1,4 +1,5 @@
 import { Reveal } from "./Reveal";
+import { AppPhone } from "./AppPhone";
 import { Coordinate, SurveyRule } from "./cartographic";
 
 // How you buy. The buyer-facing journey. Re-crafted away from the
@@ -55,7 +56,7 @@ const STEPS: Step[] = [
 
 export function BuyerJourney({ chapter }: { chapter?: string }) {
   return (
-    <section id="how-to-buy" className="survey-grid bg-canvas py-16 sm:py-24 lg:py-32">
+    <section id="how-it-works" className="survey-grid bg-canvas py-16 sm:py-24 lg:py-32">
       <Reveal className="mx-auto grid max-w-[1440px] grid-cols-1 gap-10 px-6 sm:px-8 lg:grid-cols-12 lg:gap-16 lg:px-10">
         <div className="lg:col-span-4">
           <div className="lg:sticky lg:top-28">
@@ -84,6 +85,16 @@ export function BuyerJourney({ chapter }: { chapter?: string }) {
               Five steps from the map to the keys. We point you to a vetted
               agent, and we can help you check the property before you pay.
             </p>
+            {/* The verified-record screen, desktop only: the sticky
+               column has the air for it, and it shows the destination
+               of the five steps (the record you buy against). */}
+            <div className="mt-10 hidden lg:block">
+              <AppPhone
+                src="/app/listing.png"
+                alt="A verified property record in the Terrain app"
+                width="230px"
+              />
+            </div>
           </div>
         </div>
 

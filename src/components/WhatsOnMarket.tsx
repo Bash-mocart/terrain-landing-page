@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Reveal } from "./Reveal";
-import { AppPhone } from "./VerifyAndRequest";
+import { AppPhone } from "./AppPhone";
 import { Coordinate, ContourField, PlotCorners, SurveyRule } from "./cartographic";
 
 // Live inventory. Re-crafted to a Late-Night Boardroom surface: it

@@ -15,11 +15,12 @@ import { TerrainLogo } from "./TerrainLogo";
 // button right; tapping opens the full-screen Warm Canvas overlay so
 // the busy hero never bleeds through behind the links.
 
-// Absolute hrefs so the same nav works on the landing and on
-// /how-it-works (an anchor like "/#listings" routes home, then scrolls).
+// Absolute hrefs so the same nav works from any route (an anchor like
+// "/#listings" routes home, then scrolls). All beats live on the
+// landing now; /how-it-works redirects to its anchor here.
 const LINKS = [
+  { label: "How it works", href: "/#how-it-works" },
   { label: "Products", href: "/#the-terrain-way" },
-  { label: "How it works", href: "/how-it-works" },
   { label: "Properties", href: "/#listings" },
 ];
 
@@ -80,6 +81,15 @@ export function TopNav() {
               {l.label}
             </Link>
           ))}
+          {/* The nav's own conversion exit. A typical landing nav ends
+             in its primary CTA; ours is the app download close. */}
+          <Link
+            href="/#download"
+            className="-mr-2 rounded-full bg-primary px-5 py-2 text-canvas transition-opacity hover:opacity-90"
+            style={{ fontFamily: "var(--font-interactive)", fontWeight: 600 }}
+          >
+            Get the app
+          </Link>
         </div>
 
         <button

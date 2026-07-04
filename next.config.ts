@@ -1,6 +1,17 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // The trust-dossier subpage folded back into the landing; keep old
+  // links and search results working.
+  async redirects() {
+    return [
+      {
+        source: "/how-it-works",
+        destination: "/#how-it-works",
+        permanent: true,
+      },
+    ];
+  },
   // Allow HMR over the LAN IP so the dev server can be previewed on
   // a phone or another machine on the same network (e.g. checking the
   // mobile breakpoint on an iPhone without deploying). Next 16
