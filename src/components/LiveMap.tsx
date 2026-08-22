@@ -172,7 +172,7 @@ function createPinForListing(
   `;
 
   // Pick the first usable http(s) media url. The Flutter app uploads
-  // images to media.lunor.money; backend ships them verbatim. Videos
+  // images to media.terrain.ng; backend ships them verbatim. Videos
   // (.mp4 / .mov) and images render side by side here: whichever is
   // first in image_urls wins. Video listings get an autoplay loop
   // (muted, playsinline) so the popup shows motion; image listings
