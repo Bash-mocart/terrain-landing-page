@@ -11,7 +11,7 @@ Turn the Terrain landing page (this repo) into the full web app by wiring it to 
 
 The landing page already talks to the backend in two places, but the wiring is ad-hoc:
 
-- `src/components/LiveMap.tsx` fetches `/v1/listings?verified=true&limit=50&type_slug=land|house` (two parallel calls) and renders hero-map pins. Base URL: `process.env.NEXT_PUBLIC_TERRAIN_API_URL ?? "https://api.lunor.money"`.
+- `src/components/LiveMap.tsx` fetches `/v1/listings?verified=true&limit=50&type_slug=land|house` (two parallel calls) and renders hero-map pins. Base URL: `process.env.NEXT_PUBLIC_TERRAIN_API_URL ?? "https://api.terrain.ng"`.
 - `src/components/smoke/SignupForm.tsx` posts to `/v1/waitlist` and `/v1/waitlist/{id}/check-request` for the smoke-test signup. Same env var, raw `fetch`.
 
 Gaps to close:
@@ -31,8 +31,7 @@ Gaps to close:
 
 ## API access pattern
 
-- **Base URL:** `NEXT_PUBLIC_TERRAIN_API_URL`. Dev: `http://localhost:8090` (docker-compose) or `http://localhost:8080` (`go run`) via `.env.local`. Prod: `https://api.lunor.money`.
-- **Prod host:** the API default is `https://api.lunor.money` (baked into `LiveMap.tsx` / `SignupForm.tsx` and the mobile app); the public site is `terrain.ng` — confirm this host is still current.
+- **Base URL:** `NEXT_PUBLIC_TERRAIN_API_URL`. Dev: `http://localhost:8090` (docker-compose) or `http://localhost:8080` (`go run`) via `.env.local`. Prod: `https://api.terrain.ng` (media: `https://media.terrain.ng`).
 - **Auth:** Bearer token in the `Authorization` header. Store the access token in `localStorage`, refresh via `POST /v1/auth/refresh`, silent retry on 401.
 - **Error shape:** `{"error": "message"}`.
 - **Listing responses:** `{ "results": [...] }`.
