@@ -1,15 +1,13 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { api } from "@/lib/api";
 
 // Smoke-test signup + the fake-door "request an independent check" rider
 // (terra-backend docs/product_validation_field_kit.md). Three states:
 //   form -> offer (randomized price) -> done
 // Every event also reaches Meta via fbq when the pixel is loaded, tagged
 // with the variant so ad-set results can be read per promise.
-
-const API_BASE =
-  process.env.NEXT_PUBLIC_TERRAIN_API_URL ?? "https://api.lunor.money";
 
 // Randomized per visitor (not rotated weekly): kills the time confound.
 const CHECK_PRICES = [50_000, 75_000, 150_000];
@@ -59,13 +57,12 @@ export function SignupForm({
     }
     setBusy(true);
     try {
-      const res = await fetch(`${API_BASE}/v1/waitlist`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ contact: contact.trim(), intent, variant, source }),
+      const { id } = await api.post<{ id: string }>("/v1/waitlist", {
+        contact: contact.trim(),
+        intent,
+        variant,
+        source,
       });
-      if (!res.ok) throw new Error(await res.text());
-      const { id } = (await res.json()) as { id: string };
       setSignupId(id);
       track("Lead", { variant, intent });
       setStage("offer");
@@ -86,18 +83,10 @@ export function SignupForm({
     }
     setBusy(true);
     try {
-      const res = await fetch(
-        `${API_BASE}/v1/waitlist/${signupId}/check-request`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            price_naira: price,
-            property_details: details.trim(),
-          }),
-        },
-      );
-      if (!res.ok) throw new Error(await res.text());
+      await api.post(`/v1/waitlist/${signupId}/check-request`, {
+        price_naira: price,
+        property_details: details.trim(),
+      });
       track("CheckRequested", { variant, price_naira: price });
       setCheckRequested(true);
       setStage("done");

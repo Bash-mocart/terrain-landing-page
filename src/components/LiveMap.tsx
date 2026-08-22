@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import Supercluster from "supercluster";
 import "mapbox-gl/dist/mapbox-gl.css";
+import { api } from "@/lib/api";
+import type { ListResponse, Listing } from "@/lib/types";
 
 // Hero backdrop. Mapbox GL JS light streets style + real verified
 // plot pins pulled from /v1/listings. Fills the parent container
@@ -29,18 +31,6 @@ const ABUJA_MAX_BOUNDS: [[number, number], [number, number]] = [
   [7.1, 8.7], // SW
   [7.85, 9.45], // NE
 ];
-
-type Listing = {
-  id: string;
-  title?: string;
-  price: number;
-  latitude: number;
-  longitude: number;
-  city?: string;
-  image_urls?: string[];
-  size_sqm?: number;
-  type_slug?: "land" | "house";
-};
 
 // Fallback sample plots, one per major Abuja neighbourhood. Used
 // whenever the backend is unreachable (CORS, network, cold start) or
@@ -87,9 +77,6 @@ const FALLBACK_LISTINGS: Listing[] = [
     longitude: 7.4262,
   },
 ];
-
-const API_URL =
-  process.env.NEXT_PUBLIC_TERRAIN_API_URL ?? "https://api.lunor.money";
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? "";
 
@@ -481,30 +468,29 @@ export function LiveMap({ isExploring = false }: LiveMapProps = {}) {
         // results screen, and the city explore screen all still miss
         // these listings when they filter by city. See
         // docs/known-data-issues.md for the full fix proposal.
-        const baseUrl = `${API_URL}/v1/listings?verified=true&limit=50`;
-        const [landRes, houseRes] = await Promise.all([
-          fetch(`${baseUrl}&type_slug=land`),
-          fetch(`${baseUrl}&type_slug=house`),
+        const [land, house] = await Promise.all([
+          api.get<ListResponse<Listing>>("/v1/listings", {
+            query: { verified: true, limit: 50, type_slug: "land" },
+          }).catch(() => ({ results: [] })),
+          api.get<ListResponse<Listing>>("/v1/listings", {
+            query: { verified: true, limit: 50, type_slug: "house" },
+          }).catch(() => ({ results: [] })),
         ]);
-        const land = landRes.ok
-          ? ((await landRes.json()) as { results?: Listing[] }).results ?? []
-          : [];
-        const house = houseRes.ok
-          ? ((await houseRes.json()) as { results?: Listing[] }).results ?? []
-          : [];
         const [[minLng, minLat], [maxLng, maxLat]] = ABUJA_MAX_BOUNDS;
-        listings = [...land, ...house].filter((l) => {
-          const lat = Number(l.latitude);
-          const lng = Number(l.longitude);
-          return (
-            Number.isFinite(lat) &&
-            Number.isFinite(lng) &&
-            lat >= minLat &&
-            lat <= maxLat &&
-            lng >= minLng &&
-            lng <= maxLng
-          );
-        });
+        listings = [...(land.results ?? []), ...(house.results ?? [])].filter(
+          (l) => {
+            const lat = Number(l.latitude);
+            const lng = Number(l.longitude);
+            return (
+              Number.isFinite(lat) &&
+              Number.isFinite(lng) &&
+              lat >= minLat &&
+              lat <= maxLat &&
+              lng >= minLng &&
+              lng <= maxLng
+            );
+          },
+        );
       } catch (e) {
         // CORS, network, cold start. Log for debugging; fall through to
         // the empty listings array so the fallback path below renders.
