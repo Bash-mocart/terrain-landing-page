@@ -50,10 +50,11 @@ export default async function BrowsePage({
     getBrowseCities(),
     getListingTaxonomy(),
   ]);
-  const picks = hero.slides.map((slide) => slide.listing);
+  const picks = (hero.slides ?? []).map((slide) => slide.listing);
   const feedListings = feed.results ?? [];
   const verifiedListings = verified.results ?? [];
-  const otherCities = cities.filter((item) => item.city !== filters.city);
+  const cityCounts = cities ?? [];
+  const otherCities = cityCounts.filter((item) => item.city !== filters.city);
   const heading = filters.city
     ? `Now in ${filters.city}`
     : "Properties on record";
@@ -95,8 +96,8 @@ export default async function BrowsePage({
             }
           >
             <BrowseFilters
-              cities={cities}
-              taxonomy={taxonomy}
+              cities={cityCounts}
+              taxonomy={{ types: taxonomy.types ?? [] }}
               city={filters.city}
               typeSlug={filters.typeSlug}
               subtypeSlug={filters.subtypeSlug}
