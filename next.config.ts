@@ -19,11 +19,11 @@ const nextConfig: NextConfig = {
   allowedDevOrigins: ["192.168.178.22"],
   // Mapbox tile + sprite hosts. next/image throws by default on
   // remote hosts we haven't allow-listed; the verified-plot photos
-  // come from media.lunor.money (the same CDN the Flutter app uses
+  // come from media.terrain.ng (the same CDN the Flutter app uses
   // for listing photography).
   images: {
     remotePatterns: [
-      { protocol: "https", hostname: "media.lunor.money" },
+      { protocol: "https", hostname: "media.terrain.ng" },
       { protocol: "https", hostname: "api.mapbox.com" },
     ],
   },
