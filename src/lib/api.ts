@@ -1,6 +1,6 @@
 import type { ApiErrorResponse, SessionResponse } from "./types";
 
-const DEFAULT_API_URL = "https://api.lunor.money";
+const DEFAULT_API_URL = "https://api.terrain.ng";
 const ACCESS_TOKEN_KEY = "terra_auth_token";
 const REFRESH_TOKEN_KEY = "terra_auth_refresh";
 
