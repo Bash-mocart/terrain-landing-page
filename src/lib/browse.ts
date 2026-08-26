@@ -6,6 +6,14 @@ import type {
   ListingTaxonomy,
 } from "./types";
 
+const EMPTY_SEARCH: ListingSearchResponse = {
+  results: [],
+  total: 0,
+  new_this_week: 0,
+  limit: 0,
+  offset: 0,
+};
+
 export type BrowseFilters = {
   city?: string;
   typeSlug?: string;
@@ -32,7 +40,9 @@ async function optional<T>(
   try {
     return await request;
   } catch (error) {
-    console.error(`browse: ${label} unavailable`, error);
+    // warn, not error: this path is deliberately non-fatal, and Next's dev
+    // overlay intercepts console.error only, which would flag a healthy page.
+    console.warn(`browse: ${label} unavailable`, error);
     return fallback;
   }
 }
@@ -63,7 +73,7 @@ export function getVerifiedThisWeek(filters: BrowseFilters) {
         offset: 0,
       },
     }),
-    { results: [], total: 0, new_this_week: 0, limit: 6, offset: 0 },
+    EMPTY_SEARCH,
     "verified this week",
   );
 }
