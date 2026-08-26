@@ -102,13 +102,12 @@ When it comes back:
 
 ## Open items
 
-- **The header is translucent and blurred.** `bg-canvas/95 backdrop-blur-sm`
-  at `ProductNav.tsx:39`. `CLAUDE.md` bans glassmorphism, and the Deferred
-  section above states that rule for the tab bar, so the shipped header
-  contradicts this spec's own reasoning. `TopNav` does the same with
-  `backdrop-blur-md`, so the pattern predates the shell rather than arriving
-  with it. Whether both headers go solid is a brand decision rather than a
-  shell decision, so it is recorded here and not settled.
+- **`TopNav` is still translucent and blurred**, `backdrop-blur-md` at
+  `TopNav.tsx:78`. `ProductNav` is solid canvas with a hairline rule, matching
+  the `CLAUDE.md` glassmorphism ban and the Deferred section above. `TopNav` is
+  the landing page's floating pill over the hero map, where its own comment
+  treats the blur as load-bearing for legibility, so whether it goes solid is a
+  brand decision rather than a shell one.
 
 - `ProductNav` and `TopNav` share roughly 180 lines of near-identical menu
   code: the overlay, the hamburger and close glyphs, the scroll lock, the
