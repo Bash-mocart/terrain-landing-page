@@ -1,0 +1,116 @@
+# Product shell
+
+Status: built, in review
+Last updated: 2026-08-24
+
+The shared chrome around the product routes. Today that is one header. A mobile
+tab bar joins it when a second destination exists. Covers why the shell exists,
+what it renders, and the decisions taken along the way.
+
+## Related docs
+
+- `docs/webapp-integration-plan.md`: the umbrella plan. Phases, screen
+  inventory, locked decisions.
+- [`browse.md`](browse.md): the first route to consume the shell.
+
+## Why
+
+`src/app/layout.tsx` renders only `{children}`, so every route brought its own
+navigation. Three had grown before anyone noticed:
+
+| Route | Header |
+| --- | --- |
+| `/`, `/v/[variant]` | `TopNav`, a floating pill with a hamburger menu |
+| `/agents/sample` | its own `PageTopNav` |
+| `/browse` | an inline header with a "Back to home" link |
+
+The integration plan listed routes and endpoints but said nothing about the
+chrome around them, so each new route repeated the mistake. Five more Phase 1
+routes were about to.
+
+## Structure
+
+- **`src/app/(product)/`**, a route group holding the product routes. Its
+  `layout.tsx` supplies the shell. Route groups do not affect URLs, so
+  `/browse` stays `/browse`.
+- **`ProductNav`**: sticky header. Logo, the destinations inline on desktop, a
+  hamburger menu on mobile, and the app download call to action.
+- **`destinations.ts`**: the destination list, in one place, so every surface
+  that renders navigation reads the same order and the same routes.
+- **`DestinationIcon`**: line glyphs on a shared 24px grid, keyed by route.
+
+The landing page keeps `TopNav` and stays outside the group.
+
+A mobile tab bar mirroring the Flutter app's bottom navigation is planned but
+not built. See "Deferred" below.
+
+## Destinations
+
+Mirrors `_buyerTabs` in `terra-land/lib/screens/main_shell.dart`, in the same
+order. `destinations.ts` lists all five and exports only the ones marked
+`ready`, so adding a route to the navigation means flipping one flag.
+
+| Tab | Route | Available |
+| --- | --- | --- |
+| Explore | `/explore` | Phase 1, next |
+| Home | `/browse` | built, the only one rendered today |
+| Chat | `/inbox` | Phase 4 or later, blocked on the Matrix conversation-list decision |
+| Saved | `/saved` | Phase 3 |
+| Profile | `/account` | Phase 3 |
+
+## Decisions
+
+**The shell is not `TopNav`.** `TopNav` is built to overlay the hero map: it
+floats, it hides on scroll, and its links are landing anchors. A results page
+needs a header that holds its place in the layout and points at product
+destinations. Sharing one component would mean a flag for every difference.
+
+**Only destinations whose routes exist are rendered.** Navigation grows as
+phases land. Rendering all five with four inert was tried first, reasoning that
+a stable shell shape is worth more than a short one. It is not: on a public
+surface, navigation that is mostly dead reads as broken software.
+
+**The mobile menu carries the marketing links.** How it works, Products and
+Properties, matching `LINKS` in `TopNav`, plus the download call to action and
+the current destinations as chips.
+
+## Accessibility
+
+- The active destination carries `aria-current="page"`.
+- The header's navigation landmark is labelled "Primary". A second navigation
+  landmark needs its own distinct label, or a screen reader cannot tell them
+  apart.
+- The mobile menu is a labelled dialog that moves focus to its close button,
+  locks body scroll, and closes on Escape.
+
+## Deferred
+
+**The mobile tab bar.** Built once, then removed before shipping. With only
+`/browse` ready it rendered a bar with a single tab, which is worse than no bar
+at all. It returns with `/explore`, the next Phase 1 route, when there are two
+real destinations to move between.
+
+When it comes back:
+
+- Solid canvas with a hairline top rule, not a translucent or blurred bar.
+  Content scrolls beneath it, a see-through surface over listing photography
+  fights the imagery, and `CLAUDE.md` bans glassmorphism.
+- The content column has to reserve space for it, since it is fixed. Derive
+  that from the bar's real height rather than hardcoding a pixel value, which
+  is what the first attempt did.
+- Give it a navigation label distinct from the header's "Primary".
+
+## Open items
+
+- **The header is translucent and blurred.** `bg-canvas/95 backdrop-blur-sm`
+  at `ProductNav.tsx:39`. `CLAUDE.md` bans glassmorphism, and the Deferred
+  section above states that rule for the tab bar, so the shipped header
+  contradicts this spec's own reasoning. `TopNav` does the same with
+  `backdrop-blur-md`, so the pattern predates the shell rather than arriving
+  with it. Whether both headers go solid is a brand decision rather than a
+  shell decision, so it is recorded here and not settled.
+
+- `ProductNav` and `TopNav` share roughly 180 lines of near-identical menu
+  code: the overlay, the hamburger and close glyphs, the scroll lock, the
+  focus effect. Two variants is tolerable. Before a third navigation surface
+  exists, extract the glyphs and the menu shell.
