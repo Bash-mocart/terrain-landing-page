@@ -3,7 +3,6 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { BrowseFilters } from "@/components/browse/BrowseFilters";
 import { ListingCard } from "@/components/browse/ListingCard";
-import { TerrainLogo } from "@/components/TerrainLogo";
 import {
   getBrowseCities,
   getBrowseFeed,
@@ -60,21 +59,7 @@ export default async function BrowsePage({
     : "Properties on record";
 
   return (
-    <main className="min-h-screen bg-canvas">
-      <header className="border-b border-border-rule bg-canvas/95">
-        <div className="mx-auto flex max-w-[1280px] items-center justify-between px-6 py-5 sm:px-8 lg:px-10">
-          <Link href="/" aria-label="Terrain home">
-            <TerrainLogo />
-          </Link>
-          <Link
-            href="/"
-            className="text-sm font-semibold text-secondary transition-colors hover:text-primary"
-          >
-            Back to home
-          </Link>
-        </div>
-      </header>
-
+    <main className="bg-canvas">
       <div className="mx-auto max-w-[1280px] px-6 py-10 sm:px-8 sm:py-14 lg:px-10">
         <div className="max-w-3xl">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-verified">

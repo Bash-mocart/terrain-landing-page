@@ -15,7 +15,7 @@ export default function BrowseError({
   }, [error]);
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-canvas px-6">
+    <main className="flex min-h-[70vh] items-center justify-center bg-canvas px-6">
       <div className="max-w-md text-center">
         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-verified">
           Marketplace unavailable

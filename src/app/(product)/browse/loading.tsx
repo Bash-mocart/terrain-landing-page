@@ -1,13 +1,10 @@
 export default function BrowseLoading() {
   return (
     <main
-      className="min-h-screen bg-canvas"
+      className="bg-canvas"
       aria-busy="true"
       aria-label="Loading properties"
     >
-      <div className="border-b border-border-rule px-6 py-5">
-        <div className="mx-auto h-9 max-w-[1280px] animate-pulse rounded-full bg-border-rule/70" />
-      </div>
       <div className="mx-auto max-w-[1280px] px-6 py-12 sm:px-8 lg:px-10">
         <div className="h-14 max-w-xl animate-pulse rounded-2xl bg-border-rule/70" />
         <div className="mt-8 h-28 animate-pulse rounded-3xl bg-border-rule/60" />
