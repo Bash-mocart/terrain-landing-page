@@ -1,7 +1,7 @@
 # Web App Integration Plan
 
 Status: Active. Phase 0 complete, Phase 1 in progress.
-Last updated: 2026-08-26
+Last updated: 2026-08-29
 
 ## Goal
 
@@ -27,6 +27,11 @@ front end works around.
 Phase 0 is closed and Phase 1 has started. This section records how far the
 work has reached; the specs linked above carry the detail.
 
+Immediate delivery order: add a clear landing-to-web handoff, separate product
+navigation from marketing navigation, build `/explore`, then add mobile bottom
+navigation once Home and Explore are both real destinations. Continue with the
+remaining public routes after the shared shell reads as one coherent web app.
+
 Built:
 
 - **Shared API client.** `src/lib/api.ts` and `src/lib/types.ts`. Every request
@@ -36,6 +41,9 @@ Built:
 - **Product shell.** `src/app/(product)/` and `src/components/shell/`, the
   header shared by the product routes.
 - **`/browse`.** The first Phase 1 route, and the first consumer of the shell.
+- **Landing-to-web handoff.** The landing hero and header offer Browse
+  properties as the browser-product entry and keep app download as a separate
+  marketing choice. The footer's listings entry points to `/browse`.
 
 Still open from the original survey:
 
@@ -143,11 +151,94 @@ why the signup form is the one path that must not run against production.
 ### Phase 1: buyer public browsing (core, SEO) (in progress)
 
 - `/explore`, `/browse`, `/listing/[id]`, `/search`, `/seller/[id]`, `/estate/[id]`.
-- `/browse` is built. The other five are not started. `/explore` is next: it is
-  the second destination the product shell needs before its mobile tab bar can
-  return.
+- `/browse` is built. The other five are not started. Navigation-shell work is
+  the current prerequisite; `/explore` is the next route after that work.
 - Public pages fetch in Server Components (server-rendered for SEO).
 - Keep client-side price formatting (matches the mobile app); optionally add `price_label` to the backend later.
+
+#### Navigation and shell order
+
+- Remove marketing links and the marketing-style hamburger from product routes.
+  Mobile gets compact product chrome; desktop shows only working product
+  destinations.
+- Build `/explore` after that separation and activate it only when its own
+  acceptance criteria pass.
+- Add the fixed mobile bottom navigation after Home and Explore are both real.
+  The full destination order is Explore, Home, Chat, Saved, Profile, but
+  unavailable routes must not look or behave like working links.
+
+#### `/explore` delivery plan
+
+Build `/explore` as separate implementation units. Each unit must stay within
+the repository's file-count rule and finish with TypeScript, lint, and build
+verification before the next begins.
+
+**Unit 1 — map foundation**
+
+- Add the compact map-marker response type using the exact backend fields:
+  `id`, `lng`, `lat`, `price`, `type`, `verified`, `state`, `type_slug`, and
+  the optional 3D fields already returned by `GET /v1/listings/map`.
+- Add one shared data function for `GET /v1/listings/map`; request the Nigeria
+  bounds and let Mapbox handle viewport culling locally. Refetch only when a
+  server-backed filter changes, not after every pan or zoom.
+- Add a Server Component route for metadata and static page structure, with a
+  Client Component leaf for Mapbox and browser interaction.
+- Render the satellite-streets map, clustered count markers, and individual
+  price pills. Cluster activation zooms into the cluster.
+- Include loading, missing-token, empty-result, request-error, and retry states.
+  Do not use fallback or sample listings on the product route.
+- Add All, Land, and House controls backed by `type_slug`; filter changes
+  replace the marker set without resetting ordinary map movement.
+- Mark `/explore` ready in the shared product destinations only when the route
+  works at desktop and mobile widths.
+
+**Unit 2 — selection and listing preview**
+
+- Selecting a price pill highlights it, moves the camera without obscuring the
+  preview, and fetches `GET /v1/listings/{id}` through the shared API client.
+- Render the selected listing in a reusable preview card with stable loading,
+  success, failure, and retry states.
+- Keep navigation to `/listing/[id]` disabled until that route exists; do not
+  ship a link to a missing destination.
+- Dismissing the selection restores the unselected marker state without
+  refetching all markers.
+
+**Unit 3 — location and advanced filters**
+
+- Add location search only after its backend/geocoding contract is verified.
+- Add state, subtype, price, document, size, and development filters in a
+  dedicated filter surface. Only send parameters confirmed by the backend
+  route; do not simulate unsupported filtering against the compact marker
+  payload.
+- Active filters remain visible and individually removable. Provide one clear
+  all action and debounce rapid server-backed changes.
+
+**Unit 4 — development aggregates**
+
+- Add `GET /v1/estates/map` using the same country bounds.
+- Development mode and individual-listing mode are mutually exclusive so an
+  estate is not shown beside its own units.
+- Selecting an estate stays non-navigable until `/estate/[id]` exists.
+
+**Deferred from the first `/explore` release**
+
+- Reach and landmark overlays.
+- Plot-boundary extrusion and reveal animation.
+- 3D house-model rendering.
+- These require their own verified contracts, browser performance checks, and
+  implementation plans; their presence in the compact marker payload does not
+  make them part of Unit 1.
+
+**`/explore` acceptance criteria**
+
+- The route shows real API markers across Nigeria with no hardcoded inventory.
+- Clusters, price pills, filtering, selection, retry, and empty states work at
+  desktop and mobile widths.
+- Map movement does not trigger redundant network requests or make markers
+  disappear.
+- Every request uses `src/lib/api.ts`; no inline API base URL or raw `fetch` is
+  introduced.
+- Missing configuration and API failures remain visible and recoverable.
 
 ### Phase 2: auth (not started)
 

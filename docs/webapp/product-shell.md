@@ -1,11 +1,12 @@
 # Product shell
 
 Status: built, in review
-Last updated: 2026-08-24
+Last updated: 2026-08-29
 
-The shared chrome around the product routes. Today that is one header. A mobile
-tab bar joins it when a second destination exists. Covers why the shell exists,
-what it renders, and the decisions taken along the way.
+The shared chrome around the product routes. Today that is one header. The
+next shell unit removes the remaining marketing navigation before product
+routes expand. Covers why the shell exists, what it renders, and the decisions
+taken along the way.
 
 ## Related docs
 
@@ -34,7 +35,8 @@ routes were about to.
   `layout.tsx` supplies the shell. Route groups do not affect URLs, so
   `/browse` stays `/browse`.
 - **`ProductNav`**: sticky header. Logo, the destinations inline on desktop, a
-  hamburger menu on mobile, and the app download call to action.
+  hamburger menu on mobile, and the app download call to action. Its current
+  marketing links are transitional and are removed in the next shell unit.
 - **`destinations.ts`**: the destination list, in one place, so every surface
   that renders navigation reads the same order and the same routes.
 - **`DestinationIcon`**: line glyphs on a shared 24px grid, keyed by route.
@@ -70,9 +72,11 @@ phases land. Rendering all five with four inert was tried first, reasoning that
 a stable shell shape is worth more than a short one. It is not: on a public
 surface, navigation that is mostly dead reads as broken software.
 
-**The mobile menu carries the marketing links.** How it works, Products and
-Properties, matching `LINKS` in `TopNav`, plus the download call to action and
-the current destinations as chips.
+**Marketing and product navigation are separate.** `/` owns How it works,
+Products, Properties, app-download promotion, and the marketing footer. Product
+routes own only buyer destinations and compact product chrome. The current
+`ProductNav` mobile menu still crosses that boundary; removing it is the next
+shell implementation unit.
 
 ## Accessibility
 
@@ -81,14 +85,16 @@ the current destinations as chips.
   landmark needs its own distinct label, or a screen reader cannot tell them
   apart.
 - The mobile menu is a labelled dialog that moves focus to its close button,
-  locks body scroll, and closes on Escape.
+  locks body scroll, and closes on Escape. This requirement leaves with the
+  menu when the approved product-shell separation is implemented.
 
 ## Deferred
 
 **The mobile tab bar.** Built once, then removed before shipping. With only
 `/browse` ready it rendered a bar with a single tab, which is worse than no bar
-at all. It returns with `/explore`, the next Phase 1 route, when there are two
-real destinations to move between.
+at all. It returns after `/explore` provides a second real destination. The
+five-destination structure can be defined centrally, but unavailable routes
+must not look or behave like working links.
 
 When it comes back:
 
@@ -109,7 +115,6 @@ When it comes back:
   treats the blur as load-bearing for legibility, so whether it goes solid is a
   brand decision rather than a shell one.
 
-- `ProductNav` and `TopNav` share roughly 180 lines of near-identical menu
-  code: the overlay, the hamburger and close glyphs, the scroll lock, the
-  focus effect. Two variants is tolerable. Before a third navigation surface
-  exists, extract the glyphs and the menu shell.
+- `ProductNav` still includes landing-page links and a mobile hamburger. The
+  approved next shell unit removes both rather than extracting and preserving
+  duplicate marketing-menu code.

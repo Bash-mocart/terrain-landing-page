@@ -9,7 +9,7 @@ const NAV = [
   {
     heading: "Explore",
     links: [
-      { label: "Available Listings", href: "/#listings" },
+      { label: "Available Listings", href: "/browse" },
       { label: "How it Works", href: "/#how-it-works" },
       { label: "Get the App", href: "/#download" },
       { label: "Sample Agent Profile", href: "/agents/sample" },

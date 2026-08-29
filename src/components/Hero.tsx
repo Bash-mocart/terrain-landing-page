@@ -5,7 +5,7 @@ import Link from "next/link";
 import { LiveMap } from "./LiveMap";
 
 // Hero. The map fills the full hero as a backdrop; headline, eyebrow,
-// subhead, and two store CTAs overlay on the left half. Matches the
+// subhead, and web/app choices overlay on the left half. Matches the
 // Figma's 1440x1012 hero composition where the map is the surface,
 // not a side panel. A subtle Warm Canvas wash on the left lifts text
 // contrast against any high-contrast street segments behind it.
@@ -100,8 +100,26 @@ export function Hero() {
             estate agents and companies we have CAC-verified and vetted.
           </p>
           <div className="mt-10 flex flex-wrap items-center gap-3">
-            <StoreButton href="https://apps.apple.com" platform="ios" />
-            <StoreButton href="https://play.google.com" platform="android" />
+            <Link
+              href="/browse"
+              className="inline-flex min-h-12 items-center justify-center rounded-full border border-primary bg-primary px-6 py-3 text-canvas transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-verified focus-visible:ring-offset-2 focus-visible:ring-offset-canvas"
+              style={{
+                fontFamily: "var(--font-interactive)",
+                fontWeight: 600,
+              }}
+            >
+              Browse properties
+            </Link>
+            <Link
+              href="/#download"
+              className="inline-flex min-h-12 items-center justify-center rounded-full border border-primary bg-canvas/85 px-6 py-3 text-primary transition-colors hover:bg-canvas focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-verified focus-visible:ring-offset-2 focus-visible:ring-offset-canvas"
+              style={{
+                fontFamily: "var(--font-interactive)",
+                fontWeight: 600,
+              }}
+            >
+              Get the app
+            </Link>
           </div>
           {/* Mobile-only explore-the-map affordance. Sits in the document
              flow beneath the store CTAs as a caps eyebrow link, so it
@@ -128,52 +146,5 @@ export function Hero() {
         </div>
       </div>
     </section>
-  );
-}
-
-function StoreButton({
-  href,
-  platform,
-}: {
-  href: string;
-  platform: "ios" | "android";
-}) {
-  return (
-    <Link
-      href={href}
-      className="inline-flex items-center gap-3 rounded-full border border-primary bg-primary px-5 py-3 text-canvas transition-opacity hover:opacity-90"
-    >
-      {platform === "ios" ? <AppleGlyph /> : <PlayGlyph />}
-      <span className="flex flex-col leading-tight">
-        <span
-          className="text-[9px] uppercase tracking-[0.18em] text-canvas/70"
-          style={{ fontFamily: "var(--font-interactive)" }}
-        >
-          {platform === "ios" ? "Download on" : "Get it on"}
-        </span>
-        <span
-          className="text-[15px]"
-          style={{ fontFamily: "var(--font-interactive)", fontWeight: 600 }}
-        >
-          {platform === "ios" ? "App Store" : "Google Play"}
-        </span>
-      </span>
-    </Link>
-  );
-}
-
-function AppleGlyph() {
-  return (
-    <svg viewBox="0 0 24 24" className="h-6 w-6 fill-current" aria-hidden>
-      <path d="M17.5 12.4c0-2.7 2.2-4 2.3-4.1-1.3-1.8-3.2-2.1-3.9-2.1-1.7-.2-3.2 1-4 1-.8 0-2.1-1-3.5-1-1.8 0-3.4 1-4.3 2.7-1.8 3.2-.5 7.9 1.3 10.5.9 1.3 1.9 2.7 3.3 2.6 1.3-.1 1.8-.8 3.4-.8s2.1.8 3.5.8c1.5 0 2.4-1.3 3.3-2.6 1-1.4 1.5-2.8 1.5-2.9-.1 0-2.9-1.1-2.9-4.1zM14.8 4.5c.7-.9 1.2-2.1 1.1-3.4-1 .1-2.3.7-3 1.6-.7.8-1.3 2.1-1.1 3.3 1.2.1 2.3-.6 3-1.5z" />
-    </svg>
-  );
-}
-
-function PlayGlyph() {
-  return (
-    <svg viewBox="0 0 24 24" className="h-6 w-6 fill-current" aria-hidden>
-      <path d="M3.6 1.8C3.2 2 3 2.5 3 3v18c0 .5.2 1 .6 1.2l9.6-9.6L3.6 1.8zM14.7 11.4l2.7-2.7 5.1 2.9c.4.2.6.6.6 1s-.2.8-.6 1l-5.1 2.9-2.7-2.7v-2.4zM4.5 22.5l9.2-9.2 2.7 2.7-9.9 5.7c-.5.3-1.4.5-2 .8z" />
-    </svg>
   );
 }
