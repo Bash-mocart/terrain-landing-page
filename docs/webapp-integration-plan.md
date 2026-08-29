@@ -39,7 +39,8 @@ Built:
   repointed, and no component holds an inline `fetch` or its own base URL any
   more.
 - **Product shell.** `src/app/(product)/` and `src/components/shell/`, the
-  header shared by the product routes.
+  compact header shared by the product routes. Marketing links, app promotion,
+  and the marketing footer remain exclusive to `/`.
 - **`/browse`.** The first Phase 1 route, and the first consumer of the shell.
 - **Landing-to-web handoff.** The landing hero and header offer Browse
   properties as the browser-product entry and keep app download as a separate
@@ -151,16 +152,16 @@ why the signup form is the one path that must not run against production.
 ### Phase 1: buyer public browsing (core, SEO) (in progress)
 
 - `/explore`, `/browse`, `/listing/[id]`, `/search`, `/seller/[id]`, `/estate/[id]`.
-- `/browse` is built. The other five are not started. Navigation-shell work is
-  the current prerequisite; `/explore` is the next route after that work.
+- `/browse` is built. The other five are not started. Product-shell separation
+  is complete; `/explore` is next.
 - Public pages fetch in Server Components (server-rendered for SEO).
 - Keep client-side price formatting (matches the mobile app); optionally add `price_label` to the backend later.
 
 #### Navigation and shell order
 
-- Remove marketing links and the marketing-style hamburger from product routes.
-  Mobile gets compact product chrome; desktop shows only working product
-  destinations.
+- Product routes use compact chrome with no marketing links, download CTA, or
+  mobile hamburger. Desktop destinations stay hidden while Home is the only
+  ready route.
 - Build `/explore` after that separation and activate it only when its own
   acceptance criteria pass.
 - Add the fixed mobile bottom navigation after Home and Explore are both real.
