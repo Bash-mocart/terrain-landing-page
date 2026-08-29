@@ -22,6 +22,7 @@ const LINKS = [
   { label: "How it works", href: "/#how-it-works" },
   { label: "Products", href: "/#the-terrain-way" },
   { label: "Properties", href: "/#listings" },
+  { label: "Get the app", href: "/#download" },
 ];
 
 export function TopNav() {
@@ -73,7 +74,7 @@ export function TopNav() {
     >
       <nav
         aria-label="Primary"
-        className={`flex w-full max-w-[760px] items-center justify-between gap-6 rounded-full border px-5 py-2.5 transition-all duration-300 md:w-auto md:gap-9 md:px-7 md:py-3 ${
+        className={`flex w-full max-w-5xl items-center justify-between gap-6 rounded-full border px-5 py-2.5 transition-all duration-300 lg:w-auto lg:gap-9 lg:px-7 lg:py-3 ${
           scrolled
             ? "border-[--color-border-rule] bg-canvas/95 shadow-[0_10px_34px_rgba(9,5,3,0.16)] backdrop-blur-md"
             : "border-[--color-border-rule] bg-canvas/80 shadow-[0_8px_28px_rgba(9,5,3,0.10)] backdrop-blur-md"
@@ -84,7 +85,7 @@ export function TopNav() {
         </Link>
 
         <div
-          className="hidden items-center gap-8 text-sm text-primary md:flex"
+          className="hidden items-center gap-8 text-sm text-primary lg:flex"
           style={{ fontFamily: "var(--font-interactive)" }}
         >
           {LINKS.map((l) => (
@@ -96,20 +97,20 @@ export function TopNav() {
               {l.label}
             </Link>
           ))}
-          {/* The nav's own conversion exit. A typical landing nav ends
-             in its primary CTA; ours is the app download close. */}
+          {/* The nav's primary conversion takes visitors into the browser
+             product. App download remains available as a marketing link. */}
           <Link
-            href="/#download"
+            href="/browse"
             className="-mr-2 rounded-full bg-primary px-5 py-2 text-canvas transition-opacity hover:opacity-90"
             style={{ fontFamily: "var(--font-interactive)", fontWeight: 600 }}
           >
-            Get the app
+            Browse properties
           </Link>
         </div>
 
         <button
           type="button"
-          className="-mr-1 inline-flex h-9 w-9 items-center justify-center text-primary md:hidden"
+          className="-mr-1 inline-flex h-9 w-9 items-center justify-center text-primary lg:hidden"
           aria-label="Open menu"
           aria-expanded={menuOpen}
           aria-controls="mobile-menu"
@@ -125,7 +126,7 @@ export function TopNav() {
           role="dialog"
           aria-modal="true"
           aria-label="Menu"
-          className="terrain-menu-overlay fixed inset-0 z-50 flex flex-col bg-canvas md:hidden"
+          className="terrain-menu-overlay fixed inset-0 z-50 flex flex-col bg-canvas lg:hidden"
         >
           <div className="flex items-center justify-between px-6 py-4">
             <Link
@@ -184,12 +185,12 @@ export function TopNav() {
 
           <div className="px-6 pb-10">
             <Link
-              href="/#download"
+              href="/browse"
               onClick={() => setMenuOpen(false)}
               className="flex w-full items-center justify-center rounded-full bg-primary px-6 py-4 text-canvas"
               style={{ fontFamily: "var(--font-interactive)", fontWeight: 600 }}
             >
-              Get the app
+              Browse properties
             </Link>
             <p
               className="mt-5 text-center text-[11px] uppercase tracking-[0.16em] text-secondary"
