@@ -18,7 +18,7 @@ export function ProductNav() {
   return (
     <header className="sticky top-0 z-40 border-b border-border-rule bg-canvas">
       <div className="mx-auto flex max-w-[1280px] items-center justify-between gap-6 px-6 py-4 sm:px-8 lg:px-10">
-        <Link href="/" aria-label="Terrain home">
+        <Link href="/" prefetch={false} aria-label="Terrain home">
           <TerrainLogo markSize={26} tone="onLight" wordClassName="text-2xl" />
         </Link>
 
