@@ -1,12 +1,12 @@
 # Product shell
 
-Status: built, in review
-Last updated: 2026-08-29
+Status: built
+Last updated: 2026-08-30
 
-The shared chrome around the product routes. Today that is one header. The
-next shell unit removes the remaining marketing navigation before product
-routes expand. Covers why the shell exists, what it renders, and the decisions
-taken along the way.
+The shared chrome around the product routes. Today that is a compact header;
+mobile bottom navigation joins it once a second product destination exists.
+Covers why the shell exists, what it renders, and the decisions taken along
+the way.
 
 ## Related docs
 
@@ -35,22 +35,20 @@ routes were about to.
   `layout.tsx` supplies the shell. Route groups do not affect URLs, so
   `/browse` stays `/browse`.
 - **`ProductNav`**: sticky header. Logo, the destinations inline on desktop, a
-  hamburger menu on mobile, and the app download call to action. Its current
-  marketing links are transitional and are removed in the next shell unit.
+  compact brand-only treatment on mobile, and no marketing links or app
+  promotion. Desktop destinations stay hidden until at least two are ready.
 - **`destinations.ts`**: the destination list, in one place, so every surface
   that renders navigation reads the same order and the same routes.
 - **`DestinationIcon`**: line glyphs on a shared 24px grid, keyed by route.
 
 The landing page keeps `TopNav` and stays outside the group.
 
-A mobile tab bar mirroring the Flutter app's bottom navigation is planned but
-not built. See "Deferred" below.
+A mobile tab bar is planned but not built. See "Deferred" below.
 
 ## Destinations
 
-Mirrors `_buyerTabs` in `terra-land/lib/screens/main_shell.dart`, in the same
-order. `destinations.ts` lists all five and exports only the ones marked
-`ready`, so adding a route to the navigation means flipping one flag.
+`destinations.ts` lists all five in their fixed order and exports only the ones
+marked `ready`, so adding a route to the navigation means flipping one flag.
 
 | Tab | Route | Available |
 | --- | --- | --- |
@@ -74,9 +72,12 @@ surface, navigation that is mostly dead reads as broken software.
 
 **Marketing and product navigation are separate.** `/` owns How it works,
 Products, Properties, app-download promotion, and the marketing footer. Product
-routes own only buyer destinations and compact product chrome. The current
-`ProductNav` mobile menu still crosses that boundary; removing it is the next
-shell implementation unit.
+routes own only buyer destinations and compact product chrome.
+
+**A single destination is not navigation.** With only Home ready, the header
+shows the Terrain mark and nothing else. Desktop destination links appear once
+two or more routes are ready. Mobile destinations remain reserved for the
+bottom navigation.
 
 ## Accessibility
 
@@ -84,9 +85,6 @@ shell implementation unit.
 - The header's navigation landmark is labelled "Primary". A second navigation
   landmark needs its own distinct label, or a screen reader cannot tell them
   apart.
-- The mobile menu is a labelled dialog that moves focus to its close button,
-  locks body scroll, and closes on Escape. This requirement leaves with the
-  menu when the approved product-shell separation is implemented.
 
 ## Deferred
 
@@ -114,7 +112,3 @@ When it comes back:
   the landing page's floating pill over the hero map, where its own comment
   treats the blur as load-bearing for legibility, so whether it goes solid is a
   brand decision rather than a shell one.
-
-- `ProductNav` still includes landing-page links and a mobile hamburger. The
-  approved next shell unit removes both rather than extracting and preserving
-  duplicate marketing-menu code.
