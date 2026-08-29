@@ -71,6 +71,9 @@ decision 6 in the umbrella plan.
 
 ## Open items
 
+- Listing cards remain non-interactive until `/listing/[id]` exists. Do not
+  wrap them in links before that route ships: production prefetches every
+  visible destination and turns each missing detail route into a 404 request.
 - The empty state and the everything-failed state look alike. A reader cannot
   tell "no properties match these filters" from "the feed came back empty
   because something is wrong upstream".
