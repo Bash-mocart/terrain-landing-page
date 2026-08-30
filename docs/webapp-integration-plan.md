@@ -27,10 +27,10 @@ front end works around.
 Phase 0 is closed and Phase 1 has started. This section records how far the
 work has reached; the specs linked above carry the detail.
 
-Immediate delivery order: add a clear landing-to-web handoff, separate product
-navigation from marketing navigation, build `/explore`, then add mobile bottom
-navigation once Home and Explore are both real destinations. Continue with the
-remaining public routes after the shared shell reads as one coherent web app.
+Immediate delivery order: finish the `/explore` map foundation, build its map
+controls and listing interaction, then add mobile bottom navigation once Home
+and Explore are both real destinations. Continue with the remaining public
+routes after the shared shell reads as one coherent web app.
 
 Built:
 
@@ -45,6 +45,10 @@ Built:
 - **Landing-to-web handoff.** The landing hero and header offer Browse
   properties as the browser-product entry and keep app download as a separate
   marketing choice. The footer's listings entry points to `/browse`.
+
+In progress:
+
+- **`/explore`.** Unit 1 is complete; Unit 2 is next.
 
 Still open from the original survey:
 
@@ -152,9 +156,11 @@ why the signup form is the one path that must not run against production.
 ### Phase 1: buyer public browsing (core, SEO) (in progress)
 
 - `/explore`, `/browse`, `/listing/[id]`, `/search`, `/seller/[id]`, `/estate/[id]`.
-- `/browse` is built. The other five are not started. Product-shell separation
-  is complete; `/explore` is next.
-- Public pages fetch in Server Components (server-rendered for SEO).
+- `/browse` is built and `/explore` is in progress. The other four are not
+  started. Product-shell separation is complete.
+- Fetch indexable public-page content in Server Components. Interactive map
+  data may load in the client when that allows the map renderer and its data
+  request to start concurrently.
 - Keep client-side price formatting (matches the mobile app); optionally add `price_label` to the backend later.
 
 #### Navigation and shell order
@@ -174,52 +180,73 @@ Build `/explore` as separate implementation units. Each unit must stay within
 the repository's file-count rule and finish with TypeScript, lint, and build
 verification before the next begins.
 
-**Unit 1 — map foundation**
+**Unit 1 — map foundation (complete)**
 
-- Add the compact map-marker response type using the exact backend fields:
-  `id`, `lng`, `lat`, `price`, `type`, `verified`, `state`, `type_slug`, and
-  the optional 3D fields already returned by `GET /v1/listings/map`.
-- Add one shared data function for `GET /v1/listings/map`; request the Nigeria
-  bounds and let Mapbox handle viewport culling locally. Refetch only when a
-  server-backed filter changes, not after every pan or zoom.
-- Add a Server Component route for metadata and static page structure, with a
-  Client Component leaf for Mapbox and browser interaction.
-- Render the satellite-streets map, clustered count markers, and individual
-  price pills. Cluster activation zooms into the cluster.
-- Include loading, missing-token, empty-result, request-error, and retry states.
-  Do not use fallback or sample listings on the product route.
-- Add All, Land, and House controls backed by `type_slug`; filter changes
-  replace the marker set without resetting ordinary map movement.
-- Mark `/explore` ready in the shared product destinations only when the route
-  works at desktop and mobile widths.
+- Add a typed data function for `GET /v1/listings/map`, using the backend marker
+  contract: `id`, `lng`, `lat`, `price`, `type`, `verified`, `state`,
+  `type_slug`, and the optional 3D fields.
+- Use a Server Component route with a Client Component boundary for Mapbox and
+  browser interaction.
+- Load markers across Nigeria and let Mapbox handle viewport culling locally.
+  Panning and zooming must not trigger API requests; server-backed filter
+  changes must refresh the marker set without resetting the camera.
+- Render the satellite-streets map with native clustering and cluster
+  expansion.
+- Render individual prices as styled pill markers.
+- Support All, Land, and House filtering through `type_slug`.
+- Provide missing-token, empty-result, request-error, and retry states without
+  fallback or sample listings.
+- Add route-level loading feedback for the initial marker request.
+- Verify the complete route at desktop and mobile widths before marking the
+  Explore destination ready.
 
-**Unit 2 — selection and listing preview**
+**Unit 2 — map controls**
 
-- Selecting a price pill highlights it, moves the camera without obscuring the
-  preview, and fetches `GET /v1/listings/{id}` through the shared API client.
-- Render the selected listing in a reusable preview card with stable loading,
-  success, failure, and retry states.
-- Keep navigation to `/listing/[id]` disabled until that route exists; do not
-  ship a link to a missing destination.
-- Dismissing the selection restores the unselected marker state without
-  refetching all markers.
+Decisions required before implementation:
 
-**Unit 3 — location and advanced filters**
+- Choose whether List opens the existing `/browse` route or an in-page list
+  view.
+- Confirm the location-search provider and request contract.
 
-- Add location search only after its backend/geocoding contract is verified.
-- Add state, subtype, price, document, size, and development filters in a
-  dedicated filter surface. Only send parameters confirmed by the backend
-  route; do not simulate unsupported filtering against the compact marker
-  payload.
-- Active filters remain visible and individually removable. Provide one clear
-  all action and debounce rapid server-backed changes.
+Deliverables:
 
-**Unit 4 — development aggregates**
+- Add a responsive control bar containing location search, Map/List selection,
+  and access to filters.
+- Move Land and House into the filter surface. With no type selected, the map
+  shows all listing types; All is not displayed as a persistent filter chip.
+- Display active filters below the control bar and allow each filter to be
+  removed independently.
+- Only expose controls whose behavior is implemented. Location search remains
+  out of the interface until its contract is confirmed.
+- Keep controls clear of Mapbox attribution, zoom controls, and selected map
+  content at supported viewport sizes.
 
-- Add `GET /v1/estates/map` using the same country bounds.
-- Development mode and individual-listing mode are mutually exclusive so an
-  estate is not shown beside its own units.
-- Selecting an estate stays non-navigable until `/estate/[id]` exists.
+**Unit 3 — listing selection and preview**
+
+- Highlight the selected price marker and position the camera so the marker
+  remains visible beside the preview.
+- Fetch `GET /v1/listings/{id}` through the shared API client and render the
+  result in a reusable preview card.
+- Cover loading, success, failure, retry, and dismissal states without
+  reloading the complete marker set.
+- Enable navigation only after `/listing/[id]` is available.
+
+**Unit 4 — location search and advanced filters**
+
+- Implement location search against the confirmed provider and request
+  contract if it was not completed in Unit 2.
+- Add state, subtype, price, document, size, and development filters. Send only
+  parameters supported by the backend map endpoint.
+- Keep active filters individually removable, provide a single clear-all
+  action, and debounce rapid server-backed changes.
+
+**Unit 5 — development aggregates**
+
+- Load development markers from `GET /v1/estates/map` using the same country
+  bounds as listing markers.
+- Keep development and individual-listing modes mutually exclusive so an
+  estate is not displayed alongside its own units.
+- Enable estate navigation only after `/estate/[id]` is available.
 
 **Deferred from the first `/explore` release**
 
@@ -233,8 +260,10 @@ verification before the next begins.
 **`/explore` acceptance criteria**
 
 - The route shows real API markers across Nigeria with no hardcoded inventory.
-- Clusters, price pills, filtering, selection, retry, and empty states work at
+- Initial navigation and subsequent requests provide visible loading feedback.
+- Clusters, price markers, filtering, selection, retry, and empty states work at
   desktop and mobile widths.
+- Every visible search, Map/List, and filter control performs its stated action.
 - Map movement does not trigger redundant network requests or make markers
   disappear.
 - Every request uses `src/lib/api.ts`; no inline API base URL or raw `fetch` is

@@ -12,7 +12,7 @@ export type Destination = {
 };
 
 const ALL: Destination[] = [
-  { label: "Explore", href: "/explore", ready: false },
+  { label: "Explore", href: "/explore", ready: true },
   { label: "Home", href: "/browse", ready: true },
   { label: "Chat", href: "/inbox", ready: false },
   { label: "Saved", href: "/saved", ready: false },
