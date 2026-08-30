@@ -9,7 +9,7 @@ export default function ProductLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-canvas">
+    <div className="grid min-h-dvh grid-rows-[auto_1fr] bg-canvas">
       <ProductNav />
       {children}
     </div>

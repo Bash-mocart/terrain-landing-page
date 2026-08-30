@@ -131,6 +131,25 @@ body {
   }
 }
 
+.terrain-map-loader-pixel {
+  opacity: 0.14;
+  animation: terrain-map-loader 650ms ease-in-out infinite;
+}
+
+@keyframes terrain-map-loader {
+  35% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .terrain-map-loader-pixel {
+    animation: none;
+    opacity: 0.45;
+  }
+}
+
 /* Full-screen mobile menu entrance. Fade + a small downward settle,
    ease-out-expo. The links inside ride the same fade. */
 .terrain-menu-overlay {

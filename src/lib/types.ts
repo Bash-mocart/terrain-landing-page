@@ -36,6 +36,21 @@ export type Listing = {
   has_payment_plan?: boolean;
 };
 
+export type MapMarker = {
+  id: string;
+  lng: number;
+  lat: number;
+  price: number;
+  type: string;
+  verified: boolean;
+  state?: string;
+  type_slug?: "land" | "house";
+  building_3d_url?: string;
+  building_3d_yaw_deg?: number;
+  building_3d_default_scale?: number;
+  building_3d_scale_override?: number;
+};
+
 export type CityCount = {
   city: string;
   state: string;
