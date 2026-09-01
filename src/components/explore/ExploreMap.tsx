@@ -1,25 +1,26 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { getExploreMarkers, type ExploreType } from "@/lib/explore";
+import { getExploreMarkers } from "@/lib/explore";
 import type { MapMarker } from "@/lib/types";
+import type { PlaceSearchResult } from "@/lib/geocoding";
+import { ExploreControls, type ExploreFilter } from "./ExploreControls";
 import { ExploreLoadingIndicator } from "./ExploreLoadingIndicator";
 import { useExploreMap } from "./useExploreMap";
 
-type Filter = "all" | ExploreType;
 type LoadStatus = "ready" | "loading" | "error";
 
 export function ExploreMap() {
   const abortRef = useRef<AbortController | null>(null);
   const [markers, setMarkers] = useState<MapMarker[]>([]);
-  const [filter, setFilter] = useState<Filter>("all");
+  const [filter, setFilter] = useState<ExploreFilter>("all");
   const [status, setStatus] = useState<LoadStatus>("loading");
   const [requestError, setRequestError] = useState<string | null>(null);
   const [initialRequestComplete, setInitialRequestComplete] = useState(false);
-  const { containerRef, hasMapboxToken, mapError, mapReady, sectionRef } =
+  const { containerRef, hasMapboxToken, mapError, mapReady, sectionRef, recenter, selectPlace, zoomIn, zoomOut } =
     useExploreMap(markers);
 
-  const loadMarkers = useCallback(async (nextFilter: Filter) => {
+  const loadMarkers = useCallback(async (nextFilter: ExploreFilter) => {
     abortRef.current?.abort();
     const controller = new AbortController();
     abortRef.current = controller;
@@ -98,28 +99,19 @@ export function ExploreMap() {
         aria-label="Property map"
       />
 
-      <div className="absolute left-4 top-4 z-10 flex rounded-full border border-border-rule bg-canvas p-1 shadow-lg sm:left-6 sm:top-6">
-        {(["all", "land", "house"] as const).map((value) => (
-          <button
-            key={value}
-            type="button"
-            disabled={!initialRequestComplete}
-            onClick={() => {
-              if (value === filter) return;
-              setFilter(value);
-              void loadMarkers(value);
-            }}
-            aria-pressed={filter === value}
-            className={`rounded-full px-4 py-2 text-sm font-semibold capitalize transition-colors ${
-              filter === value
-                ? "bg-primary text-canvas"
-                : "text-primary hover:bg-border-rule"
-            }`}
-          >
-            {value}
-          </button>
-        ))}
-      </div>
+      <ExploreControls
+        filter={filter}
+        disabled={!initialRequestComplete || status === "loading"}
+        onRecenter={recenter}
+        onZoomIn={zoomIn}
+        onZoomOut={zoomOut}
+        onPlaceSelect={(place: PlaceSearchResult) => selectPlace(place.lng, place.lat)}
+        onFilterChange={(nextFilter) => {
+          if (nextFilter === filter) return;
+          setFilter(nextFilter);
+          void loadMarkers(nextFilter);
+        }}
+      />
 
       {showInitialLoading && <ExploreLoadingIndicator />}
 
