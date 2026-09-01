@@ -14,13 +14,14 @@ export function ExploreMap() {
   const abortRef = useRef<AbortController | null>(null);
   const [markers, setMarkers] = useState<MapMarker[]>([]);
   const [filter, setFilter] = useState<ExploreFilter>("all");
+  const [state, setState] = useState("");
   const [status, setStatus] = useState<LoadStatus>("loading");
   const [requestError, setRequestError] = useState<string | null>(null);
   const [initialRequestComplete, setInitialRequestComplete] = useState(false);
   const { containerRef, hasMapboxToken, mapError, mapReady, sectionRef, recenter, selectPlace, zoomIn, zoomOut } =
     useExploreMap(markers);
 
-  const loadMarkers = useCallback(async (nextFilter: ExploreFilter) => {
+  const loadMarkers = useCallback(async (nextFilter: ExploreFilter, nextState = state) => {
     abortRef.current?.abort();
     const controller = new AbortController();
     abortRef.current = controller;
@@ -30,6 +31,7 @@ export function ExploreMap() {
     try {
       const nextMarkers = await getExploreMarkers(
         nextFilter === "all" ? undefined : nextFilter,
+        nextState || undefined,
         controller.signal,
       );
       if (controller.signal.aborted) return;
@@ -41,7 +43,7 @@ export function ExploreMap() {
       setRequestError("We couldn't load properties on the map.");
       setStatus("error");
     }
-  }, []);
+  }, [state]);
 
   useEffect(() => {
     if (!hasMapboxToken) return;
@@ -51,6 +53,7 @@ export function ExploreMap() {
     async function loadInitialMarkers() {
       try {
         const nextMarkers = await getExploreMarkers(
+          undefined,
           undefined,
           controller.signal,
         );
@@ -100,16 +103,27 @@ export function ExploreMap() {
       />
 
       <ExploreControls
-        filter={filter}
+          filter={filter}
+          state={state}
         disabled={!initialRequestComplete || status === "loading"}
         onRecenter={recenter}
         onZoomIn={zoomIn}
         onZoomOut={zoomOut}
-        onPlaceSelect={(place: PlaceSearchResult) => selectPlace(place.lng, place.lat)}
+        onStateClear={() => {
+          setState("");
+          void loadMarkers(filter, "");
+        }}
+        onPlaceSelect={(place: PlaceSearchResult) => {
+          selectPlace(place.lng, place.lat);
+          if (place.state && place.state !== state) {
+            setState(place.state);
+            void loadMarkers(filter, place.state);
+          }
+        }}
         onFilterChange={(nextFilter) => {
           if (nextFilter === filter) return;
           setFilter(nextFilter);
-          void loadMarkers(nextFilter);
+          void loadMarkers(nextFilter, state);
         }}
       />
 

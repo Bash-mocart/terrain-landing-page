@@ -10,13 +10,14 @@ const NIGERIA_BOUNDS = {
   max_lat: 13.8856,
 };
 
-export function getExploreMarkers(typeSlug?: ExploreType, signal?: AbortSignal) {
+export function getExploreMarkers(typeSlug?: ExploreType, state?: string, signal?: AbortSignal) {
   return api.get<MapMarker[]>("/v1/listings/map", {
     cache: "no-store",
     signal,
     query: {
       ...NIGERIA_BOUNDS,
       type_slug: typeSlug,
+      state,
       limit: 500,
     },
   });

@@ -1,6 +1,6 @@
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? "";
 
-export type PlaceSearchResult = { name: string; region: string; lng: number; lat: number };
+export type PlaceSearchResult = { name: string; region: string; state: string; lng: number; lat: number };
 
 export async function searchPlaces(query: string, signal?: AbortSignal): Promise<PlaceSearchResult[]> {
   const trimmed = query.trim();
@@ -15,12 +15,22 @@ export async function searchPlaces(query: string, signal?: AbortSignal): Promise
   const body = (await response.json()) as { features?: unknown[] };
   return (body.features ?? []).flatMap((raw) => {
     if (!raw || typeof raw !== "object") return [];
-    const feature = raw as { text?: unknown; place_name?: unknown; center?: unknown };
+    const feature = raw as { text?: unknown; place_name?: unknown; center?: unknown; place_type?: unknown[]; context?: unknown[] };
     const center = Array.isArray(feature.center) ? feature.center : [];
     const lng = typeof center[0] === "number" ? center[0] : NaN;
     const lat = typeof center[1] === "number" ? center[1] : NaN;
     if (typeof feature.text !== "string" || typeof feature.place_name !== "string" || !Number.isFinite(lng) || !Number.isFinite(lat)) return [];
     const [, region = ""] = feature.place_name.split(", ");
-    return [{ name: feature.text, region, lng, lat }];
+    const contextState = (feature.context ?? []).find((item) => {
+      if (!item || typeof item !== "object") return false;
+      const context = item as { id?: unknown };
+      return typeof context.id === "string" && context.id.startsWith("region.");
+    }) as { text?: unknown } | undefined;
+    const state = feature.place_type?.includes("region")
+      ? feature.text
+      : typeof contextState?.text === "string"
+        ? contextState.text
+        : "";
+    return [{ name: feature.text, region, state, lng, lat }];
   });
 }
