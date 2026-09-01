@@ -11,7 +11,7 @@ export type Destination = {
   ready: boolean;
 };
 
-const ALL: Destination[] = [
+export const ALL_DESTINATIONS: Destination[] = [
   { label: "Explore", href: "/explore", ready: true },
   { label: "Home", href: "/browse", ready: true },
   { label: "Chat", href: "/inbox", ready: false },
@@ -19,4 +19,6 @@ const ALL: Destination[] = [
   { label: "Profile", href: "/account", ready: false },
 ];
 
-export const DESTINATIONS = ALL.filter((destination) => destination.ready);
+export const DESTINATIONS = ALL_DESTINATIONS.filter(
+  (destination) => destination.ready,
+);

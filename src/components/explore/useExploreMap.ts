@@ -39,8 +39,15 @@ export function useExploreMap(markers: MapMarker[]) {
     const section = sectionRef.current;
     const sizeSection = () => {
       const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
+      const bottomNavigation = document.querySelector<HTMLElement>(
+        "[data-product-bottom-nav]",
+      );
+      const bottomNavigationHeight =
+        bottomNavigation?.getBoundingClientRect().height ?? 0;
       const availableHeight = Math.max(
-        viewportHeight - section.getBoundingClientRect().top,
+        viewportHeight -
+          section.getBoundingClientRect().top -
+          bottomNavigationHeight,
         0,
       );
       section.style.height = `${availableHeight}px`;
