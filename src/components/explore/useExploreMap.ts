@@ -69,7 +69,6 @@ export function useExploreMap(markers: MapMarker[]) {
     });
     let styleReady = false;
 
-    map.addControl(new mapboxgl.NavigationControl(), "bottom-right");
     map.addControl(
       new mapboxgl.AttributionControl({ compact: true }),
       "bottom-left",
@@ -155,5 +154,9 @@ export function useExploreMap(markers: MapMarker[]) {
     mapError,
     mapReady,
     sectionRef,
+    zoomIn: () => mapRef.current?.zoomIn(),
+    zoomOut: () => mapRef.current?.zoomOut(),
+    recenter: () => mapRef.current?.easeTo({ center: NIGERIA_CENTER, zoom: INITIAL_ZOOM }),
+    selectPlace: (lng: number, lat: number) => mapRef.current?.easeTo({ center: [lng, lat], zoom: 8.5 }),
   };
 }
