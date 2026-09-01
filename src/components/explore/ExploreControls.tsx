@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { searchPlaces, type PlaceSearchResult } from "@/lib/geocoding";
 
@@ -8,12 +8,14 @@ export type ExploreFilter = "all" | "land" | "house";
 
 type Props = {
   filter: ExploreFilter;
+  state: string;
   disabled: boolean;
   onFilterChange: (filter: ExploreFilter) => void;
   onRecenter: () => void;
   onZoomIn: () => void;
   onZoomOut: () => void;
   onPlaceSelect: (place: PlaceSearchResult) => void;
+  onStateClear: () => void;
 };
 
 const LABELS = { land: "Land", house: "House" } as const;
@@ -22,14 +24,20 @@ function FilterIcon() {
   return <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M4 5h16M7 12h10M10 19h4" /></svg>;
 }
 
-export function ExploreControls({ filter, disabled, onFilterChange, onRecenter, onZoomIn, onZoomOut, onPlaceSelect }: Props) {
+export function ExploreControls({ filter, state, disabled, onFilterChange, onRecenter, onZoomIn, onZoomOut, onPlaceSelect, onStateClear }: Props) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<PlaceSearchResult[]>([]);
   const [searching, setSearching] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
+  const skipNextSearch = useRef(false);
   const hasFilter = filter !== "all";
+  const activeCount = Number(hasFilter) + Number(Boolean(state));
 
   useEffect(() => {
+    if (skipNextSearch.current) {
+      skipNextSearch.current = false;
+      return;
+    }
     if (query.trim().length < 2) return;
     const controller = new AbortController();
     const timer = window.setTimeout(async () => {
@@ -61,11 +69,12 @@ export function ExploreControls({ filter, disabled, onFilterChange, onRecenter, 
       </div>
       {query.trim().length >= 2 && (searching || results.length > 0) && <div className="mt-2 max-w-xl overflow-hidden rounded-2xl border border-border-rule bg-canvas shadow-lg">
         {searching && <p className="px-4 py-3 text-sm text-secondary">Searching…</p>}
-        {results.map((place) => <button key={`${place.lng}-${place.lat}`} type="button" onClick={() => { onPlaceSelect(place); setQuery(place.name); setResults([]); }} className="block w-full px-4 py-3 text-left text-sm hover:bg-border-rule"><span className="block font-semibold text-primary">{place.name}</span><span className="block text-xs text-secondary">{place.region}</span></button>)}
+        {results.map((place, index) => <button key={`${place.name}-${place.lng}-${place.lat}-${index}`} type="button" onClick={() => { skipNextSearch.current = true; onPlaceSelect(place); setQuery(place.name); setResults([]); }} className="block w-full px-4 py-3 text-left text-sm hover:bg-border-rule"><span className="block font-semibold text-primary">{place.name}</span><span className="block text-xs text-secondary">{place.region}</span></button>)}
       </div>}
       <div className="mt-2 flex items-center gap-2 overflow-x-auto pb-1">
-        <button type="button" disabled={disabled} onClick={() => setFilterOpen(true)} aria-expanded={filterOpen} className="relative flex size-10 shrink-0 items-center justify-center rounded-full border border-border-rule bg-canvas text-primary shadow-sm disabled:opacity-50" aria-label="Open filters"><FilterIcon />{hasFilter && <span className="absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-verified text-[10px] font-bold text-canvas">1</span>}</button>
+        <button type="button" disabled={disabled} onClick={() => setFilterOpen(true)} aria-expanded={filterOpen} className="relative flex size-10 shrink-0 items-center justify-center rounded-full border border-border-rule bg-canvas text-primary shadow-sm disabled:opacity-50" aria-label="Open filters"><FilterIcon />{activeCount > 0 && <span className="absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-verified text-[10px] font-bold text-canvas">{activeCount}</span>}</button>
         {hasFilter && <button type="button" disabled={disabled} onClick={() => onFilterChange("all")} className="shrink-0 rounded-full border border-verified bg-canvas px-3 py-1.5 text-xs font-semibold text-verified">{LABELS[filter]} ×</button>}
+        {state && <button type="button" disabled={disabled} onClick={onStateClear} className="shrink-0 rounded-full border border-verified bg-canvas px-3 py-1.5 text-xs font-semibold text-verified">{state} ×</button>}
       </div>
     </div>
     <div className="absolute right-4 top-[42%] z-10 flex flex-col gap-2 sm:right-6">
