@@ -99,10 +99,10 @@ export function Hero() {
             aerials, and 3D tours before you visit. Listed by real
             estate agents and companies we have CAC-verified and vetted.
           </p>
-          <div className="mt-10 flex flex-wrap items-center gap-3">
+          <div className="mt-10 flex flex-nowrap items-center gap-2 sm:gap-3">
             <Link
               href="/browse"
-              className="inline-flex min-h-12 items-center justify-center rounded-full border border-primary bg-primary px-6 py-3 text-canvas transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-verified focus-visible:ring-offset-2 focus-visible:ring-offset-canvas"
+              className="inline-flex min-h-12 shrink-0 items-center justify-center whitespace-nowrap rounded-full border border-primary bg-primary px-5 py-3 text-canvas transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-verified focus-visible:ring-offset-2 focus-visible:ring-offset-canvas sm:px-6"
               style={{
                 fontFamily: "var(--font-interactive)",
                 fontWeight: 600,
@@ -112,7 +112,7 @@ export function Hero() {
             </Link>
             <Link
               href="/#download"
-              className="inline-flex min-h-12 items-center justify-center rounded-full border border-primary bg-canvas/85 px-6 py-3 text-primary transition-colors hover:bg-canvas focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-verified focus-visible:ring-offset-2 focus-visible:ring-offset-canvas"
+              className="inline-flex min-h-12 shrink-0 items-center justify-center whitespace-nowrap rounded-full border border-primary bg-canvas/85 px-5 py-3 text-primary transition-colors hover:bg-canvas focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-verified focus-visible:ring-offset-2 focus-visible:ring-offset-canvas sm:px-6"
               style={{
                 fontFamily: "var(--font-interactive)",
                 fontWeight: 600,
