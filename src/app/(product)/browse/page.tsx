@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { BrowseFilters } from "@/components/browse/BrowseFilters";
+import { BrowsePagination } from "@/components/browse/BrowsePagination";
 import { ListingCard } from "@/components/browse/ListingCard";
 import {
   getBrowseCities,
@@ -9,6 +10,7 @@ import {
   getListingTaxonomy,
   getTerrainPicks,
   getVerifiedThisWeek,
+  BROWSE_PAGE_SIZE,
 } from "@/lib/browse";
 import type { Listing } from "@/lib/types";
 
@@ -23,6 +25,7 @@ type BrowseSearchParams = Promise<{
   type?: string | string[];
   subtype?: string | string[];
   q?: string | string[];
+  page?: string | string[];
 }>;
 
 function valueOf(value: string | string[] | undefined) {
@@ -40,6 +43,7 @@ export default async function BrowsePage({
     typeSlug: valueOf(params.type),
     subtypeSlug: valueOf(params.subtype),
     query: valueOf(params.q),
+    page: Math.max(1, Number(valueOf(params.page)) || 1),
   };
 
   const [feed, hero, verified, cities, taxonomy] = await Promise.all([
@@ -54,12 +58,20 @@ export default async function BrowsePage({
   const verifiedListings = verified.results ?? [];
   const cityCounts = cities ?? [];
   const otherCities = cityCounts.filter((item) => item.city !== filters.city);
+  const cityHref = (city: string) => {
+    const params = new URLSearchParams();
+    params.set("city", city);
+    if (filters.typeSlug) params.set("type", filters.typeSlug);
+    if (filters.subtypeSlug) params.set("subtype", filters.subtypeSlug);
+    if (filters.query) params.set("q", filters.query);
+    return `/browse?${params.toString()}`;
+  };
   const heading = filters.city
     ? `Now in ${filters.city}`
     : "Properties on record";
 
   return (
-    <main className="bg-canvas">
+    <main className="min-w-0 bg-canvas">
       <div className="mx-auto max-w-[1280px] px-6 py-10 sm:px-8 sm:py-14 lg:px-10">
         <div className="max-w-3xl">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-verified">
@@ -106,6 +118,12 @@ export default async function BrowsePage({
           className="mt-14"
           emptyMessage="No properties match these filters yet."
         />
+        <BrowsePagination
+          page={filters.page}
+          total={feed.total}
+          pageSize={BROWSE_PAGE_SIZE}
+          searchParams={{ city: filters.city, type: filters.typeSlug, subtype: filters.subtypeSlug, q: filters.query }}
+        />
 
         {verifiedListings.length > 0 && (
           <PropertySection
@@ -116,16 +134,16 @@ export default async function BrowsePage({
         )}
 
         {otherCities.length > 0 && (
-          <section className="mt-16 border-t border-border-rule pt-10">
-            <h2 className="font-display text-3xl font-bold tracking-tight">
-              Explore other cities
+          <section className="mt-14 border-t border-border-rule pt-8">
+            <h2 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
+              Browse by city
             </h2>
-            <div className="mt-6 flex flex-wrap gap-3">
+            <div className="mt-5 flex snap-x gap-3 overflow-x-auto pb-2">
               {otherCities.map((item) => (
                 <Link
                   key={`${item.city}-${item.state}`}
-                  href={`/browse?city=${encodeURIComponent(item.city)}`}
-                  className="rounded-full border border-border-rule bg-white px-5 py-3 text-sm text-primary transition-colors hover:border-primary"
+                  href={cityHref(item.city)}
+                  className="shrink-0 snap-start rounded-full border border-border-rule bg-white px-5 py-3 text-sm text-primary transition-colors hover:border-primary"
                 >
                   {item.city} · {item.plot_count}
                 </Link>

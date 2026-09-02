@@ -13,12 +13,14 @@ const EMPTY_SEARCH: ListingSearchResponse = {
   limit: 0,
   offset: 0,
 };
+export const BROWSE_PAGE_SIZE = 5;
 
 export type BrowseFilters = {
   city?: string;
   typeSlug?: string;
   subtypeSlug?: string;
   query?: string;
+  page?: number;
 };
 
 function listingQuery(filters: BrowseFilters) {
@@ -48,8 +50,9 @@ async function optional<T>(
 }
 
 export function getBrowseFeed(filters: BrowseFilters) {
+  const page = Math.max(1, filters.page ?? 1);
   return api.get<ListingSearchResponse>("/v1/listings", {
-    query: { ...listingQuery(filters), limit: 10, offset: 0 },
+    query: { ...listingQuery(filters), limit: BROWSE_PAGE_SIZE, offset: (page - 1) * BROWSE_PAGE_SIZE },
   });
 }
 
