@@ -1,10 +1,14 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { getExploreMarkers } from "@/lib/explore";
-import type { MapMarker } from "@/lib/types";
+import {
+  getExploreMarkers,
+  getExploreTaxonomy,
+  type ExploreFilters,
+} from "@/lib/explore";
+import type { ListingTaxonomy, MapMarker } from "@/lib/types";
 import type { PlaceSearchResult } from "@/lib/geocoding";
-import { ExploreControls, type ExploreFilter } from "./ExploreControls";
+import { ExploreControls } from "./ExploreControls";
 import { ExploreLoadingIndicator } from "./ExploreLoadingIndicator";
 import { useExploreMap } from "./useExploreMap";
 
@@ -13,15 +17,15 @@ type LoadStatus = "ready" | "loading" | "error";
 export function ExploreMap() {
   const abortRef = useRef<AbortController | null>(null);
   const [markers, setMarkers] = useState<MapMarker[]>([]);
-  const [filter, setFilter] = useState<ExploreFilter>("all");
-  const [state, setState] = useState("");
+  const [filters, setFilters] = useState<ExploreFilters>({});
+  const [taxonomy, setTaxonomy] = useState<ListingTaxonomy>({ types: [] });
   const [status, setStatus] = useState<LoadStatus>("loading");
   const [requestError, setRequestError] = useState<string | null>(null);
   const [initialRequestComplete, setInitialRequestComplete] = useState(false);
   const { containerRef, hasMapboxToken, mapError, mapReady, sectionRef, recenter, selectPlace, zoomIn, zoomOut } =
     useExploreMap(markers);
 
-  const loadMarkers = useCallback(async (nextFilter: ExploreFilter, nextState = state) => {
+  const loadMarkers = useCallback(async (nextFilters: ExploreFilters) => {
     abortRef.current?.abort();
     const controller = new AbortController();
     abortRef.current = controller;
@@ -29,11 +33,7 @@ export function ExploreMap() {
     setRequestError(null);
 
     try {
-      const nextMarkers = await getExploreMarkers(
-        nextFilter === "all" ? undefined : nextFilter,
-        nextState || undefined,
-        controller.signal,
-      );
+      const nextMarkers = await getExploreMarkers(nextFilters, controller.signal);
       if (controller.signal.aborted) return;
       setMarkers(nextMarkers);
       setStatus("ready");
@@ -43,7 +43,15 @@ export function ExploreMap() {
       setRequestError("We couldn't load properties on the map.");
       setStatus("error");
     }
-  }, [state]);
+  }, []);
+
+  const handleFiltersChange = useCallback(
+    (nextFilters: ExploreFilters) => {
+      setFilters(nextFilters);
+      void loadMarkers(nextFilters);
+    },
+    [loadMarkers],
+  );
 
   useEffect(() => {
     if (!hasMapboxToken) return;
@@ -52,11 +60,7 @@ export function ExploreMap() {
 
     async function loadInitialMarkers() {
       try {
-        const nextMarkers = await getExploreMarkers(
-          undefined,
-          undefined,
-          controller.signal,
-        );
+        const nextMarkers = await getExploreMarkers({}, controller.signal);
         if (controller.signal.aborted) return;
         setMarkers(nextMarkers);
         setStatus("ready");
@@ -73,6 +77,18 @@ export function ExploreMap() {
     void loadInitialMarkers();
     return () => controller.abort();
   }, [hasMapboxToken]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    getExploreTaxonomy(controller.signal)
+      .then(setTaxonomy)
+      .catch((error) => {
+        if (!controller.signal.aborted) {
+          console.warn("explore: listing taxonomy unavailable", error);
+        }
+      });
+    return () => controller.abort();
+  }, []);
 
   if (!hasMapboxToken) {
     return (
@@ -103,28 +119,19 @@ export function ExploreMap() {
       />
 
       <ExploreControls
-          filter={filter}
-          state={state}
+        filters={filters}
+        taxonomy={taxonomy}
         disabled={!initialRequestComplete || status === "loading"}
         onRecenter={recenter}
         onZoomIn={zoomIn}
         onZoomOut={zoomOut}
-        onStateClear={() => {
-          setState("");
-          void loadMarkers(filter, "");
-        }}
         onPlaceSelect={(place: PlaceSearchResult) => {
           selectPlace(place.lng, place.lat);
-          if (place.state && place.state !== state) {
-            setState(place.state);
-            void loadMarkers(filter, place.state);
+          if (place.state && place.state !== filters.state) {
+            handleFiltersChange({ ...filters, state: place.state });
           }
         }}
-        onFilterChange={(nextFilter) => {
-          if (nextFilter === filter) return;
-          setFilter(nextFilter);
-          void loadMarkers(nextFilter, state);
-        }}
+        onFiltersChange={handleFiltersChange}
       />
 
       {showInitialLoading && <ExploreLoadingIndicator />}
@@ -145,7 +152,7 @@ export function ExploreMap() {
                 window.location.reload();
                 return;
               }
-              void loadMarkers(filter);
+              void loadMarkers(filters);
             }}
             className="mt-3 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-canvas"
           >

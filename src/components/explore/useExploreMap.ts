@@ -55,18 +55,32 @@ export function useExploreMap(markers: MapMarker[]) {
     sizeSection();
 
     mapboxgl.accessToken = MAPBOX_TOKEN;
-    const map = new mapboxgl.Map({
-      container: containerRef.current,
-      style: MAP_STYLE,
-      center: NIGERIA_CENTER,
-      zoom: INITIAL_ZOOM,
-      minZoom: MIN_ZOOM,
-      maxZoom: MAX_ZOOM,
-      projection: "mercator",
-      pitchWithRotate: false,
-      touchPitch: false,
-      attributionControl: false,
-    });
+    let disposed = false;
+    let map: mapboxgl.Map;
+    try {
+      map = new mapboxgl.Map({
+        container: containerRef.current,
+        style: MAP_STYLE,
+        center: NIGERIA_CENTER,
+        zoom: INITIAL_ZOOM,
+        minZoom: MIN_ZOOM,
+        maxZoom: MAX_ZOOM,
+        projection: "mercator",
+        pitchWithRotate: false,
+        touchPitch: false,
+        attributionControl: false,
+      });
+    } catch (error) {
+      console.error("explore: Mapbox could not initialize", error);
+      queueMicrotask(() => {
+        if (!disposed) {
+          setMapError("This browser couldn't initialize the property map.");
+        }
+      });
+      return () => {
+        disposed = true;
+      };
+    }
     let styleReady = false;
 
     map.addControl(
@@ -132,6 +146,7 @@ export function useExploreMap(markers: MapMarker[]) {
     mapRef.current = map;
 
     return () => {
+      disposed = true;
       resizeObserver.disconnect();
       window.removeEventListener("resize", resizeMap);
       window.visualViewport?.removeEventListener("resize", resizeMap);
