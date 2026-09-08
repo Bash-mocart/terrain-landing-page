@@ -15,9 +15,11 @@ import { useExploreMap } from "./useExploreMap";
 import { ListingPreviewCard } from "./ListingPreviewCard";
 
 type LoadStatus = "ready" | "loading" | "error";
+const FILTER_REQUEST_DEBOUNCE_MS = 300;
 
 export function ExploreMap() {
   const abortRef = useRef<AbortController | null>(null);
+  const filterRequestTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [markers, setMarkers] = useState<MapMarker[]>([]);
   const [filters, setFilters] = useState<ExploreFilters>({});
   const [taxonomy, setTaxonomy] = useState<ListingTaxonomy>({ types: [] });
@@ -85,15 +87,31 @@ export function ExploreMap() {
 
   const handleFiltersChange = useCallback(
     (nextFilters: ExploreFilters) => {
+      abortRef.current?.abort();
+      if (filterRequestTimerRef.current) {
+        clearTimeout(filterRequestTimerRef.current);
+      }
       selectedListingIdRef.current = null;
       setSelectedListingId(null);
       setSelectedListing(undefined);
       setPreviewStatus("idle");
       setFilters(nextFilters);
-      void loadMarkers(nextFilters);
+      setStatus("loading");
+      filterRequestTimerRef.current = setTimeout(() => {
+        filterRequestTimerRef.current = null;
+        void loadMarkers(nextFilters);
+      }, FILTER_REQUEST_DEBOUNCE_MS);
     },
     [loadMarkers],
   );
+
+  useEffect(() => {
+    return () => {
+      if (filterRequestTimerRef.current) {
+        clearTimeout(filterRequestTimerRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (!hasMapboxToken) return;
@@ -163,7 +181,7 @@ export function ExploreMap() {
       <ExploreControls
         filters={filters}
         taxonomy={taxonomy}
-        disabled={!initialRequestComplete || status === "loading"}
+        disabled={!initialRequestComplete}
         onRecenter={recenter}
         onZoomIn={zoomIn}
         onZoomOut={zoomOut}
