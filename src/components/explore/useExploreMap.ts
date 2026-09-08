@@ -9,8 +9,10 @@ import {
   CLUSTER_LAYER_ID,
   INITIAL_ZOOM,
   MAP_STYLE,
+  MARKER_LAYER_ID,
   markerData,
   NIGERIA_CENTER,
+  SELECTED_MARKER_LAYER_ID,
   SOURCE_ID,
 } from "./exploreMapStyle";
 
@@ -18,7 +20,11 @@ const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? "";
 const MIN_ZOOM = 4;
 const MAX_ZOOM = 20;
 
-export function useExploreMap(markers: MapMarker[]) {
+export function useExploreMap(
+  markers: MapMarker[],
+  selectedMarkerId: string | null,
+  onMarkerSelect: (id: string) => void,
+) {
   const sectionRef = useRef<HTMLElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
@@ -137,10 +143,29 @@ export function useExploreMap(markers: MapMarker[]) {
         map.easeTo({ center: [coordinates[0], coordinates[1]], zoom });
       });
     });
+    map.on("click", MARKER_LAYER_ID, (event) => {
+      const feature = event.features?.[0];
+      const id = feature?.properties?.id;
+      const coordinates = (feature?.geometry as GeoJSON.Point | undefined)
+        ?.coordinates;
+      if (typeof id !== "string" || !coordinates) return;
+      onMarkerSelect(id);
+      map.easeTo({
+        center: [coordinates[0], coordinates[1]],
+        padding: { top: 0, right: 0, bottom: 260, left: 0 },
+        duration: 450,
+      });
+    });
     map.on("mouseenter", CLUSTER_LAYER_ID, () => {
       map.getCanvas().style.cursor = "pointer";
     });
     map.on("mouseleave", CLUSTER_LAYER_ID, () => {
+      map.getCanvas().style.cursor = "";
+    });
+    map.on("mouseenter", MARKER_LAYER_ID, () => {
+      map.getCanvas().style.cursor = "pointer";
+    });
+    map.on("mouseleave", MARKER_LAYER_ID, () => {
       map.getCanvas().style.cursor = "";
     });
     mapRef.current = map;
@@ -153,7 +178,7 @@ export function useExploreMap(markers: MapMarker[]) {
       map.remove();
       mapRef.current = null;
     };
-  }, []);
+  }, [onMarkerSelect]);
 
   useEffect(() => {
     markersRef.current = markers;
@@ -162,6 +187,27 @@ export function useExploreMap(markers: MapMarker[]) {
       | undefined;
     source?.setData(markerData(markers));
   }, [markers]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !map.getLayer(SELECTED_MARKER_LAYER_ID)) return;
+    map.setFilter(
+      SELECTED_MARKER_LAYER_ID,
+      selectedMarkerId
+        ? [
+            "all",
+            ["!", ["has", "point_count"]],
+            ["==", ["get", "id"], selectedMarkerId],
+          ]
+        : ["==", ["get", "id"], "__none__"],
+    );
+    if (!selectedMarkerId) {
+      map.easeTo({
+        padding: { top: 0, right: 0, bottom: 0, left: 0 },
+        duration: 300,
+      });
+    }
+  }, [selectedMarkerId]);
 
   return {
     containerRef,

@@ -48,7 +48,7 @@ Built:
 
 In progress:
 
-- **`/explore`.** Unit 1 is complete; Unit 2 is next.
+- **`/explore`.** Units 1, 2, and 4 are complete; Unit 3 (listing selection and preview) is in progress.
 
 Still open from the original survey:
 
