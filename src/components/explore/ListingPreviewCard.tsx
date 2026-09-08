@@ -1,6 +1,7 @@
 "use client";
 
 import type { Listing } from "@/lib/types";
+import Link from "next/link";
 
 type Props = {
   listing?: Listing;
@@ -107,6 +108,12 @@ export function ListingPreviewCard({
                 Listed by {listing.seller_name}
               </p>
             )}
+            <Link
+              href={`/listing/${encodeURIComponent(listing.id)}`}
+              className="mt-5 inline-flex rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-canvas"
+            >
+              View full listing
+            </Link>
           </div>
         </>
       )}
