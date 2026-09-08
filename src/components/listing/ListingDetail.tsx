@@ -20,9 +20,13 @@ function imageStyle(url: string) {
 export function ListingDetail({
   listing,
   error,
+  backHref = "/browse",
+  backLabel = "Browse properties",
 }: {
   listing?: Listing;
   error?: string;
+  backHref?: string;
+  backLabel?: string;
 }) {
   if (error || !listing) {
     return (
@@ -38,10 +42,10 @@ export function ListingDetail({
             {error ?? "Check your connection and try again."}
           </p>
           <Link
-            href="/browse"
+            href={backHref}
             className="mt-8 inline-flex rounded-full bg-primary px-6 py-3 text-sm font-semibold text-canvas"
           >
-            Browse properties
+            {backLabel}
           </Link>
         </div>
       </main>
@@ -54,8 +58,8 @@ export function ListingDetail({
   return (
     <main className="min-w-0 bg-canvas">
       <div className="mx-auto max-w-[1280px] px-6 py-8 sm:px-8 sm:py-12 lg:px-10">
-        <Link href="/browse" className="text-sm font-semibold text-verified">
-          ← Browse properties
+        <Link href={backHref} className="text-sm font-semibold text-verified">
+          ← {backLabel}
         </Link>
 
         <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1.35fr)_minmax(320px,0.65fr)] lg:items-start">
