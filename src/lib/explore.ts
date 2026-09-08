@@ -1,5 +1,5 @@
 import { api } from "./api";
-import type { ListingTaxonomy, MapMarker } from "./types";
+import type { Listing, ListingTaxonomy, MapMarker } from "./types";
 
 export type ExploreType = "land" | "house";
 
@@ -41,4 +41,8 @@ export function getExploreMarkers(
 
 export function getExploreTaxonomy(signal?: AbortSignal) {
   return api.get<ListingTaxonomy>("/v1/listings/taxonomy", { signal });
+}
+
+export function getExploreListing(id: string, signal?: AbortSignal) {
+  return api.get<Listing>(`/v1/listings/${encodeURIComponent(id)}`, { signal });
 }

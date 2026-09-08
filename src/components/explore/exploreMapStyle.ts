@@ -6,9 +6,10 @@ export const NIGERIA_CENTER: [number, number] = [8.6753, 9.082];
 export const INITIAL_ZOOM = 4.2;
 export const SOURCE_ID = "terrain-listings";
 export const CLUSTER_LAYER_ID = "terrain-clusters";
+export const MARKER_LAYER_ID = "terrain-marker-prices";
+export const SELECTED_MARKER_LAYER_ID = "terrain-selected-marker";
 
 const CLUSTER_COUNT_LAYER_ID = "terrain-cluster-count";
-const MARKER_LAYER_ID = "terrain-marker-prices";
 const PRICE_PILL_IMAGE_ID = "terrain-price-pill";
 const CLUSTER_MAX_ZOOM = 11;
 const CLUSTER_RADIUS = 60;
@@ -210,6 +211,18 @@ export function addExploreLayers(map: mapboxgl.Map, markers: MapMarker[]) {
       "text-size": 13,
     },
     paint: { "text-color": "#fdfcfb" },
+  });
+  map.addLayer({
+    id: SELECTED_MARKER_LAYER_ID,
+    type: "circle",
+    source: SOURCE_ID,
+    filter: ["==", ["get", "id"], "__none__"],
+    paint: {
+      "circle-color": "#4a7c59",
+      "circle-radius": 22,
+      "circle-stroke-color": "#fdfcfb",
+      "circle-stroke-width": 3,
+    },
   });
   map.addLayer({
     id: MARKER_LAYER_ID,

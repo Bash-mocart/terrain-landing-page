@@ -3,14 +3,16 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   getExploreMarkers,
+  getExploreListing,
   getExploreTaxonomy,
   type ExploreFilters,
 } from "@/lib/explore";
-import type { ListingTaxonomy, MapMarker } from "@/lib/types";
+import type { Listing, ListingTaxonomy, MapMarker } from "@/lib/types";
 import type { PlaceSearchResult } from "@/lib/geocoding";
 import { ExploreControls } from "./ExploreControls";
 import { ExploreLoadingIndicator } from "./ExploreLoadingIndicator";
 import { useExploreMap } from "./useExploreMap";
+import { ListingPreviewCard } from "./ListingPreviewCard";
 
 type LoadStatus = "ready" | "loading" | "error";
 
@@ -22,8 +24,44 @@ export function ExploreMap() {
   const [status, setStatus] = useState<LoadStatus>("loading");
   const [requestError, setRequestError] = useState<string | null>(null);
   const [initialRequestComplete, setInitialRequestComplete] = useState(false);
+  const [selectedListingId, setSelectedListingId] = useState<string | null>(null);
+  const [selectedListing, setSelectedListing] = useState<Listing | undefined>();
+  const [previewStatus, setPreviewStatus] = useState<"idle" | "loading" | "ready" | "error">("idle");
+  const [previewError, setPreviewError] = useState<string | null>(null);
+  const [previewRetry, setPreviewRetry] = useState(0);
+  const previewAbortRef = useRef<AbortController | null>(null);
+  const selectedListingIdRef = useRef<string | null>(null);
+  const handleMarkerSelect = useCallback((id: string) => {
+    if (selectedListingIdRef.current === id) return;
+    selectedListingIdRef.current = id;
+    setSelectedListingId(id);
+    setSelectedListing(undefined);
+    setPreviewError(null);
+    setPreviewStatus("loading");
+    setPreviewRetry(0);
+  }, []);
   const { containerRef, hasMapboxToken, mapError, mapReady, sectionRef, recenter, selectPlace, zoomIn, zoomOut } =
-    useExploreMap(markers);
+    useExploreMap(markers, selectedListingId, handleMarkerSelect);
+
+  useEffect(() => {
+    if (!selectedListingId) return;
+    previewAbortRef.current?.abort();
+    const controller = new AbortController();
+    previewAbortRef.current = controller;
+    getExploreListing(selectedListingId, controller.signal)
+      .then((listing) => {
+        if (controller.signal.aborted) return;
+        setSelectedListing(listing);
+        setPreviewStatus("ready");
+      })
+      .catch((error) => {
+        if (controller.signal.aborted) return;
+        console.error("explore: listing preview unavailable", error);
+        setPreviewError("We couldn't load this property.");
+        setPreviewStatus("error");
+      });
+    return () => controller.abort();
+  }, [selectedListingId, previewRetry]);
 
   const loadMarkers = useCallback(async (nextFilters: ExploreFilters) => {
     abortRef.current?.abort();
@@ -47,6 +85,10 @@ export function ExploreMap() {
 
   const handleFiltersChange = useCallback(
     (nextFilters: ExploreFilters) => {
+      selectedListingIdRef.current = null;
+      setSelectedListingId(null);
+      setSelectedListing(undefined);
+      setPreviewStatus("idle");
       setFilters(nextFilters);
       void loadMarkers(nextFilters);
     },
@@ -165,6 +207,25 @@ export function ExploreMap() {
         <div className="absolute inset-x-4 bottom-6 z-10 mx-auto max-w-md rounded-2xl border border-border-rule bg-canvas p-5 text-center shadow-xl">
           No properties match this filter yet.
         </div>
+      )}
+
+      {selectedListingId && (
+        <ListingPreviewCard
+          listing={selectedListing}
+          loading={previewStatus === "loading"}
+          error={previewStatus === "error" ? previewError : null}
+          onRetry={() => {
+            setPreviewError(null);
+            setPreviewStatus("loading");
+            setPreviewRetry((value) => value + 1);
+          }}
+          onClose={() => {
+            selectedListingIdRef.current = null;
+            setSelectedListingId(null);
+            setSelectedListing(undefined);
+            setPreviewStatus("idle");
+          }}
+        />
       )}
     </section>
   );
