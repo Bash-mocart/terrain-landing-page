@@ -68,7 +68,7 @@ These are hard rules. Violating any of them wastes time and produces wrong code.
 - All import statements at the top of the file. Never mid-function imports.
 - Never use magic numbers — use named constants with meaningful names.
 - Write production-ready code. Never use sample data, placeholder values, or `lorem ipsum` unless explicitly told to.
-- Avoid unnecessary comments. Code should be self-documenting. Comments explain why, not what.
+- Comment only non-obvious constraints, workarounds, or reasons for a decision. Keep comments to 1–2 lines where practical. Do not narrate code, repeat names, describe visual styling, or preserve development history, critique feedback, or discarded approaches; use Git history or docs for those.
 - Prefer implementation units of 5 files or fewer. For changes affecting 6–10 files, summarize the exact blast radius and get approval before editing. For changes affecting more than 10 files, split the work unless it is one indivisible mechanical change, such as a model rename.
 - Every implementation unit must finish with `npx tsc --noEmit` and `npm run build` passing. `npm run lint` must introduce no new errors; it has 4 pre-existing ones in `LiveMap.tsx`, `Reveal.tsx`, and `SignupForm.tsx`.
 
