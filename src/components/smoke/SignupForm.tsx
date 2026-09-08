@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useRef, useState } from "react";
 import { api } from "@/lib/api";
 
 // Smoke-test signup + the fake-door "request an independent check" rider
@@ -11,6 +11,7 @@ import { api } from "@/lib/api";
 
 // Randomized per visitor (not rotated weekly): kills the time confound.
 const CHECK_PRICES = [50_000, 75_000, 150_000];
+const MAX_SOURCE_LENGTH = 400;
 
 type FbqFn = (...args: unknown[]) => void;
 function track(event: string, params: Record<string, unknown>) {
@@ -36,16 +37,8 @@ export function SignupForm({
   const [signupId, setSignupId] = useState("");
   const [checkRequested, setCheckRequested] = useState(false);
 
-  // One price per visitor, stable across re-renders.
-  const price = useMemo(
-    () => CHECK_PRICES[Math.floor(Math.random() * CHECK_PRICES.length)],
-    [],
-  );
-
-  const [source, setSource] = useState("");
-  useEffect(() => {
-    setSource(window.location.search.slice(0, 400));
-  }, []);
+  const [price, setPrice] = useState<number | null>(null);
+  const sourceRef = useRef<string | null>(null);
 
   async function submitSignup(e: React.FormEvent) {
     e.preventDefault();
@@ -56,17 +49,22 @@ export function SignupForm({
       return;
     }
     setBusy(true);
+    if (price === null) {
+      setPrice(CHECK_PRICES[Math.floor(Math.random() * CHECK_PRICES.length)]);
+    }
+    sourceRef.current ??= window.location.search.slice(0, MAX_SOURCE_LENGTH);
     try {
       const { id } = await api.post<{ id: string }>("/v1/waitlist", {
         contact: contact.trim(),
         intent,
         variant,
-        source,
+        source: sourceRef.current,
       });
       setSignupId(id);
       track("Lead", { variant, intent });
       setStage("offer");
-    } catch {
+    } catch (error) {
+      console.error("Waitlist signup failed:", error);
       setError("Something went wrong. Please try again.");
     } finally {
       setBusy(false);
@@ -75,7 +73,7 @@ export function SignupForm({
 
   async function submitCheckRequest(e: React.FormEvent) {
     e.preventDefault();
-    if (busy) return;
+    if (busy || price === null) return;
     setError("");
     if (details.trim().length === 0) {
       setError("Tell us a little about the property.");
@@ -90,7 +88,8 @@ export function SignupForm({
       track("CheckRequested", { variant, price_naira: price });
       setCheckRequested(true);
       setStage("done");
-    } catch {
+    } catch (error) {
+      console.error("Independent check request failed:", error);
       setError("Something went wrong. Please try again.");
     } finally {
       setBusy(false);
@@ -112,7 +111,7 @@ export function SignupForm({
     );
   }
 
-  if (stage === "offer") {
+  if (stage === "offer" && price !== null) {
     return (
       <form
         onSubmit={submitCheckRequest}

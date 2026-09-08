@@ -1,45 +1,21 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import mapboxgl from "mapbox-gl";
 import Supercluster from "supercluster";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { api } from "@/lib/api";
 import type { ListResponse, Listing } from "@/lib/types";
 
-// Hero backdrop. Mapbox GL JS light streets style + real verified
-// plot pins pulled from /v1/listings. Fills the parent container
-// (the Hero section); the headline + CTAs overlay on top. Pin chrome
-// is a small Forest Verification dot with a Warm Canvas halo so it
-// reads against the colorful street map without competing with the
-// hero copy.
-//
-// Style choice: streets-v12 (light streets) rather than satellite,
-// per the Figma. Cooperative gestures stay true so wheel-zoom needs
-// cmd/ctrl and doesn't hijack page scroll. NavigationControl is
-// dropped; the map is a backdrop, not a control surface.
-
-// Camera defaults. Initial framing covers the FCT urban districts
-// (Maitama, Wuse, Asokoro, Garki). After listings arrive we fit the
-// camera to the actual plot bounds so the visible map is exactly the
-// area where verified plots sit, padded for breathing room.
 const ABUJA_CENTER: [number, number] = [7.4951, 9.0579]; // [lng, lat], central FCT urban
 const ABUJA_ZOOM = 11.4;
-// FCT bounding box, prevents the user from panning to Lagos or beyond
-// once they're inside the map.
+const MOBILE_BREAKPOINT = 640;
 const ABUJA_MAX_BOUNDS: [[number, number], [number, number]] = [
   [7.1, 8.7], // SW
   [7.85, 9.45], // NE
 ];
 
-// Fallback sample plots, one per major Abuja neighbourhood. Used
-// whenever the backend is unreachable (CORS, network, cold start) or
-// returns no verified plots yet. Coordinates are real neighbourhood
-// centroids; prices are representative of recent verified inventory.
-// The day the live API responds the page switches to real data
-// silently. No "sample" labels on the page because that'd be
-// double-talk — the page just shows plots; if there are none on
-// record, the hero would otherwise be empty satellite.
+// Sample fallback inventory used when the API fails or returns no FCT listings.
 const FALLBACK_LISTINGS: Listing[] = [
   {
     id: "sample-asokoro",
@@ -80,24 +56,8 @@ const FALLBACK_LISTINGS: Listing[] = [
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? "";
 
-// Active-popup tracker shared across all pins. Passed by reference into
-// each pin factory so opening one popup can close whichever was open
-// before. Only one popup is visible at any moment regardless of how
-// many pins the user hovers.
 type PopupRef = { current: mapboxgl.Popup | null };
 
-// Cluster-badge factory. When supercluster groups two or more pins
-// into a single visual point at the current zoom level, this renders
-// a Late-Night Boardroom circular badge with the plot count inside
-// it. Buyers read "12 plots" rather than a stack of overlapping
-// price pills — registry-document quietness over marketing density.
-//
-// With the map's cooperative gestures enabled the badge becomes
-// tappable: click / Enter / Space eases the camera into the
-// supercluster-reported expansion zoom for that cluster, breaking
-// the badge apart into its constituent pins (or smaller sub-clusters)
-// on the next idle re-render. Buyers can explore inventory from the
-// hero without leaving the page.
 function createClusterMarker(
   lng: number,
   lat: number,
@@ -111,9 +71,6 @@ function createClusterMarker(
     "aria-label",
     `Explore ${count} verified plots in this area`,
   );
-  // Single span inside the circle; count formatted "12" for ≤99
-  // and "99+" beyond — keeps the badge a consistent two-character
-  // width so the layout stays calm at any cluster size.
   badge.innerHTML = `<span class="terrain-cluster-count">${count > 99 ? "99+" : count}</span>`;
   badge.addEventListener("click", (e) => {
     e.stopPropagation();
@@ -125,11 +82,6 @@ function createClusterMarker(
   ]);
 }
 
-// GeoJSON Point feature properties for supercluster. The leaf carries
-// the full Listing so the same createPinForListing factory can render
-// it once supercluster reports it as a non-cluster leaf at the current
-// zoom. Cluster nodes get their own auto-generated properties from
-// supercluster ({ cluster: true, point_count, cluster_id, ... }).
 type LeafProps = { listing: Listing };
 type ClusterProps = {
   cluster: true;
@@ -138,17 +90,6 @@ type ClusterProps = {
   point_count_abbreviated: string | number;
 };
 
-// Per-pin factory. Every plot on the hero map goes through this exact
-// function — there is no per-pin special-casing, no listing-specific
-// branching, no "skip this one if it has X" logic. If a particular
-// pin behaves differently from others at runtime, the cause is either
-// the listing's data (e.g. missing image_urls) or a geometric overlap
-// at its lat/lng (Mapbox stacks markers in latitude order; a pin
-// underneath another in the same screen position can be unreachable
-// to the cursor). It is NOT differential construction.
-//
-// Returns the Mapbox Marker so the caller can push it onto a markers
-// array for later cleanup.
 function createPinForListing(
   listing: Listing,
   map: mapboxgl.Map,
@@ -161,33 +102,12 @@ function createPinForListing(
     "aria-label",
     `${listing.title ?? "Verified plot"}, ${formatPrice(listing.price)}`,
   );
-  // Price-pill chrome matches the Flutter buyer-map exactly: Late-
-  // Night Boardroom pill with the price in Inter, small triangular
-  // tail beneath the pill so the tip lands on the lat/lng. Two
-  // children (body + tail) so Mapbox anchor "bottom" positions the
-  // tail tip precisely at the coordinate.
   pin.innerHTML = `
     <span class="terrain-pin-body">${formatPrice(listing.price)}</span>
     <span class="terrain-pin-tail" aria-hidden="true"></span>
   `;
 
-  // Pick the first usable http(s) media url. The Flutter app uploads
-  // images to media.terrain.ng; backend ships them verbatim. Videos
-  // (.mp4 / .mov) and images render side by side here: whichever is
-  // first in image_urls wins. Video listings get an autoplay loop
-  // (muted, playsinline) so the popup shows motion; image listings
-  // get the static background-image card.
-  // Prefer a video so the popup leads with motion (the immersive
-  // "walk every plot through videos, drone aerials, and 3D tours"
-  // promise from the landing copy). Listings whose seller uploaded
-  // media in [image, image, video] order were showing the first image
-  // and the video never autoplayed — reported as "we only show the
-  // images not the video for those ones." Walking the array for a
-  // video URL first, falling back to the first valid URL otherwise,
-  // makes the popup honour the listing's most informative media.
-  //
-  // Detect video by extension. Allow .mp4 / .mov / .webm and tolerate
-  // query strings (e.g. CDN cache busters: media.example.com/clip.mp4?v=2).
+  // Prefer video over still images for the property preview.
   const isVideoUrl = (u: string) =>
     /\.(mp4|mov|webm)(\?|#|$)/i.test(u);
   const validMediaUrls = (listing.image_urls ?? []).filter(
@@ -201,10 +121,6 @@ function createPinForListing(
     listing.size_sqm && Number.isFinite(listing.size_sqm)
       ? `<div class="terrain-popup-meta">${listing.size_sqm.toLocaleString("en-NG")} sqm · ${listing.city ?? "Abuja"}</div>`
       : `<div class="terrain-popup-meta">${listing.city ?? "Abuja"}</div>`;
-  // Renders either a <video> (autoplay loop) or a background-image
-  // div depending on whether the first media is a video file. Both
-  // share .terrain-popup-media for layout so the popup chrome doesn't
-  // shift between media types.
   const mediaBlock = !firstMedia
     ? ""
     : isVideo
@@ -215,9 +131,6 @@ function createPinForListing(
     offset: 14,
     closeButton: false,
     className: "terrain-popup",
-    // anchor: undefined lets Mapbox pick the best side based on
-    // viewport space. Pins near the top get the popup below; pins
-    // anywhere else get the popup above.
     maxWidth: "280px",
   }).setHTML(
     `<div class="terrain-popup-inner">
@@ -234,11 +147,7 @@ function createPinForListing(
     .setLngLat([listing.longitude, listing.latitude])
     .addTo(map);
 
-  // Hover preview with a 120ms close buffer. The cursor needs to be
-  // able to move from pin -> popup without the popup closing on the
-  // gap. setTimeout schedules the close, and a mouseenter on either
-  // pin OR popup cancels it. Single-popup-at-a-time enforced via
-  // popupRef.current so the page never shows two popups at once.
+  // Delay closing so the cursor can cross the gap between pin and popup.
   let closeTimeout: ReturnType<typeof setTimeout> | null = null;
   const cancelClose = () => {
     if (closeTimeout) {
@@ -265,28 +174,17 @@ function createPinForListing(
     }
     popupRef.current = popup;
     popup.setLngLat([listing.longitude, listing.latitude]).addTo(map);
-    // The popup element only exists after addTo. Attach the cursor-
-    // over-popup handlers so the popup stays open while the user
-    // reads it. Also kick any <video> inside the popup into playback;
-    // innerHTML-injected videos don't always honour the autoplay
-    // attribute (browser policy considers them non-user-initiated).
+    // The popup DOM is available only after addTo().
     const popupEl = popup.getElement();
     if (popupEl) {
       popupEl.addEventListener("mouseenter", cancelClose);
       popupEl.addEventListener("mouseleave", scheduleClose);
       popupEl.querySelectorAll("video").forEach((video) => {
-        // Belt-and-suspenders: set muted + playsinline via JS as well
-        // as the HTML attributes. Some browsers (notably mobile
-        // Safari < 17) are inconsistent about parsing boolean
-        // attributes from setHTML-injected markup.
+        // Set playback attributes on the injected video element as well as its markup.
         video.muted = true;
         video.setAttribute("muted", "");
         video.setAttribute("playsinline", "");
 
-        // Surface load-time errors so per-video failures are visible
-        // (codec mismatch on iPhone .mov files in Chrome / Firefox,
-        // CORS rejection, 404, etc.). Without this the .catch below
-        // swallows everything and "some videos don't play" is opaque.
         video.addEventListener("error", () => {
           const err = video.error;
           console.warn(
@@ -296,10 +194,6 @@ function createPinForListing(
           );
         });
 
-        // Race-safe play. play() called before the decoder has any
-        // frame ready can resolve but then stall. If readyState is
-        // < HAVE_FUTURE_DATA we wait for loadedmetadata (cheapest
-        // event that means the file's playable) then try once more.
         const tryPlay = () =>
           video.play().catch((reason) => {
             console.warn(
@@ -312,8 +206,7 @@ function createPinForListing(
           tryPlay();
         } else {
           video.addEventListener("loadedmetadata", tryPlay, { once: true });
-          // Some browsers stall the loaded event entirely on first
-          // hover; call load() to kick the pipeline. Idempotent.
+          // Start loading explicitly when the video has no decoded frame yet.
           video.load();
         }
       });
@@ -342,15 +235,7 @@ function formatPrice(naira: number): string {
 }
 
 type LiveMapProps = {
-  /**
-   * When true on a mobile viewport the map's pan / pinch / double-tap
-   * handlers are enabled and the user can interact freely; when false
-   * the map is a backdrop and single-finger touches pass through to
-   * page scroll. The Hero owns this flag so the toggle UI lives in
-   * the document's reading flow (a caps link beneath the store CTAs)
-   * rather than as floating chrome on top of the map. Ignored on
-   * desktop where cooperative-gestures + ⌘+wheel handle interaction.
-   */
+  /** Enable mobile map gestures; desktop interaction is unaffected. */
   isExploring?: boolean;
 };
 
@@ -358,19 +243,13 @@ export function LiveMap({ isExploring = false }: LiveMapProps = {}) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const markersRef = useRef<mapboxgl.Marker[]>([]);
-  // Camera state captured the moment the user enters explore mode,
-  // so exiting can ease back to the original framing instead of
-  // leaving the map stranded wherever the user panned/zoomed to.
+  // Restore the original camera when the user exits explore mode.
   const preExploreCameraRef = useRef<{
     center: mapboxgl.LngLat;
     zoom: number;
   } | null>(null);
-  // isMobile gates the runtime handler-enable effect — desktop
-  // doesn't toggle handlers at runtime because cooperative-gestures
-  // handles its interaction model statically. Set once on mount;
-  // this hero doesn't try to adapt across breakpoints in a single
-  // session (would require tearing down + re-creating the map).
-  const [isMobile, setIsMobile] = useState(false);
+  // Keep the interaction mode chosen at mount; resizing does not recreate the map.
+  const isMobileRef = useRef(false);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -379,39 +258,13 @@ export function LiveMap({ isExploring = false }: LiveMapProps = {}) {
       console.warn("Terrain map: NEXT_PUBLIC_MAPBOX_TOKEN is not set.");
       return;
     }
-    // React 19 strict-mode in dev double-mounts effects. Mapbox's
-    // `map.remove()` cleanup doesn't always evict its DOM children
-    // synchronously, so the second mount can land on a non-empty
-    // container and warn "The map container element should be empty".
-    // Replacing the children first is harmless on a clean container
-    // and idempotent on a dirty one.
+    // Clear leftover Mapbox DOM before Strict Mode reinitializes the map.
     container.replaceChildren();
     mapboxgl.accessToken = MAPBOX_TOKEN;
 
-    // Interactivity split.
-    //
-    // Desktop: interactive so the user can click-drag to pan the map,
-    // BUT cooperativeGestures is off (no "Hold ⌘ + scroll" tip) and
-    // scroll-zoom is disabled (below), so an ordinary wheel / two-
-    // finger scroll over the full-bleed hero scrolls the PAGE instead
-    // of being captured by the map. Drag-pan without scroll-jacking
-    // and without the blocker overlay.
-    //
-    // Mobile: non-interactive backdrop so single-finger touches pass
-    // straight through to page scroll. The "tap to explore" toggle
-    // (Hero passes isExploring) re-enables dragPan / pinch-zoom at
-    // runtime for users who deliberately opt in.
-    //
-    // Either way: cluster badges + pin pills stay clickable, since
-    // their handlers are DOM listeners outside Mapbox's interaction
-    // system and call map.easeTo() / popup.addTo() programmatically.
-    // Use window.innerWidth, NOT container.clientWidth: inside this
-    // effect the absolutely-positioned container can still measure 0
-    // before layout settles, and 0 < 640 would wrongly flag desktop as
-    // mobile, building the map non-interactive (no drag-pan) with no
-    // desktop toggle to undo it. window.innerWidth is always real.
-    const isMobileVal = window.innerWidth < 640;
-    setIsMobile(isMobileVal);
+    // Use viewport width: the absolute container can measure zero before layout.
+    const isMobileVal = window.innerWidth < MOBILE_BREAKPOINT;
+    isMobileRef.current = isMobileVal;
     const map = new mapboxgl.Map({
       container,
       style: "mapbox://styles/mapbox/streets-v12",
@@ -421,19 +274,13 @@ export function LiveMap({ isExploring = false }: LiveMapProps = {}) {
       attributionControl: false,
       interactive: !isMobileVal,
       cooperativeGestures: false,
-      // 2D inventory map — rotation and pitch would only confuse the
-      // top-down lat/lng reading; keep them off even when the mobile
-      // explore toggle re-enables pan + zoom.
+      // Keep the map flat, including when mobile explore mode enables gestures.
       dragRotate: false,
       pitchWithRotate: false,
       touchPitch: false,
     });
 
-    // Desktop: drag-pan + double-click zoom on (explicitly, so a stray
-    // construction race can't leave them off), but scroll-zoom OFF so a
-    // wheel / two-finger scroll over the map bubbles up to scroll the
-    // page instead of being captured. With cooperativeGestures already
-    // off, no blocker tip ever shows.
+    // Allow desktop panning while leaving wheel scrolling to the page.
     if (!isMobileVal) {
       map.dragPan.enable();
       map.doubleClickZoom.enable();
@@ -449,25 +296,8 @@ export function LiveMap({ isExploring = false }: LiveMapProps = {}) {
     async function loadPins() {
       let listings: Listing[] = [];
       try {
-        // Two parallel calls so both verified lands AND verified houses
-        // surface on the hero map. Notably NO city=Abuja filter on the
-        // query: sellers in the FCT routinely save the city field as
-        // the district (Gwarinpa, Maitama, Wuse, Asokoro, Wuye) instead
-        // of "Abuja", and we'd miss them. Instead we filter on the
-        // client by lat/lng bounding box (ABUJA_MAX_BOUNDS, the same
-        // FCT envelope the map locks to). Anything geographically in
-        // FCT shows up regardless of how the city field is shaped.
-        //
-        // BAND-AID: this client-side filter is a workaround, not the
-        // right answer. The proper fix is data normalisation in the
-        // seller wizard — FCT districts should resolve to city="Abuja"
-        // with the district kept in a separate field. Same pattern for
-        // Lagos districts (Lekki, Ikoyi, Victoria Island). Until that
-        // ships in terra-backend, this bounds filter solves the symptom
-        // for the landing page only; the Flutter buyer-map, the search
-        // results screen, and the city explore screen all still miss
-        // these listings when they filter by city. See
-        // docs/known-data-issues.md for the full fix proposal.
+        // Filter by coordinates because FCT listings may use district names as their city.
+        // See docs/known-data-issues.md for the normalization work.
         const [land, house] = await Promise.all([
           api.get<ListResponse<Listing>>("/v1/listings", {
             query: { verified: true, limit: 50, type_slug: "land" },
@@ -492,30 +322,19 @@ export function LiveMap({ isExploring = false }: LiveMapProps = {}) {
           },
         );
       } catch (e) {
-        // CORS, network, cold start. Log for debugging; fall through to
-        // the empty listings array so the fallback path below renders.
         console.warn("Terrain map fetch failed, using fallback:", e);
         listings = [];
       }
       if (cancelled) return;
-      // Use fallback if the API returns no plots or if the fetch
-      // failed. The hero is never empty.
       if (listings.length === 0) listings = FALLBACK_LISTINGS;
 
       try {
         for (const m of markersRef.current) m.remove();
         markersRef.current = [];
 
-        // Single-popup-at-a-time tracker. Shared across renderClusters
-        // invocations so opening a leaf pin's popup closes whichever
-        // was open before, even across the idle re-renders that fire
-        // after fitBounds settles.
+        // Share the active popup across idle renders so only one remains open.
         const popupRef: PopupRef = { current: null };
 
-        // Build the supercluster index once from the listings. Each
-        // leaf carries its full Listing in feature properties so the
-        // same createPinForListing factory can render it at zoom
-        // levels where supercluster no longer merges it.
         const features = listings
           .filter(
             (l) =>
@@ -530,13 +349,6 @@ export function LiveMap({ isExploring = false }: LiveMapProps = {}) {
             properties: { listing: l },
           }));
 
-        // Cluster radius 50px at the current zoom — empirically the
-        // value where the Wuse / Gwarinpa / Asokoro corridor reads as
-        // 2-3 district badges rather than one giant lump, while a
-        // single neighbourhood with overlapping pins collapses cleanly.
-        // maxZoom 16 means past that level supercluster releases every
-        // pin as a leaf (the hero only ever sits between 10-13, so this
-        // mainly matters when the same module powers the Registry map).
         const cluster = new Supercluster<LeafProps, ClusterProps>({
           radius: 50,
           maxZoom: 16,
@@ -544,22 +356,7 @@ export function LiveMap({ isExploring = false }: LiveMapProps = {}) {
         });
         cluster.load(features);
 
-        // Re-render the visible markers from the supercluster index
-        // every time the map is idle (post-fitBounds settle, post-
-        // initial-load). Idempotent: clear existing markers, recompute
-        // clusters at the current zoom + visible bounds, render.
-        // Cluster bbox is the full FCT envelope, NOT the current
-        // visible viewport. Supercluster's bbox filter is there to
-        // skip points you can't see when you have thousands of them;
-        // we have <50, so the perf savings are zero and the cost is
-        // real: if we filtered by the visible viewport, panning even
-        // a little would shift pins off the bbox edge, dropping them
-        // from the next render. Users reported pins disappearing
-        // after they tapped "explore" and panned. Pinning the bbox
-        // to ABUJA_MAX_BOUNDS means every pin in FCT is always
-        // evaluated, regardless of where the camera sits. Mapbox
-        // clips the markers visually for free; we don't need
-        // supercluster to do it again.
+        // Query the full FCT bounds so panning does not remove edge markers.
         const [[bbWest, bbSouth], [bbEast, bbNorth]] = ABUJA_MAX_BOUNDS;
         const fullBbox: [number, number, number, number] = [
           bbWest,
@@ -579,20 +376,12 @@ export function LiveMap({ isExploring = false }: LiveMapProps = {}) {
           for (const item of items) {
             const [lng, lat] = item.geometry.coordinates as [number, number];
             const props = item.properties;
-            // Discriminate cluster vs leaf via the supercluster-
-            // assigned `cluster: true` flag on cluster features. Leaf
-            // features carry our original LeafProps shape with the
-            // full Listing inside.
             if (
               "cluster" in props &&
               (props as { cluster?: boolean }).cluster === true
             ) {
               const { point_count, cluster_id } = props as ClusterProps;
-              // Ask supercluster how far we need to zoom to break this
-              // cluster apart. +0.5 nudges past the merge threshold so
-              // the next idle render releases the leaves cleanly
-              // instead of rebuilding the same cluster one zoom-level
-              // shallower. Capped at 16 to match the index's maxZoom.
+              // Zoom slightly beyond the cluster split threshold, capped at the index maxZoom.
               const onActivate = () => {
                 const expansionZoom = Math.min(
                   16,
@@ -619,52 +408,23 @@ export function LiveMap({ isExploring = false }: LiveMapProps = {}) {
           }
         };
         map.on("idle", renderClusters);
-        // Render once immediately for the case where the map is
-        // already idle by the time listings finish loading (cache hit,
-        // very fast network). The idle event won't fire again until
-        // something changes, so without this we'd see no markers
-        // until fitBounds runs below.
+        // The map may already be idle when the listings arrive.
         renderClusters();
 
-        // Fit the camera to the actual plot envelope so the visible
-        // map is exactly the area where plots sit. Skip if there are
-        // 0 or 1 plots (fitBounds on a single point throws); the
-        // initial Abuja camera handles those.
         const coords = features.map(
           (f) => f.geometry.coordinates as [number, number],
         );
         if (coords.length >= 2) {
           const bounds = new mapboxgl.LngLatBounds(coords[0], coords[0]);
           for (const c of coords) bounds.extend(c);
-          // Padding adapts to viewport so pins don't get clipped on
-          // narrow screens AND don't sit underneath the content
-          // overlay. The hero overlay (eyebrow + headline + subhead +
-          // two CTA buttons) consumes the top ~460px on mobile, the
-          // top ~520px on tablet, and the left ~40% on desktop. Bias
-          // fitBounds padding into that region so the pin cluster is
-          // pushed into the actually-visible map band — otherwise pins
-          // land geographically correct but behind the headline where
-          // a buyer can never see them.
-          //
-          // maxZoom drops to 12 on mobile so even a single-listing
-          // case shows a few neighbouring districts; at zoom 13 the
-          // camera would tunnel into one street.
+          // Reserve space for the hero text and controls when framing the listings.
           const c = map.getContainer();
           const w = c.clientWidth;
           const h = c.clientHeight;
           const padding =
             w < 640
               ? {
-                  // ~80% of hero height to clear BOTH the CTA stack
-                  // and the "Tap to explore the map" caps link that
-                  // lives beneath the CTAs in the same column. The
-                  // earlier 70% put pill labels right at the link's
-                  // y position, which made the cluster badge clip the
-                  // link text and pin pills overlap with the link
-                  // glyph (impeccable critique P0 / P1). 80% gives
-                  // ~50-70px of clean breathing space between the
-                  // link row and the pin cluster. Capped at 600 for
-                  // foldables / unusually tall viewports.
+                  // Keep pins below the mobile CTA stack and explore toggle.
                   top: Math.min(600, Math.round(h * 0.8)),
                   bottom: 64,
                   left: 24,
@@ -679,11 +439,7 @@ export function LiveMap({ isExploring = false }: LiveMapProps = {}) {
             duration: 700,
           });
         } else if (coords.length === 1) {
-          // Single-pin case: fitBounds can't run (a single point has
-          // zero extent), but we still want the pin rendered in the
-          // visible band rather than behind the headline. Ease to
-          // the pin with a viewport offset that pushes its centerpoint
-          // into the bottom of the hero on mobile.
+          // Offset a single pin away from the hero text.
           const c = map.getContainer();
           const w = c.clientWidth;
           const h = c.clientHeight;
@@ -712,17 +468,8 @@ export function LiveMap({ isExploring = false }: LiveMapProps = {}) {
     };
   }, []);
 
-  // Toggle map interaction handlers in lockstep with isExploring.
-  // The map is constructed non-interactive on mobile, so dragPan /
-  // touchZoomRotate / doubleClickZoom are disabled at startup. When
-  // the user taps "Tap to explore", we enable them; tapping "Done"
-  // disables and eases the camera back to the pre-explore framing
-  // so the user lands where they started rather than wherever they
-  // last panned. Cooperative gestures stays off in both states —
-  // the user has already opted in via the pill, so the overlay
-  // would be pure noise.
   useEffect(() => {
-    if (!isMobile) return;
+    if (!isMobileRef.current) return;
     const map = mapRef.current;
     if (!map) return;
     if (isExploring) {
@@ -745,7 +492,7 @@ export function LiveMap({ isExploring = false }: LiveMapProps = {}) {
         });
       }
     }
-  }, [isExploring, isMobile]);
+  }, [isExploring]);
 
   return (
     <div
