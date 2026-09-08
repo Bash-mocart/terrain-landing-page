@@ -4,43 +4,15 @@ import { useState } from "react";
 import Link from "next/link";
 import { LiveMap } from "./LiveMap";
 
-// Hero. The map fills the full hero as a backdrop; headline, eyebrow,
-// subhead, and web/app choices overlay on the left half. Matches the
-// Figma's 1440x1012 hero composition where the map is the surface,
-// not a side panel. A subtle Warm Canvas wash on the left lifts text
-// contrast against any high-contrast street segments behind it.
-//
-// Hero owns the map's explore-mode toggle state so the affordance
-// (a small caps text link beneath the store CTAs) lives in the
-// document's reading flow rather than on top of the map. The map
-// itself stays clean of UI chrome; the link sets the user's
-// intention from the same place the buyer already reads the
-// headline + subhead.
 export function Hero() {
   const [isExploring, setIsExploring] = useState(false);
 
   return (
     <section className="relative min-h-[680px] w-full overflow-hidden bg-canvas sm:min-h-[760px] lg:min-h-[1012px]">
-      {/* Note: no z-index on this wrapper. The previous z-0 created a
-         stacking context that trapped Mapbox popups inside the map's
-         layer, so on mobile the popup ended up under the wash gradient
-         (z-1) and the bottom fade (z-2). Without z-index here, the
-         popup's CSS rule (z-index: 100) escapes to the section's
-         document context and floats above every overlay. The map
-         canvas still renders below the washes/fade because it is
-         first in DOM order and carries no explicit z-index — auto
-         stacking below explicit z-indexed siblings. */}
+      {/* Avoid a stacking context here so Mapbox popups can appear above the gradients. */}
       <div className="absolute inset-0">
         <LiveMap isExploring={isExploring} />
       </div>
-      {/* Reading wash: covers a wider band on small viewports so the
-         headline always sits on a quieter surface. On mobile (<640px)
-         the column spans the full width since the text column itself
-         takes the whole viewport; on tablet ~70%, on desktop the
-         original 40% so plot pins in the middle/right of the map are
-         never washed out. Two-pass gradient — vertical on mobile
-         (text sits at the top so the bottom of the hero stays open
-         for the map) and horizontal from the lg breakpoint up. */}
       <div
         className="pointer-events-none absolute inset-x-0 top-0 z-[1] h-[60%] bg-gradient-to-b from-canvas/90 via-canvas/65 to-transparent sm:hidden"
         aria-hidden
@@ -49,26 +21,12 @@ export function Hero() {
         className="pointer-events-none absolute inset-y-0 left-0 z-[1] hidden w-3/5 bg-gradient-to-r from-canvas/80 via-canvas/30 to-transparent sm:block lg:w-2/5 lg:from-canvas/75 lg:via-canvas/25"
         aria-hidden
       />
-      {/* Bottom fade: dissolves the sharp horizontal line between the
-         map and the next section (the product-family Warm Canvas
-         surface) into a gradual gradient. Shorter on mobile so it does
-         not eat the already-cramped hero vertical real estate. */}
       <div
         className="pointer-events-none absolute inset-x-0 bottom-0 z-[2] h-20 bg-gradient-to-b from-transparent to-canvas sm:h-32"
         aria-hidden
       />
-      {/* pointer-events-none on the grid container so its empty right
-         half doesn't intercept hover events bound for plot pins behind
-         it. Pin elements at z-0 inside the map were unreachable to the
-         cursor when overlaid by this z-10 layer; mouseenter only fired
-         on pins outside the container's bounding box. */}
+      {/* Let the empty grid area pass pointer events through to map pins. */}
       <div className="pointer-events-none relative z-10 mx-auto grid max-w-[1440px] grid-cols-12 gap-6 px-6 pt-24 pb-16 sm:gap-8 sm:px-8 sm:pt-28 sm:pb-20 lg:px-10 lg:pt-36 lg:pb-32">
-        {/* Text column shrunk from col-span-7 to col-span-6 (58% to 50%)
-           so the headline terminates before it crowds the pin cluster on
-           the right side of the map. Critique flagged "Fear" running
-           into the leftmost pin. pointer-events-auto restored on the
-           content column so eyebrow, CTAs, and any interactive children
-           still receive clicks. */}
         <div className="pointer-events-auto col-span-12 lg:col-span-6">
           <span
             className="inline-block rounded-full bg-canvas/85 px-3 py-1.5 text-xs uppercase tracking-[0.18em] text-primary backdrop-blur-sm"
@@ -84,13 +42,6 @@ export function Hero() {
             <br />
             you can trust.
           </h1>
-          {/* Subhead reframed: Terrain is a marketplace, not an escrow.
-             Trust signal is the agent vetting (CAC-registered + reviewed
-             before listing), not "title confirmed before funds move."
-             NOTE: copy says "across Nigeria" but the LiveMap below is
-             still hard-locked to Abuja (ABUJA_MAX_BOUNDS / pins are FCT
-             only). Widen the map bounds + camera once inventory exists
-             beyond the FCT so the hero map matches this claim. */}
           <p
             className="mt-6 max-w-xl text-lg leading-relaxed text-secondary"
             style={{ fontFamily: "var(--font-body)" }}
@@ -121,20 +72,6 @@ export function Hero() {
               Get the app
             </Link>
           </div>
-          {/* Mobile-only explore-the-map affordance. Sits in the document
-             flow beneath the store CTAs as a caps eyebrow link, so it
-             reads as another voiceline of the registry (same Inter 11px
-             / 0.14em letter-spacing grammar used by every other caps
-             label) rather than as a floating control on top of the map.
-             Desktop already has cooperative-gestures + ⌘+wheel, so the
-             link is hidden via sm:hidden. */}
-          {/* Caps text only — no glyph box. Impeccable critique flagged
-             that the dark Late-Night Boardroom glyph square visually
-             competed with the pin pills (also dark, also rounded) and
-             the cluster badge; three categories of dark elements in
-             the same horizontal band. Plain caps text + inline arrow
-             reads as a typographic link, not as another map control.
-             Hover/focus shifts to Forest Verification + underline. */}
           <button
             type="button"
             onClick={() => setIsExploring((prev) => !prev)}

@@ -4,20 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { TerrainLogo } from "./TerrainLogo";
 
-// Top navigation, "floating pill" design. A detached rounded Warm
-// Canvas pill floats near the top over the hero map. Because the pill
-// is its own surface (Warm Canvas + hairline + blur + soft shadow),
-// the wordmark and links are always legible regardless of the map
-// beneath, no scrim needed. It firms up subtly on scroll.
-//
-// Desktop: the pill hugs its content, centered, logo + inline links.
-// Mobile: the pill spans the width with the logo left and a menu
-// button right; tapping opens the full-screen Warm Canvas overlay so
-// the busy hero never bleeds through behind the links.
-
-// Absolute hrefs so the same nav works from any route (an anchor like
-// "/#listings" routes home, then scrolls). All beats live on the
-// landing now; /how-it-works redirects to its anchor here.
+// Root-relative anchors also work from product and variant routes.
 const LINKS = [
   { label: "How it works", href: "/#how-it-works" },
   { label: "Products", href: "/#the-terrain-way" },
@@ -32,11 +19,6 @@ export function TopNav() {
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
-    // Hide on scroll down, reveal on scroll up. On a page this long
-    // (especially mobile, where the pill spans the width) a permanently
-    // floating white pill sits on every dark plate; retreating while
-    // the reader descends gives the sections back their full canvas,
-    // and any upward flick brings the nav straight back.
     let lastY = window.scrollY;
     const onScroll = () => {
       const y = window.scrollY;
@@ -97,8 +79,6 @@ export function TopNav() {
               {l.label}
             </Link>
           ))}
-          {/* The nav's primary conversion takes visitors into the browser
-             product. App download remains available as a marketing link. */}
           <Link
             href="/browse"
             className="-mr-2 rounded-full bg-primary px-5 py-2 text-canvas transition-opacity hover:opacity-90"

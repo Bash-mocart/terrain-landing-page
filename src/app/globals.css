@@ -1,20 +1,5 @@
 @import "tailwindcss";
 
-/*
- * Terrain brand tokens. Sourced from the Flutter app's DESIGN.md so
- * the marketing site and product surfaces stay visually unified.
- *
- *   Warm Canvas          #fdfcfb   page background, sheet surface
- *   Late-Night Boardroom #090503   primary text + dark CTA surface
- *   Forest Verification  #4a7c59   trust anchor (verified badge, accent)
- *   Survey Gray          #717171   secondary text
- *   Border Rule          #ebebeb   hairlines, dividers, input borders
- *
- * Restrained palette. The five tokens below are exhaustive. Component
- * code can use either the Tailwind class form (bg-canvas, text-primary)
- * via @theme below, OR the literal-hex form (bg-[#fdfcfb]); both
- * resolve to the same value at build time.
- */
 :root {
   --color-canvas: #fdfcfb;
   --color-primary: #090503;
@@ -22,16 +7,10 @@
   --color-secondary: #717171;
   --color-border-rule: #ebebeb;
 
-  /* next/font emits these per-font variables on <html>. Re-published
-     here as semantic role tokens so component code reads as intent
-     (display / body / interactive). */
+  /* Map next/font variables to semantic font roles. */
   --font-display: var(--font-zain), system-ui, sans-serif;
   --font-body: var(--font-nunito), system-ui, sans-serif;
   --font-interactive: var(--font-inter), system-ui, sans-serif;
-  /* Cartographic redesign: a system monospace, used ONLY for
-     coordinates and technical survey annotations. Zero load cost.
-     Coordinates are monospace in the real world; this one role sells
-     the survey feel. */
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, "Cascadia Code",
     "Segoe UI Mono", "Roboto Mono", monospace;
 }
@@ -59,8 +38,7 @@ body {
   color: var(--color-primary);
 }
 
-/* Jump links: smooth scroll (motion-permitting) and an offset so an
-   anchored section doesn't land under the fixed floating nav. */
+/* Keep anchored sections below the fixed navigation. */
 @media (prefers-reduced-motion: no-preference) {
   html {
     scroll-behavior: smooth;
@@ -71,15 +49,6 @@ body {
   scroll-margin-top: 6rem;
 }
 
-/* ============================================================
- * Cartographic survey kit
- *
- * Faint graph/survey-paper textures applied to section backgrounds.
- * Kept very low contrast so they read as paper, not noise. The light
- * variant uses Border Rule lines on Warm Canvas; the dark variant uses
- * a whisper of Warm Canvas on Late-Night Boardroom. 40px grid with a
- * heavier line every 5th cell, like real survey paper.
- * ============================================================ */
 .survey-grid {
   background-image:
     linear-gradient(to right, rgba(9, 5, 3, 0.035) 1px, transparent 1px),
@@ -106,9 +75,6 @@ body {
     200px 200px;
 }
 
-/* Scroll-in reveal, driven by the Reveal client component. Fade + a
-   small rise, ease-out-expo, transform/opacity only. The component
-   toggles -in once the block enters the viewport. */
 .terrain-reveal {
   opacity: 0;
   transform: translateY(18px);
@@ -150,8 +116,6 @@ body {
   }
 }
 
-/* Full-screen mobile menu entrance. Fade + a small downward settle,
-   ease-out-expo. The links inside ride the same fade. */
 .terrain-menu-overlay {
   animation: terrain-menu-in 260ms cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -173,20 +137,6 @@ body {
   }
 }
 
-/* ============================================================
- * Mapbox plot pin + popup chrome
- *
- * Price pill matches the Flutter buyer-map exactly: Warm Canvas pill
- * with the price text in Inter, Border Rule hairline outline, small
- * Warm Canvas triangular tail beneath so the tip lands on the lat/
- * lng. Continuity with the app a visitor will install.
- *
- * Hover uses filter and box-shadow (NOT transform) because Mapbox
- * sets its own transform on the marker element for positioning;
- * overriding it with a CSS hover transform would dislodge the pin
- * from its lat/lng.
- * ============================================================ */
-
 .terrain-pin-marker {
   display: inline-flex;
   flex-direction: column;
@@ -197,9 +147,6 @@ body {
   cursor: pointer;
   filter: drop-shadow(0 2px 4px rgba(9, 5, 3, 0.22));
   transition: filter 140ms cubic-bezier(0.2, 0.6, 0.2, 1);
-  /* Default z-index for marker stacking. Mapbox sorts markers by
-     latitude on render; hover raises this so the hovered pin always
-     comes to the top of the cluster regardless of its lat order. */
   position: relative;
   z-index: 1;
 }
@@ -213,11 +160,6 @@ body {
 
 .terrain-pin-body {
   padding: 5px 11px 6px;
-  /* Late-Night Boardroom pill with Warm Canvas text — matches the
-     Flutter app's selected-pin variant. Light streets map below
-     means a Warm Canvas pill would blend into the cream terrain; the
-     dark variant pops cleanly and stays in the Flutter pin
-     vocabulary. */
   background: #090503;
   border: 1px solid #090503;
   border-radius: 999px;
@@ -228,11 +170,7 @@ body {
   letter-spacing: 0;
   line-height: 1.2;
   white-space: nowrap;
-  /* Hover lift on the inner pill rather than the outer marker —
-     Mapbox sets a transform on the marker itself for positioning, so
-     animating the parent would dislodge the pin from its lat/lng.
-     The inner body has no positioning transform of its own and
-     scales freely. */
+  /* Animate the inner pill; Mapbox owns the outer marker transform. */
   transition: transform 140ms cubic-bezier(0.2, 0.6, 0.2, 1);
   transform-origin: 50% 100%;
 }
@@ -252,13 +190,6 @@ body {
   border-top: 6px solid #090503;
 }
 
-/* Cluster badge — Late-Night Boardroom circle with the plot count in
-   Warm Canvas Inter caps. Rendered by createClusterMarker when
-   supercluster merges 2+ pins at the current zoom. Sized larger than
-   a price pill so the badge reads as a category-different object, not
-   as a "different style of pin". Centred via anchor="center" in the
-   Marker constructor, so transform-origin sits at the visual centre
-   without disturbing Mapbox's positioning transform. */
 .terrain-cluster-badge {
   display: inline-flex;
   align-items: center;
@@ -271,8 +202,6 @@ body {
   border: 2px solid var(--color-canvas);
   box-shadow: 0 2px 6px rgba(9, 5, 3, 0.28);
   filter: drop-shadow(0 4px 8px rgba(9, 5, 3, 0.18));
-  /* Tappable: cluster click eases the camera into the supercluster
-     expansion zoom, breaking the badge apart on the next idle. */
   cursor: pointer;
   transition: transform 140ms cubic-bezier(0.2, 0.6, 0.2, 1),
     filter 140ms cubic-bezier(0.2, 0.6, 0.2, 1);
@@ -286,8 +215,6 @@ body {
 }
 
 .terrain-cluster-badge:focus-visible {
-  /* Forest Verification focus ring for keyboard users. Inset so it
-     hugs the canvas-coloured outer ring without enlarging the badge. */
   box-shadow:
     0 2px 6px rgba(9, 5, 3, 0.28),
     0 0 0 2px var(--color-verified);
@@ -302,11 +229,6 @@ body {
   line-height: 1;
 }
 
-/* Mobile: smaller, MUTED pins. On a phone the full-bleed hero map sits
-   directly under the headline, so Late-Night Boardroom pins read as
-   the focal point and fight the copy. Survey Gray + smaller makes them
-   recede as unfocused backdrop markers; the price is still legible but
-   the eye lands on the headline first. */
 @media (max-width: 639px) {
   .terrain-pin-body {
     background: #717171;
@@ -329,12 +251,7 @@ body {
   }
 }
 
-/* Wrapper z-index. Mapbox does not assign one by default, so the
-   popup relies on DOM order — and our pin hover sets z-index: 10 on
-   the hovered marker, which can stack on top of a sibling pin's open
-   popup. Pinning the popup wrapper to z-index: 100 keeps the open
-   record floating above every marker in the same stacking context,
-   regardless of which pin the user hovers next. */
+/* Keep popups above hovered markers. */
 .terrain-popup {
   z-index: 100;
 }
@@ -347,20 +264,12 @@ body {
   box-shadow: 0 12px 28px rgba(9, 5, 3, 0.18);
   overflow: hidden; /* keeps the image's top corners rounded with the card */
   min-width: 240px;
-  /* Entrance animation: subtle scale-up from the tail of the popup.
-     transform-origin matches the popup's anchor (bottom or top via
-     Mapbox's auto-anchor) so the card appears to grow out of the
-     pin. Mapbox sets a transform on the popup parent for positioning;
-     animating .mapboxgl-popup-content lets us scale without breaking
-     that positioning transform. */
+  /* Animate the content; Mapbox owns the popup wrapper transform. */
   animation: terrain-popup-enter 180ms cubic-bezier(0.2, 0.6, 0.2, 1) both;
   transform-origin: 50% 100%;
 }
 
-/* When Mapbox auto-anchors the popup BELOW the pin (pin near top of
-   map), flip the transform-origin so the card grows downward from
-   the tip. The popup container gains class names like
-   "mapboxgl-popup-anchor-top" in that case. */
+/* Match the animation origin to popups anchored below the pin. */
 .mapboxgl-popup-anchor-top .terrain-popup .mapboxgl-popup-content,
 .terrain-popup.mapboxgl-popup-anchor-top .mapboxgl-popup-content {
   transform-origin: 50% 0%;
@@ -379,8 +288,6 @@ body {
 
 .terrain-popup .mapboxgl-popup-tip {
   border-top-color: var(--color-canvas);
-  /* Fade the tip in alongside the card so they don't appear in two
-     separate beats. Same duration + curve as the content. */
   animation: terrain-popup-tip-enter 180ms cubic-bezier(0.2, 0.6, 0.2, 1) both;
 }
 
@@ -398,13 +305,6 @@ body {
   flex-direction: column;
 }
 
-/* Media block at the top of the popup card. Same 16:10 box whether
-   the listing's first media is an image or a video so the popup
-   chrome doesn't shift between media types. Cover crop centres the
-   most informative part of typical plot photography / drone video
-   (sky and ground frame the subject; cover crops to the middle
-   band). Videos play silently on loop; images use background-image
-   so we don't need per-image dimension handling. */
 .terrain-popup-media {
   display: block;
   width: 100%;
@@ -414,9 +314,6 @@ body {
 }
 
 .terrain-popup-image {
-  /* Image variant of the media block — uses background-image so the
-     same .terrain-popup-media box covers both video and image with
-     identical layout. */
   background-size: cover;
   background-position: center;
 }
@@ -425,11 +322,6 @@ body {
   padding: 12px 14px 14px;
 }
 
-/* Three-size type hierarchy: 18px (price), 13px (title + meta), 10px
-   (caps CTA). The earlier 10/11/12/13/18 spread was flagged by the
-   deterministic detector as flat hierarchy — four consecutive pixel
-   sizes with no real anchor between them. Weight + colour now
-   differentiate title vs meta at the same 13px. */
 .terrain-popup-price {
   font-family: var(--font-body);
   font-size: 18px;
@@ -457,33 +349,8 @@ body {
   color: var(--color-secondary);
 }
 
-/* .terrain-popup-cta rule retired alongside its DOM node — the popup
-   no longer carries a "Get the app to view the record" footer. The
-   popup is now a quiet inspection card: price, title, meta. The
-   install CTA lives in the hero store buttons, not on every pin
-   tooltip. */
-
-/* Mobile-only "Tap to explore the map" affordance. Rendered by Hero.tsx
-   beneath the App Store + Google Play CTA row, hidden on sm+. Sits in
-   the document's reading flow as a caps eyebrow link rather than
-   floating on top of the map. Same Inter 11px / 0.14em letter-spacing
-   grammar used everywhere else on the page (eyebrow chip, section
-   labels), so it reads as another voiceline of the registry rather
-   than as third-party chrome layered over content.
-
-   Anatomy: a small Late-Night Boardroom glyph box (→ or ×) on the
-   left, caps text on the right. Hover and focus shift the text to
-   Forest Verification and nudge the arrow right by 2px as a tiny
-   affordance hint. Keyboard focus also rings the glyph box in
-   Forest Verification. */
 .terrain-map-link {
-  /* Default to hidden. The JSX tags this button with `sm:hidden` to
-     suppress it from sm+ viewports, but the cascade order put our
-     `display: inline-flex` rule AFTER Tailwind's utility, so on
-     desktop our default leaked through and the link appeared.
-     Inverting the default — hidden everywhere, enabled only inside
-     the mobile-width media query below — makes the desktop case
-     unambiguous without depending on utility specificity. */
+  /* Unlayered CSS overrides Tailwind utilities; enable display only in the mobile query. */
   display: none;
   align-items: center;
   gap: 10px;
@@ -517,8 +384,6 @@ body {
 }
 
 .terrain-map-link:focus-visible {
-  /* Forest Verification focus ring around the bounding box for
-     keyboard users, since there is no longer a glyph box to ring. */
   box-shadow: 0 0 0 2px var(--color-verified);
   border-radius: 4px;
 }
@@ -529,19 +394,6 @@ body {
   }
 }
 
-/* Cooperative-gestures help overlays. Mapbox renders two of them —
-   ScrollZoomBlocker fires when the user wheel-scrolls over the map
-   without ⌘/ctrl, TouchPanBlocker fires on single-finger touch over
-   the map. Default chrome is an opaque dark scrim with a system-font
-   message that reads "Mapbox interrupting me" instead of "Terrain
-   telling me something."
-
-   Restyled as a quiet typographic toast: nearly-transparent
-   Late-Night Boardroom wash over the map, a small Warm Canvas pill
-   centred inside, message in Inter caps at 11px / 0.14em — the same
-   eyebrow grammar used elsewhere on the page. The wash is light
-   enough (12% Late-Night Boardroom) that pins behind it remain
-   readable, so the overlay feels like a label rather than a modal. */
 .mapboxgl-scroll-zoom-blocker,
 .mapboxgl-touch-pan-blocker {
   background: rgba(9, 5, 3, 0.12) !important;
@@ -553,19 +405,11 @@ body {
   text-transform: uppercase !important;
   text-align: center !important;
   line-height: 1.4 !important;
-  /* Mapbox positions the message text directly inside this element
-     with default flex centering — keep that, just replace the chrome.
-     padding lifts the text into a Warm Canvas pill via background
-     and box-shadow rather than a child element so the typography
-     reads as a single typeset toast. */
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
 }
 
-/* The inner text node — Mapbox wraps the message in a span/div with
-   one of these class fragments. Style both safely; both targeted via
-   the parent's flex centring, so we just need to dress them as a pill. */
 .mapboxgl-scroll-zoom-blocker > *,
 .mapboxgl-touch-pan-blocker > * {
   background: var(--color-canvas) !important;
@@ -576,9 +420,6 @@ body {
   box-shadow: 0 6px 18px rgba(9, 5, 3, 0.16) !important;
 }
 
-/* Visibility transition: fade in/out fast (180ms) using the same
-   ease-out curve as the pin hover. Mapbox toggles a "-show" class
-   variant for the visible state. */
 .mapboxgl-scroll-zoom-blocker,
 .mapboxgl-touch-pan-blocker {
   transition: opacity 180ms cubic-bezier(0.2, 0.6, 0.2, 1) !important;
@@ -602,12 +443,7 @@ body {
   border: 1px solid var(--color-border-rule);
 }
 
-/* Hero map's bottom controls (Mapbox logo + attribution) sit above
-   the 128px fade gradient at the hero's bottom edge so they remain
-   visible. Mapbox ToS requires the attribution + logo to be visible
-   and unobscured; if the fade covered them they'd dissolve into the
-   Warm Canvas section below. Pushed up 132px (fade height + 4px
-   breathing room). */
+/* Keep the Mapbox logo and attribution above the hero fade. */
 .mapboxgl-ctrl-bottom-left,
 .mapboxgl-ctrl-bottom-right {
   bottom: 132px !important;
