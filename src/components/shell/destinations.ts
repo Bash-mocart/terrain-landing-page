@@ -15,8 +15,8 @@ export const ALL_DESTINATIONS: Destination[] = [
   { label: "Explore", href: "/explore", ready: true },
   { label: "Home", href: "/browse", ready: true },
   { label: "Chat", href: "/inbox", ready: false },
-  { label: "Saved", href: "/saved", ready: false },
-  { label: "Profile", href: "/account", ready: false },
+  { label: "Saved", href: "/saved", ready: true },
+  { label: "Profile", href: "/account", ready: true },
 ];
 
 export const DESTINATIONS = ALL_DESTINATIONS.filter(

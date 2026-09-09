@@ -13,6 +13,11 @@ export type ListingSearchResponse = ListResponse<Listing> & {
   offset: number;
 };
 
+export type SavedFavorite = {
+  listing_id: string;
+  created_at: string;
+};
+
 export type Listing = {
   id: string;
   owner_id?: string;
