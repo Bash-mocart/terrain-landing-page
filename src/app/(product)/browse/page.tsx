@@ -25,6 +25,9 @@ type BrowseSearchParams = Promise<{
   type?: string | string[];
   subtype?: string | string[];
   q?: string | string[];
+  min_price?: string | string[];
+  max_price?: string | string[];
+  verified?: string | string[];
   page?: string | string[];
 }>;
 
@@ -38,11 +41,16 @@ export default async function BrowsePage({
   searchParams: BrowseSearchParams;
 }) {
   const params = await searchParams;
+  const minPrice = Number(valueOf(params.min_price));
+  const maxPrice = Number(valueOf(params.max_price));
   const filters = {
     city: valueOf(params.city),
     typeSlug: valueOf(params.type),
     subtypeSlug: valueOf(params.subtype),
     query: valueOf(params.q),
+    minPrice: Number.isFinite(minPrice) && minPrice >= 0 ? minPrice : undefined,
+    maxPrice: Number.isFinite(maxPrice) && maxPrice >= 0 ? maxPrice : undefined,
+    verified: valueOf(params.verified) === "true" || undefined,
     page: Math.max(1, Number(valueOf(params.page)) || 1),
   };
 
@@ -92,13 +100,17 @@ export default async function BrowsePage({
               <div className="h-24 animate-pulse rounded-2xl bg-border-rule/60" />
             }
           >
-            <BrowseFilters
+          <BrowseFilters
+              key={`${valueOf(params.min_price)}-${valueOf(params.max_price)}-${valueOf(params.verified)}`}
               cities={cityCounts}
               taxonomy={{ types: taxonomy.types ?? [] }}
               city={filters.city}
               typeSlug={filters.typeSlug}
               subtypeSlug={filters.subtypeSlug}
               query={filters.query}
+              minPrice={valueOf(params.min_price)}
+              maxPrice={valueOf(params.max_price)}
+              verified={Boolean(filters.verified)}
             />
           </Suspense>
         </div>
@@ -122,7 +134,7 @@ export default async function BrowsePage({
           page={filters.page}
           total={feed.total}
           pageSize={BROWSE_PAGE_SIZE}
-          searchParams={{ city: filters.city, type: filters.typeSlug, subtype: filters.subtypeSlug, q: filters.query }}
+          searchParams={{ city: filters.city, type: filters.typeSlug, subtype: filters.subtypeSlug, q: filters.query, min_price: valueOf(params.min_price), max_price: valueOf(params.max_price), verified: valueOf(params.verified) }}
         />
 
         {verifiedListings.length > 0 && (

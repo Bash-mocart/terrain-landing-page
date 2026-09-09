@@ -12,6 +12,9 @@ type BrowseFiltersProps = {
   typeSlug: string;
   subtypeSlug: string;
   query: string;
+  minPrice: string;
+  maxPrice: string;
+  verified: boolean;
 };
 
 export function BrowseFilters({
@@ -21,13 +24,23 @@ export function BrowseFilters({
   typeSlug,
   subtypeSlug,
   query,
+  minPrice,
+  maxPrice,
+  verified,
 }: BrowseFiltersProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const activeType = taxonomy.types.find((type) => type.slug === typeSlug);
   const [open, setOpen] = useState(false);
-  const activeCount = Number(Boolean(city)) + Number(Boolean(typeSlug)) + Number(Boolean(subtypeSlug));
+  const [minimum, setMinimum] = useState(minPrice);
+  const [maximum, setMaximum] = useState(maxPrice);
+  const activeCount =
+    Number(Boolean(city)) +
+    Number(Boolean(typeSlug)) +
+    Number(Boolean(subtypeSlug)) +
+    Number(Boolean(minPrice) || Boolean(maxPrice)) +
+    Number(verified);
 
   function update(values: Record<string, string>) {
     const next = new URLSearchParams(searchParams.toString());
@@ -77,6 +90,8 @@ export function BrowseFilters({
         {city && <button type="button" onClick={() => update({ city: "" })} className="shrink-0 rounded-full border border-verified bg-canvas px-4 py-2.5 text-sm font-semibold text-verified">{city} ×</button>}
         {typeSlug && <button type="button" onClick={() => update({ type: "", subtype: "" })} className="shrink-0 rounded-full border border-verified bg-canvas px-4 py-2.5 text-sm font-semibold text-verified">{activeType?.name ?? typeSlug} ×</button>}
         {subtypeSlug && <button type="button" onClick={() => update({ subtype: "" })} className="shrink-0 rounded-full border border-verified bg-canvas px-4 py-2.5 text-sm font-semibold text-verified">{subtypeSlug} ×</button>}
+        {(minPrice || maxPrice) && <button type="button" onClick={() => { setMinimum(""); setMaximum(""); update({ min_price: "", max_price: "" }); }} className="shrink-0 rounded-full border border-verified bg-canvas px-4 py-2.5 text-sm font-semibold text-verified">Price ×</button>}
+        {verified && <button type="button" onClick={() => update({ verified: "" })} className="shrink-0 rounded-full border border-verified bg-canvas px-4 py-2.5 text-sm font-semibold text-verified">Verified ×</button>}
       </div>
       {open && <div className="fixed inset-0 z-50 flex items-end bg-primary/30 sm:items-center sm:justify-center" role="presentation" onMouseDown={() => setOpen(false)}>
         <div role="dialog" aria-modal="true" aria-labelledby="browse-filter-title" className="w-full rounded-t-3xl bg-canvas p-6 shadow-2xl sm:max-w-lg sm:rounded-3xl" onMouseDown={(event) => event.stopPropagation()}>
@@ -139,7 +154,24 @@ export function BrowseFilters({
           </>
         )}
           </div>
-          <button type="button" onClick={() => { update({ city: "", type: "", subtype: "", q: "" }); setOpen(false); }} className="mt-5 w-full rounded-full border border-border-rule px-4 py-3 text-sm font-semibold text-primary">Clear filters</button>
+          <div className="mt-5 grid gap-4 sm:grid-cols-2">
+            <label className="text-sm text-secondary">
+              Minimum price
+              <input type="number" min="0" value={minimum} onChange={(event) => setMinimum(event.target.value)} placeholder="₦0" className="mt-1 w-full rounded-2xl border border-border-rule bg-canvas px-4 py-3 text-base text-primary" />
+            </label>
+            <label className="text-sm text-secondary">
+              Maximum price
+              <input type="number" min="0" value={maximum} onChange={(event) => setMaximum(event.target.value)} placeholder="₦10,000,000" className="mt-1 w-full rounded-2xl border border-border-rule bg-canvas px-4 py-3 text-base text-primary" />
+            </label>
+          </div>
+          <label className="mt-4 flex items-center justify-between rounded-2xl border border-border-rule px-4 py-3 text-sm font-semibold text-primary">
+            Verified listings only
+            <input type="checkbox" checked={verified} onChange={(event) => update({ verified: event.target.checked ? "true" : "" })} className="size-5 accent-[var(--color-verified)]" />
+          </label>
+          <button type="button" onClick={() => { update({ min_price: minimum.trim(), max_price: maximum.trim() }); setOpen(false); }} className="mt-5 w-full rounded-full bg-primary px-4 py-3 text-sm font-semibold text-canvas">
+            Apply price filters
+          </button>
+          <button type="button" onClick={() => { update({ city: "", type: "", subtype: "", q: "", min_price: "", max_price: "", verified: "" }); setMinimum(""); setMaximum(""); setOpen(false); }} className="mt-5 w-full rounded-full border border-border-rule px-4 py-3 text-sm font-semibold text-primary">Clear filters</button>
         </div>
       </div>}
     </div>
