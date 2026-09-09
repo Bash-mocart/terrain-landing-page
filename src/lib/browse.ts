@@ -20,6 +20,9 @@ export type BrowseFilters = {
   typeSlug?: string;
   subtypeSlug?: string;
   query?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  verified?: boolean;
   page?: number;
 };
 
@@ -29,6 +32,9 @@ function listingQuery(filters: BrowseFilters) {
     type_slug: filters.typeSlug,
     subtype_slug: filters.subtypeSlug,
     q: filters.query,
+    min_price: filters.minPrice,
+    max_price: filters.maxPrice,
+    verified: filters.verified,
   };
 }
 
