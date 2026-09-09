@@ -125,7 +125,21 @@ export type AuthUser = {
   role: string;
   kyc_verified: boolean;
   seller_type?: string;
+  whatsapp_url?: string;
+  twitter_url?: string;
+  instagram_url?: string;
+  facebook_url?: string;
+  linkedin_url?: string;
+  website_url?: string;
+  buyer_preferences?: unknown;
   created_at?: string;
+};
+
+export type AccountUpdate = {
+  full_name?: string;
+  avatar_url?: string;
+  bio?: string;
+  location?: string;
 };
 
 export type PhoneAccountStatus = "new" | "unverified" | "verified";
