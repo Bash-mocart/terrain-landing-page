@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Listing } from "@/lib/types";
+import { SaveButton } from "@/components/saved/SaveButton";
 
 function formatPrice(price: number) {
   return new Intl.NumberFormat("en-NG", {
@@ -157,6 +158,9 @@ export function ListingDetail({
                 )}
               </p>
             )}
+            <div className="mt-6">
+              <SaveButton listingId={listing.id} />
+            </div>
           </article>
         </div>
 
