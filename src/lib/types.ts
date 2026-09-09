@@ -111,3 +111,36 @@ export type SessionResponse = {
   refresh_token: string;
   expires_in: number;
 };
+
+export type AuthUser = {
+  id: string;
+  full_name: string;
+  first_name?: string;
+  last_name?: string;
+  phone: string;
+  email?: string;
+  avatar_url?: string;
+  bio?: string;
+  location?: string;
+  role: string;
+  kyc_verified: boolean;
+  seller_type?: string;
+  created_at?: string;
+};
+
+export type PhoneAccountStatus = "new" | "unverified" | "verified";
+
+export type PhoneCheckResponse = {
+  status: PhoneAccountStatus;
+};
+
+export type OtpRequestResponse = {
+  channel: "sms" | "whatsapp";
+  expires_in_seconds: number;
+  dev_code?: string;
+};
+
+export type AuthSessionResponse = SessionResponse & {
+  user: AuthUser;
+  is_new_user: boolean;
+};
