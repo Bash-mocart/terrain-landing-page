@@ -15,6 +15,7 @@ export type ListingSearchResponse = ListResponse<Listing> & {
 
 export type Listing = {
   id: string;
+  owner_id?: string;
   title?: string;
   description?: string;
   price: number;
@@ -34,6 +35,27 @@ export type Listing = {
   created_at?: string;
   verified_at?: string;
   has_payment_plan?: boolean;
+};
+
+export type PublicSellerProfile = {
+  id: string;
+  full_name?: string;
+  avatar_url?: string;
+  bio?: string;
+  location?: string;
+  seller_type?: string;
+  kyc_verified?: boolean;
+  verified_at?: string;
+  joined_at?: string;
+  instagram_url?: string;
+  facebook_url?: string;
+  twitter_url?: string;
+  linkedin_url?: string;
+  website_url?: string;
+  listings_count?: number;
+  company_name?: string;
+  company_logo_url?: string;
+  company_verified?: boolean;
 };
 
 export type MapMarker = {

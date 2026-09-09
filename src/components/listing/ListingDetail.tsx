@@ -144,7 +144,17 @@ export function ListingDetail({
 
             {listing.seller_name && (
               <p className="mt-5 text-sm text-secondary">
-                Listed by <span className="font-semibold text-primary">{listing.seller_name}</span>
+                Listed by{" "}
+                {listing.owner_id ? (
+                  <Link
+                    href={`/seller/${encodeURIComponent(listing.owner_id)}`}
+                    className="font-semibold text-verified"
+                  >
+                    {listing.seller_name}
+                  </Link>
+                ) : (
+                  <span className="font-semibold text-primary">{listing.seller_name}</span>
+                )}
               </p>
             )}
           </article>
