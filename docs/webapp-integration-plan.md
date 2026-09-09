@@ -48,7 +48,8 @@ Built:
 
 In progress:
 
-- **`/explore`.** Units 1, 2, and 4 are complete; Unit 3 (listing selection and preview) is in progress.
+- **Phase 1 buyer routes.** `/browse`, `/explore`, and `/listing/[id]` are
+  complete. `/seller/[id]` and `/estate/[id]` remain.
 
 Still open from the original survey:
 
@@ -155,9 +156,10 @@ why the signup form is the one path that must not run against production.
 
 ### Phase 1: buyer public browsing (core, SEO) (in progress)
 
-- `/explore`, `/browse`, `/listing/[id]`, `/search`, `/seller/[id]`, `/estate/[id]`.
-- `/browse` is built and `/explore` is in progress. The other four are not
-  started. Product-shell separation is complete.
+- `/explore`, `/browse`, `/listing/[id]`, `/seller/[id]`, `/estate/[id]`.
+- `/browse`, `/explore`, and `/listing/[id]` are built. The seller and estate
+  routes are not started. Browse owns search and filter results; there is no
+  separate `/search` route. Product-shell separation is complete.
 - Fetch indexable public-page content in Server Components. Interactive map
   data may load in the client when that allows the map renderer and its data
   request to start concurrently.
@@ -221,7 +223,7 @@ Deliverables:
 - Keep controls clear of Mapbox attribution, zoom controls, and selected map
   content at supported viewport sizes.
 
-**Unit 3 — listing selection and preview**
+**Unit 3 — listing selection and preview (complete)**
 
 - Highlight the selected price marker and position the camera so the marker
   remains visible beside the preview.
@@ -231,12 +233,13 @@ Deliverables:
   reloading the complete marker set.
 - Enable navigation only after `/listing/[id]` is available.
 
-**Unit 4 — location search and advanced filters**
+**Unit 4 — location search and supported filters (complete)**
 
 - Implement location search against the confirmed provider and request
   contract if it was not completed in Unit 2.
-- Add state, subtype, price, document, size, and development filters. Send only
-  parameters supported by the backend map endpoint.
+- Add the supported map filters: state, subtype, price, and verification. Do
+  not expose size or documentation filters because the map endpoint does not
+  support them.
 - Keep active filters individually removable, provide a single clear-all
   action, and debounce rapid server-backed changes.
 
