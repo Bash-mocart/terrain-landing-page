@@ -1,4 +1,4 @@
-import { api } from "./api";
+import { api, clearSession, getStoredRefreshToken } from "./api";
 import type {
   AuthSessionResponse,
   OtpRequestResponse,
@@ -30,4 +30,15 @@ export function verifyOtp(phone: string, code: string) {
     phone,
     code,
   });
+}
+
+export async function logout(): Promise<void> {
+  const refreshToken = getStoredRefreshToken();
+  try {
+    if (refreshToken) {
+      await api.post("/v1/auth/logout", { refresh_token: refreshToken });
+    }
+  } finally {
+    clearSession();
+  }
 }

@@ -196,3 +196,7 @@ export function clearSession(): void {
   storage?.removeItem(ACCESS_TOKEN_KEY);
   storage?.removeItem(REFRESH_TOKEN_KEY);
 }
+
+export function getStoredRefreshToken(): string | null {
+  return browserStorage()?.getItem(REFRESH_TOKEN_KEY) ?? null;
+}
