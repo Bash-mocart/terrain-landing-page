@@ -1,5 +1,10 @@
 import Link from "next/link";
 import type { Listing } from "@/lib/types";
+import {
+  ListingActionBar,
+  ListingShareButton,
+} from "@/components/listing/ListingActionBar";
+import { ListingMediaGallery } from "@/components/listing/ListingMediaGallery";
 import { SaveButton } from "@/components/saved/SaveButton";
 
 function formatPrice(price: number) {
@@ -8,14 +13,6 @@ function formatPrice(price: number) {
     maximumFractionDigits: 0,
     style: "currency",
   }).format(price);
-}
-
-function validImages(listing: Listing) {
-  return (listing.image_urls ?? []).filter((url) => /^https?:\/\//.test(url));
-}
-
-function imageStyle(url: string) {
-  return { backgroundImage: `url(${JSON.stringify(url)})` };
 }
 
 export function ListingDetail({
@@ -53,38 +50,19 @@ export function ListingDetail({
     );
   }
 
-  const images = validImages(listing);
   const location = [listing.city, listing.state].filter(Boolean).join(", ");
 
   return (
     <main className="min-w-0 bg-canvas">
       <div className="mx-auto max-w-[1280px] px-6 py-8 sm:px-8 sm:py-12 lg:px-10">
-        <Link href={backHref} className="text-sm font-semibold text-verified">
-          ← {backLabel}
-        </Link>
-
         <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1.35fr)_minmax(320px,0.65fr)] lg:items-start">
-          <section aria-label="Property photos">
-            {images.length > 0 ? (
-              <div className="grid gap-3 sm:grid-cols-2">
-                {images.map((image, index) => (
-                  <div
-                    key={image}
-                    className={`min-h-64 rounded-3xl bg-border-rule bg-cover bg-center ${
-                      index === 0 ? "sm:col-span-2 sm:min-h-[460px]" : ""
-                    }`}
-                    style={imageStyle(image)}
-                    role="img"
-                    aria-label={`Property photo ${index + 1}`}
-                  />
-                ))}
-              </div>
-            ) : (
-              <div className="flex min-h-[360px] items-center justify-center rounded-3xl bg-border-rule text-secondary">
-                No property photos available
-              </div>
-            )}
-          </section>
+          <ListingMediaGallery
+            key={listing.id}
+            imageUrls={listing.image_urls}
+            backHref={backHref}
+            backLabel={backLabel}
+            title={listing.title || "Property"}
+          />
 
           <article className="rounded-3xl border border-border-rule bg-white p-6 sm:p-8 lg:sticky lg:top-28">
             <div className="flex items-start gap-3">
@@ -101,6 +79,11 @@ export function ListingDetail({
                   Verified
                 </span>
               )}
+            </div>
+
+            <div className="mt-5 flex flex-wrap items-center gap-3">
+              <SaveButton listingId={listing.id} />
+              <ListingShareButton title={listing.title} />
             </div>
 
             <p className="mt-4 text-secondary">
@@ -158,11 +141,10 @@ export function ListingDetail({
                 )}
               </p>
             )}
-            <div className="mt-6">
-              <SaveButton listingId={listing.id} />
-            </div>
           </article>
         </div>
+
+        <ListingActionBar listing={listing} />
 
         {listing.description && (
           <section className="mt-10 max-w-3xl">
