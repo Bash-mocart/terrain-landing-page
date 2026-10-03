@@ -1,0 +1,12 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["9Y7AKN632L.com.terra.land"],
+        "components": [
+          { "/": "/invite/*", "comment": "Team invites open the Terrain app" }
+        ]
+      }
+    ]
+  }
+}
