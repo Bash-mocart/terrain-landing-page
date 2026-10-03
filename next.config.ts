@@ -3,6 +3,16 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   // The trust-dossier subpage folded back into the landing; keep old
   // links and search results working.
+  // Apple fetches this to let the Terrain app open /invite/* links. It has
+  // no extension, so say it's JSON.
+  async headers() {
+    return [
+      {
+        source: "/.well-known/apple-app-site-association",
+        headers: [{ key: "Content-Type", value: "application/json" }],
+      },
+    ];
+  },
   async redirects() {
     return [
       {
