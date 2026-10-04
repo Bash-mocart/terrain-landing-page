@@ -278,6 +278,9 @@ export function LiveMap({
       zoom: ABUJA_ZOOM,
       maxBounds: ABUJA_MAX_BOUNDS,
       attributionControl: false,
+      // Bottom-right sits clear of the hero copy's fade, so the logo stays
+      // visible (Mapbox terms).
+      logoPosition: "bottom-right",
       interactive: !isMobileVal,
       cooperativeGestures: false,
       // Keep the map flat, including when mobile explore mode enables gestures.

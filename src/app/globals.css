@@ -443,8 +443,62 @@ body {
   border: 1px solid var(--color-border-rule);
 }
 
-/* Keep the Mapbox logo and attribution above the hero fade. */
-.mapboxgl-ctrl-bottom-left,
-.mapboxgl-ctrl-bottom-right {
-  bottom: 132px !important;
+
+/* Home chapters: visible by default; where the browser supports
+   scroll-driven animation, each photo rises in and its numeral's rule
+   draws as the chapter enters view. */
+.terrain-chapter-num::after {
+  content: "";
+  display: block;
+  width: 2.5rem;
+  height: 2px;
+  margin-top: 0.5rem;
+  background: currentColor;
+  transform-origin: left;
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .terrain-chapter-photo {
+      animation: terrain-chapter-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 70%;
+    }
+    .terrain-chapter-num::after {
+      animation: terrain-chapter-rule linear both;
+      animation-timeline: view();
+      animation-range: entry 10% entry 80%;
+    }
+  }
+}
+
+@keyframes terrain-chapter-rise {
+  from {
+    opacity: 0.35;
+    transform: translateY(48px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes terrain-chapter-rule {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* The hero map's logo and attribution sit above the bottom fade. */
+.terrain-hero .mapboxgl-ctrl-bottom-right {
+  margin-bottom: 4.25rem;
+}
+
+@media (min-width: 640px) {
+  .terrain-hero .mapboxgl-ctrl-bottom-right {
+    margin-bottom: 6.25rem;
+  }
 }

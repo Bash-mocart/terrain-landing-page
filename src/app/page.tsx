@@ -1,53 +1,27 @@
 import { TopNav } from "@/components/TopNav";
 import { Hero } from "@/components/Hero";
-import { TrustStrip } from "@/components/TrustStrip";
-import { ProblemSolution } from "@/components/ProblemSolution";
-import { WhyTerrain } from "@/components/WhyTerrain";
-import { BuyerJourney } from "@/components/BuyerJourney";
-import { Verification } from "@/components/Verification";
-import { AgentVetting } from "@/components/AgentVetting";
-import { OwnBuildGrow } from "@/components/OwnBuildGrow";
-import { WhatsOnMarket } from "@/components/WhatsOnMarket";
-import { Testimonials } from "@/components/Testimonials";
-import { FAQ } from "@/components/FAQ";
-import { AgentBand } from "@/components/AgentBand";
-import { ClosingCTA } from "@/components/ClosingCTA";
+import { Journey } from "@/components/home/Journey";
+import { Protection } from "@/components/home/Protection";
+import { Closing } from "@/components/home/Closing";
 import { Footer } from "@/components/Footer";
 
-// The full landing arc, one page, each beat once. Light/dark plates
-// alternate so the scroll has rhythm; /how-it-works redirects here.
+// One buyer's journey, then why it's safe, who's on Terrain, and the close.
 //
-//   Hero (map)       hook
-//   TrustStrip       the four facts, stamped under the hero
-//   ProblemSolution  the old way vs the Terrain way
-//   WhyTerrain       mission (dark)
-//   BuyerJourney     how you buy, five steps        #how-it-works
-//   Verification     the field report artefact      #verification
-//   AgentVetting     how we check agents (dark)     #vetting
-//   OwnBuildGrow     the product family             #the-terrain-way
-//   WhatsOnMarket    live inventory by city (dark)  #listings
-//   Testimonials     proof
-//   FAQ              questions (dark)               #questions
-//   AgentBand        the seller-side ask            #for-agents
-//   ClosingCTA       download close                 #download
-//   Footer
+//   Hero (live map)   own property you can trust + waitlist
+//   Journey           five chapters, finds -> hers      #how-it-works
+//   Protection        built to protect you from fraud, with the real
+//                     verified companies as proof        #protection #companies
+//   Closing           sell on Terrain + Own. Build. Grow. + waitlist  #for-companies #waitlist
 export default function Home() {
   return (
     <>
       <TopNav />
-      <Hero />
-      <TrustStrip />
-      <ProblemSolution />
-      <WhyTerrain />
-      <BuyerJourney />
-      <Verification />
-      <AgentVetting />
-      <OwnBuildGrow />
-      <WhatsOnMarket />
-      <Testimonials />
-      <FAQ />
-      <AgentBand />
-      <ClosingCTA />
+      <main>
+        <Hero />
+        <Journey />
+        <Protection />
+        <Closing />
+      </main>
       <Footer />
     </>
   );
