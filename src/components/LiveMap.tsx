@@ -237,9 +237,15 @@ function formatPrice(naira: number): string {
 type LiveMapProps = {
   /** Enable mobile map gestures; desktop interaction is unaffected. */
   isExploring?: boolean;
+  /** Draw listing pins. Off before launch: the hero says "Coming soon"
+   *  over a plain map instead. */
+  showListings?: boolean;
 };
 
-export function LiveMap({ isExploring = false }: LiveMapProps = {}) {
+export function LiveMap({
+  isExploring = false,
+  showListings = false,
+}: LiveMapProps = {}) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const markersRef = useRef<mapboxgl.Marker[]>([]);
@@ -457,7 +463,7 @@ export function LiveMap({ isExploring = false }: LiveMapProps = {}) {
         console.error("Terrain map fetch failed:", e);
       }
     }
-    void loadPins();
+    if (showListings) void loadPins();
 
     return () => {
       cancelled = true;
@@ -466,6 +472,8 @@ export function LiveMap({ isExploring = false }: LiveMapProps = {}) {
       map.remove();
       mapRef.current = null;
     };
+    // Mount-only: the map is built once; showListings is fixed per page.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
