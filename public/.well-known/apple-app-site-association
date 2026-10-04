@@ -2,9 +2,18 @@
   "applinks": {
     "details": [
       {
-        "appIDs": ["9Y7AKN632L.com.terra.land"],
+        "appIDs": [
+          "9Y7AKN632L.com.terra.land"
+        ],
         "components": [
-          { "/": "/invite/*", "comment": "Team invites open the Terrain app" }
+          {
+            "/": "/invite/*",
+            "comment": "Team invites open the Terrain app"
+          },
+          {
+            "/": "/company/*",
+            "comment": "Shared company pages open the Terrain app"
+          }
         ]
       }
     ]
