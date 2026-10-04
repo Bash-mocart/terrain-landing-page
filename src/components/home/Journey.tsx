@@ -14,7 +14,7 @@ const CHAPTERS = [
   {
     photo: "/photos/message.webp",
     alt: "Two people reading a message on a phone together",
-    position: "75% 30%",
+    position: "60% 25%",
     title: "You message a verified company.",
     body: "Every company on Terrain is CAC-registered and checked before it can list. Your chat stays in Terrain, and nothing in it can be edited or deleted.",
   },
@@ -40,7 +40,7 @@ const CHAPTERS = [
 
 export function Journey() {
   return (
-    <section id="how-it-works" aria-labelledby="journey-title" className="bg-canvas py-16 sm:py-24">
+    <section id="how-it-works" aria-labelledby="journey-title" className="bg-canvas pb-16 pt-4 sm:pb-24 sm:pt-6">
       <div className="mx-auto max-w-[1240px] px-6 sm:px-10">
         <h2
           id="journey-title"
@@ -49,7 +49,7 @@ export function Journey() {
         >
           Buy land in Abuja without flying home.
         </h2>
-        <ol className="mt-12 space-y-12 sm:mt-16 sm:space-y-20">
+        <ol className="mt-10 space-y-12 sm:mt-12 sm:space-y-20">
           {CHAPTERS.map((c, i) => (
             <li
               key={c.photo}

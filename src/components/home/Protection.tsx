@@ -1,5 +1,7 @@
+import { VerifiedCompanies } from "./Companies";
+
 // What stands between a buyer and fraud on Terrain: four plain facts, each
-// something the app does today.
+// something the app does today, then the real verified companies as proof.
 const POINTS = [
   {
     title: "Only verified companies can sell.",
@@ -54,6 +56,7 @@ export function Protection() {
               ))}
             </ul>
           </div>
+          <VerifiedCompanies />
         </div>
       </div>
     </section>

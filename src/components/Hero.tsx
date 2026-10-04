@@ -10,14 +10,14 @@ export function Hero() {
         <LiveMap />
       </div>
       <div
-        className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-canvas via-canvas/90 to-canvas/40 sm:bg-gradient-to-r sm:from-canvas sm:from-35% sm:via-canvas/75 sm:via-50% sm:to-transparent sm:to-75%"
+        className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-canvas from-[64%] via-canvas/60 via-[71%] to-transparent to-[80%] sm:bg-gradient-to-r sm:from-canvas sm:from-35% sm:via-canvas/75 sm:via-50% sm:to-transparent sm:to-75%"
         aria-hidden
       />
       <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-24 bg-gradient-to-b from-transparent to-canvas"
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-16 bg-gradient-to-b from-transparent to-canvas sm:h-24"
         aria-hidden
       />
-      <div className="pointer-events-none relative z-10 mx-auto max-w-[1240px] px-6 pb-28 pt-32 sm:px-10 sm:pb-28 sm:pt-40 lg:pb-36 lg:pt-44">
+      <div className="pointer-events-none relative z-10 mx-auto max-w-[1240px] px-6 pb-[18rem] pt-32 sm:px-10 sm:pb-24 sm:pt-36 lg:pb-24 lg:pt-40">
         <div className="pointer-events-auto max-w-xl">
           <h1
             className="text-[clamp(44px,8vw,76px)] leading-[0.95] tracking-[-0.02em] text-primary"

@@ -443,11 +443,6 @@ body {
   border: 1px solid var(--color-border-rule);
 }
 
-/* Keep the Mapbox logo and attribution above the hero fade. */
-.mapboxgl-ctrl-bottom-left,
-.mapboxgl-ctrl-bottom-right {
-  bottom: 132px !important;
-}
 
 /* Home chapters: visible by default; where the browser supports
    scroll-driven animation, each photo rises in and its numeral's rule
@@ -504,6 +499,6 @@ body {
 
 @media (min-width: 640px) {
   .terrain-hero .mapboxgl-ctrl-bottom-right {
-    margin-bottom: 6.5rem;
+    margin-bottom: 6.25rem;
   }
 }

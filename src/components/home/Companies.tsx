@@ -3,52 +3,44 @@ import { getVerifiedCompanies } from "@/lib/company";
 
 const SHOWN = 8;
 
-// Real verified companies from the backend, each opening its public page.
-// Hidden when there are none, so the page never shows an empty promise.
-export async function Companies() {
+// Real verified companies, each opening its public page: the proof under
+// "Only verified companies can sell". Renders nothing when there are none.
+export async function VerifiedCompanies() {
   const companies = (await getVerifiedCompanies()).slice(0, SHOWN);
   if (companies.length === 0) return null;
 
   return (
-    <section id="companies" aria-labelledby="companies-title" className="bg-canvas pb-16 sm:pb-24">
-      <div className="mx-auto max-w-[1240px] px-6 sm:px-10">
-        <div className="border-t border-border-rule pt-14 sm:pt-20">
-          <h2
-            id="companies-title"
-            className="max-w-2xl text-[clamp(28px,4vw,40px)] leading-[1.05] tracking-[-0.02em] text-primary"
-            style={{ fontFamily: "var(--font-display)", fontWeight: 800 }}
-          >
-            Every company here is verified.
-          </h2>
-          <ul className="mt-8 flex flex-wrap gap-3">
-            {companies.map((c) => (
-              <li key={c.id}>
-                <Link
-                  href={`/company/${encodeURIComponent(c.id)}`}
-                  className="flex items-center gap-3 rounded-full border border-border-rule bg-white py-2 pl-2 pr-5 transition-colors hover:border-primary/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-verified"
+    <div id="companies" className="mt-12 border-t border-border-rule pt-8">
+      <p className="text-base text-primary" style={{ fontFamily: "var(--font-body)", fontWeight: 700 }}>
+        Verified companies on Terrain
+      </p>
+      <ul className="mt-4 flex flex-wrap gap-3">
+        {companies.map((c) => (
+          <li key={c.id}>
+            <Link
+              href={`/company/${encodeURIComponent(c.id)}`}
+              className="flex items-center gap-3 rounded-full border border-border-rule bg-white py-2 pl-2 pr-5 transition-colors hover:border-primary/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-verified"
+            >
+              <Logo url={c.logo_url} name={c.name} />
+              <span className="min-w-0">
+                <span
+                  className="flex items-center gap-1.5 text-[15px] text-primary"
+                  style={{ fontFamily: "var(--font-body)", fontWeight: 700 }}
                 >
-                  <Logo url={c.logo_url} name={c.name} />
-                  <span className="min-w-0">
-                    <span
-                      className="flex items-center gap-1.5 text-[15px] text-primary"
-                      style={{ fontFamily: "var(--font-body)", fontWeight: 700 }}
-                    >
-                      <span className="max-w-[16rem] truncate">{c.name}</span>
-                      <GoldCheck />
-                    </span>
-                    {c.count_label && (
-                      <span className="block text-[13px] text-secondary" style={{ fontFamily: "var(--font-body)" }}>
-                        {c.count_label}
-                      </span>
-                    )}
+                  <span className="max-w-[16rem] truncate">{c.name}</span>
+                  <GoldCheck />
+                </span>
+                {c.count_label && (
+                  <span className="block text-[13px] text-secondary" style={{ fontFamily: "var(--font-body)" }}>
+                    {c.count_label}
                   </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </section>
+                )}
+              </span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 
