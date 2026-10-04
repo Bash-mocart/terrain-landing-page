@@ -7,9 +7,8 @@ import { TerrainLogo } from "./TerrainLogo";
 // Root-relative anchors also work from product and variant routes.
 const LINKS = [
   { label: "How it works", href: "/#how-it-works" },
-  { label: "Products", href: "/#the-terrain-way" },
-  { label: "Properties", href: "/#listings" },
-  { label: "Get the app", href: "/#download" },
+  { label: "Fraud protection", href: "/#protection" },
+  { label: "For companies", href: "/#for-companies" },
 ];
 
 export function TopNav() {
@@ -80,11 +79,11 @@ export function TopNav() {
             </Link>
           ))}
           <Link
-            href="/browse"
+            href="/#waitlist"
             className="-mr-2 rounded-full bg-primary px-5 py-2 text-canvas transition-opacity hover:opacity-90"
             style={{ fontFamily: "var(--font-interactive)", fontWeight: 600 }}
           >
-            Browse properties
+            Join the waitlist
           </Link>
         </div>
 
@@ -165,18 +164,18 @@ export function TopNav() {
 
           <div className="px-6 pb-10">
             <Link
-              href="/browse"
+              href="/#waitlist"
               onClick={() => setMenuOpen(false)}
               className="flex w-full items-center justify-center rounded-full bg-primary px-6 py-4 text-canvas"
               style={{ fontFamily: "var(--font-interactive)", fontWeight: 600 }}
             >
-              Browse properties
+              Join the waitlist
             </Link>
             <p
               className="mt-5 text-center text-[11px] uppercase tracking-[0.16em] text-secondary"
               style={{ fontFamily: "var(--font-interactive)" }}
             >
-              Verified agents and companies, across Nigeria
+              Verified real estate companies only
             </p>
           </div>
         </div>
