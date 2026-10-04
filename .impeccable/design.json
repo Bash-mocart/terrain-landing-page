@@ -1,0 +1,369 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-04T16:20:22+00:00",
+  "title": "Design System: Terrain",
+  "extensions": {
+    "colorMeta": {
+      "ink": {
+        "role": "primary",
+        "displayName": "Ink",
+        "canonical": "#090503",
+        "tonalRamp": [
+          "#392013",
+          "#603520",
+          "#864A2D",
+          "#AC6039",
+          "#C9825E",
+          "#D9A68C",
+          "#E9CCBE",
+          "#F9F0EC"
+        ]
+      },
+      "trust-green": {
+        "role": "secondary",
+        "displayName": "Trust Green",
+        "canonical": "#1A5C38",
+        "tonalRamp": [
+          "#113C24",
+          "#1C633D",
+          "#278B55",
+          "#33B36D",
+          "#58D08E",
+          "#88DDAF",
+          "#BBECD1",
+          "#EBF9F2"
+        ]
+      },
+      "verified-sage": {
+        "role": "secondary",
+        "displayName": "Verified Sage",
+        "canonical": "#4A7C59",
+        "tonalRamp": [
+          "#1D3022",
+          "#305039",
+          "#437050",
+          "#569067",
+          "#79AF89",
+          "#9FC6AB",
+          "#C9DFCF",
+          "#EFF5F1"
+        ]
+      },
+      "verified-gold": {
+        "role": "tertiary",
+        "displayName": "Verified Gold",
+        "canonical": "#B8860B",
+        "tonalRamp": [
+          "#483504",
+          "#785807",
+          "#A87B0A",
+          "#D99E0D",
+          "#F3BC35",
+          "#F6CF6F",
+          "#FAE4AD",
+          "#FEF7E7"
+        ]
+      },
+      "canvas": {
+        "role": "neutral",
+        "displayName": "Canvas",
+        "canonical": "#FDFCFB",
+        "tonalRamp": [
+          "#332619",
+          "#55402A",
+          "#77593B",
+          "#99734C",
+          "#B89470",
+          "#CCB399",
+          "#E2D4C5",
+          "#F6F2EE"
+        ]
+      },
+      "surface-white": {
+        "role": "neutral",
+        "displayName": "Surface White",
+        "canonical": "#FFFFFF",
+        "tonalRamp": [
+          "#262626",
+          "#404040",
+          "#595959",
+          "#737373",
+          "#949494",
+          "#B2B2B2",
+          "#D4D4D4",
+          "#F2F2F2"
+        ]
+      },
+      "secondary-gray": {
+        "role": "neutral",
+        "displayName": "Secondary Gray",
+        "canonical": "#717171",
+        "tonalRamp": [
+          "#262626",
+          "#404040",
+          "#595959",
+          "#737373",
+          "#949494",
+          "#B2B2B2",
+          "#D4D4D4",
+          "#F2F2F2"
+        ]
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Rule",
+        "canonical": "#EBEBEB",
+        "tonalRamp": [
+          "#262626",
+          "#404040",
+          "#595959",
+          "#737373",
+          "#949494",
+          "#B2B2B2",
+          "#D4D4D4",
+          "#F2F2F2"
+        ]
+      },
+      "error-red": {
+        "role": "neutral",
+        "displayName": "Error Red",
+        "canonical": "#C92A2A",
+        "tonalRamp": [
+          "#3F0D0D",
+          "#691616",
+          "#941F1F",
+          "#BE2828",
+          "#DA4E4E",
+          "#E58080",
+          "#F0B7B7",
+          "#FBEAEA"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Hero headline and the closing 'Own. Build. Grow.' line only."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section titles."
+      },
+      "headline-sm": {
+        "displayName": "Headline Sm",
+        "purpose": "Secondary section titles (company path)."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Chapter titles (26px mobile, 28px from 640px)."
+      },
+      "title-sm": {
+        "displayName": "Title Sm",
+        "purpose": "Protection checklist facts."
+      },
+      "numeral": {
+        "displayName": "Numeral",
+        "purpose": "Two-digit chapter numerals in Trust Green with a drawn 40x2px rule."
+      },
+      "body-lead": {
+        "displayName": "Body Lead",
+        "purpose": "The one-line promise under the hero headline (20px mobile)."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Descriptions in Secondary Gray, 34ch in chapters, 60ch in sections."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Button and field text."
+      },
+      "nav": {
+        "displayName": "Nav",
+        "purpose": "Desktop navigation links."
+      }
+    },
+    "shadows": [
+      {
+        "name": "nav-float",
+        "value": "0 8px 28px rgba(9,5,3,0.10)",
+        "purpose": "Floating nav pill at rest."
+      },
+      {
+        "name": "nav-float-scrolled",
+        "value": "0 10px 34px rgba(9,5,3,0.16)",
+        "purpose": "Floating nav pill after 24px of scroll."
+      },
+      {
+        "name": "field-lift",
+        "value": "0 6px 20px rgba(9,5,3,0.06)",
+        "purpose": "Inline waitlist pill from 640px."
+      },
+      {
+        "name": "map-popup",
+        "value": "0 12px 28px rgba(9,5,3,0.18)",
+        "purpose": "Listing popups on the map."
+      },
+      {
+        "name": "map-pin",
+        "value": "drop-shadow(0 2px 4px rgba(9,5,3,0.22))",
+        "purpose": "Map price pins; deepens to 0 4px 8px / 0.38 on hover."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out-expo",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Reveals and the mobile menu entrance (700ms reveal, 260ms menu)."
+      },
+      {
+        "name": "ease-map",
+        "value": "cubic-bezier(0.2, 0.6, 0.2, 1)",
+        "purpose": "Map pin, cluster and popup state changes (140-180ms)."
+      },
+      {
+        "name": "chapter-rise",
+        "value": "translateY(48px) scale(0.985) opacity 0.35 -> none; animation-timeline: view(); range entry 0%-70%",
+        "purpose": "Chapter photo rises as it enters view; only under @supports(animation-timeline) and no-preference motion."
+      },
+      {
+        "name": "chapter-rule",
+        "value": "scaleX(0) -> scaleX(1) from left; range entry 10%-80%",
+        "purpose": "The numeral's rule draws as its chapter enters."
+      },
+      {
+        "name": "nav-hide",
+        "value": "translateY(-130%) 300ms ease-out",
+        "purpose": "Nav hides on scroll down past 160px, returns on scroll up."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "prefers-reduced-motion: reduce -> content at rest, no transitions",
+        "purpose": "Every motion above has a static fallback."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Ink pill for the one action (Join the waitlist).",
+      "html": "<button class=\"ds-btn-primary\">Join the waitlist</button>",
+      "css": ".ds-btn-primary{height:48px;padding:0 24px;border:none;border-radius:9999px;background:var(--color-primary,#090503);color:var(--color-canvas,#FDFCFB);font-family:var(--font-interactive,Inter,system-ui,sans-serif);font-weight:600;font-size:15px;cursor:pointer;transition:opacity 150ms}.ds-btn-primary:hover{opacity:.9}.ds-btn-primary:focus-visible{outline:none;box-shadow:0 0 0 2px #FDFCFB,0 0 0 4px var(--color-verified,#4A7C59)}.ds-btn-primary:disabled{opacity:.6}"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Quiet company path; fills Ink on hover.",
+      "html": "<a class=\"ds-btn-outline\" href=\"#\">Apply to list</a>",
+      "css": ".ds-btn-outline{display:inline-flex;align-items:center;height:48px;padding:0 24px;border:1px solid #090503;border-radius:9999px;color:#090503;background:transparent;text-decoration:none;font-family:var(--font-interactive,Inter,system-ui,sans-serif);font-weight:600;font-size:15px;transition:background 150ms,color 150ms}.ds-btn-outline:hover{background:#090503;color:#FDFCFB}.ds-btn-outline:focus-visible{outline:none;box-shadow:0 0 0 2px #FDFCFB,0 0 0 4px #4A7C59}"
+    },
+    {
+      "name": "Waitlist Pill Form",
+      "kind": "input",
+      "refersTo": "input-waitlist",
+      "description": "White pill holding a borderless field and the primary button flush inside (desktop).",
+      "html": "<form class=\"ds-waitlist\"><input class=\"ds-waitlist-input\" placeholder=\"Email or WhatsApp number\" aria-label=\"Email or WhatsApp number\"><button class=\"ds-waitlist-btn\" type=\"button\">Join the waitlist</button></form>",
+      "css": ".ds-waitlist{display:flex;align-items:center;max-width:448px;padding:6px;background:#fff;border:1px solid #EBEBEB;border-radius:9999px;box-shadow:0 6px 20px rgba(9,5,3,.06)}.ds-waitlist-input{flex:1;min-width:0;height:44px;padding:0 20px;border:0;background:transparent;color:#090503;font-family:var(--font-body,Nunito,system-ui,sans-serif);font-size:15px}.ds-waitlist-input::placeholder{color:#717171}.ds-waitlist-input:focus{outline:none}.ds-waitlist:focus-within{box-shadow:0 6px 20px rgba(9,5,3,.06),0 0 0 2px #4A7C59}.ds-waitlist-btn{height:44px;padding:0 24px;border:0;border-radius:9999px;background:#090503;color:#FDFCFB;font-family:var(--font-interactive,Inter,system-ui,sans-serif);font-weight:600;font-size:15px;cursor:pointer;transition:opacity 150ms}.ds-waitlist-btn:hover{opacity:.9}"
+    },
+    {
+      "name": "Floating Nav Pill",
+      "kind": "nav",
+      "refersTo": "nav-pill",
+      "description": "Fixed, centered translucent pill with blur; hides on scroll down.",
+      "html": "<nav class=\"ds-nav\"><span class=\"ds-nav-logo\">Terrain</span><a href=\"#\">How it works</a><a href=\"#\">Fraud protection</a><a href=\"#\">For companies</a><a class=\"ds-nav-cta\" href=\"#\">Join the waitlist</a></nav>",
+      "css": ".ds-nav{display:inline-flex;align-items:center;gap:32px;padding:12px 28px;border:1px solid #EBEBEB;border-radius:9999px;background:rgba(253,252,251,.8);backdrop-filter:blur(12px);box-shadow:0 8px 28px rgba(9,5,3,.10);font-family:var(--font-interactive,Inter,system-ui,sans-serif);font-size:14px}.ds-nav a{color:#090503;text-decoration:none;transition:color 150ms}.ds-nav a:hover{color:#4A7C59}.ds-nav-logo{font-family:var(--font-display,Zain,system-ui,sans-serif);font-weight:800;font-size:24px}.ds-nav .ds-nav-cta{padding:8px 20px;margin-right:-8px;border-radius:9999px;background:#090503;color:#FDFCFB;font-weight:600}.ds-nav .ds-nav-cta:hover{color:#FDFCFB;opacity:.9}"
+    },
+    {
+      "name": "Status Chip",
+      "kind": "chip",
+      "refersTo": "chip-status",
+      "description": "Trust Green tint pill for product status (Coming soon).",
+      "html": "<span class=\"ds-chip-status\"><span class=\"ds-chip-dot\"></span>Coming soon</span>",
+      "css": ".ds-chip-status{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:9999px;background:rgba(26,92,56,.1);color:#1A5C38;font-family:var(--font-body,Nunito,system-ui,sans-serif);font-weight:700;font-size:12px}.ds-chip-dot{width:6px;height:6px;border-radius:9999px;background:#1A5C38}"
+    },
+    {
+      "name": "Verified Company Chip",
+      "kind": "chip",
+      "refersTo": "chip-company",
+      "description": "White pill with logo, name, gold verified seal and listing count.",
+      "html": "<a class=\"ds-chip-company\" href=\"#\"><span class=\"ds-chip-logo\">L</span><span><span class=\"ds-chip-name\">Legit Empire Real Estate <svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" aria-label=\"Verified\"><path fill=\"#B8860B\" d=\"M12 1.5l2.6 2.1 3.3-.4.9 3.2 2.9 1.7-1.1 3.1 1.1 3.1-2.9 1.7-.9 3.2-3.3-.4L12 22.5l-2.6-2.1-3.3.4-.9-3.2-2.9-1.7 1.1-3.1-1.1-3.1 2.9-1.7.9-3.2 3.3.4z\"/><path d=\"M8 12.3l2.7 2.7L16.2 9.5\" stroke=\"#fff\" stroke-width=\"2.2\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg></span><span class=\"ds-chip-count\">6 listings</span></span></a>",
+      "css": ".ds-chip-company{display:inline-flex;align-items:center;gap:12px;padding:8px 20px 8px 8px;border:1px solid #EBEBEB;border-radius:9999px;background:#fff;text-decoration:none;transition:border-color 150ms}.ds-chip-company:hover{border-color:rgba(9,5,3,.3)}.ds-chip-company:focus-visible{outline:none;box-shadow:0 0 0 2px #4A7C59}.ds-chip-logo{display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:9999px;background:#EBEBEB;font-weight:700;color:#090503}.ds-chip-name{display:flex;align-items:center;gap:6px;font-family:var(--font-body,Nunito,system-ui,sans-serif);font-weight:700;font-size:15px;color:#090503}.ds-chip-count{display:block;font-family:var(--font-body,Nunito,system-ui,sans-serif);font-size:13px;color:#717171}"
+    },
+    {
+      "name": "Chapter Row",
+      "kind": "custom",
+      "refersTo": "photo-chapter",
+      "description": "Signature numbered journey step: green numeral with drawn rule, Zain title, gray body, 24px-rounded wide photo.",
+      "html": "<div class=\"ds-chapter\"><div><span class=\"ds-chapter-num\">01</span><h3 class=\"ds-chapter-title\">Far from home, you find a plot.</h3><p class=\"ds-chapter-body\">Browse checked land and homes in Abuja from your phone, wherever you are.</p></div><div class=\"ds-chapter-photo\"></div></div>",
+      "css": ".ds-chapter{display:grid;grid-template-columns:minmax(0,14rem) minmax(0,1fr);gap:40px}.ds-chapter-num{display:block;font-family:var(--font-display,Zain,system-ui,sans-serif);font-weight:800;font-size:24px;color:#1A5C38;padding-top:24px}.ds-chapter-num::after{content:'';display:block;width:2.5rem;height:2px;margin-top:.5rem;background:currentColor;transform-origin:left;transition:transform 700ms cubic-bezier(.16,1,.3,1)}.ds-chapter:hover .ds-chapter-num::after{transform:scaleX(1.4)}.ds-chapter-title{margin:12px 0 0;font-family:var(--font-display,Zain,system-ui,sans-serif);font-weight:800;font-size:28px;line-height:1.1;color:#090503}.ds-chapter-body{margin-top:12px;max-width:34ch;font-family:var(--font-body,Nunito,system-ui,sans-serif);font-size:16px;line-height:1.625;color:#717171}.ds-chapter-photo{aspect-ratio:16/7;border-radius:24px;background:linear-gradient(135deg,#4A7C59,#1A5C38 60%,#B8860B)}"
+    },
+    {
+      "name": "Protection Check Item",
+      "kind": "custom",
+      "description": "Green check disc beside a Zain fact and gray explanation; sits flat on the canvas.",
+      "html": "<div class=\"ds-check\"><svg width=\"28\" height=\"28\" viewBox=\"0 0 28 28\" fill=\"none\" aria-hidden=\"true\"><circle cx=\"14\" cy=\"14\" r=\"14\" fill=\"#1A5C38\"/><path d=\"M8.5 14.5l3.5 3.5 7.5-8\" stroke=\"#fff\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg><div><p class=\"ds-check-title\">Only verified companies can sell.</p><p class=\"ds-check-body\">Every company is checked against the CAC register before it can list.</p></div></div>",
+      "css": ".ds-check{display:flex;gap:16px;max-width:22rem}.ds-check svg{flex-shrink:0;margin-top:2px}.ds-check-title{margin:0;font-family:var(--font-display,Zain,system-ui,sans-serif);font-weight:800;font-size:20px;line-height:1.375;color:#090503}.ds-check-body{margin:6px 0 0;font-family:var(--font-body,Nunito,system-ui,sans-serif);font-size:16px;line-height:1.625;color:#717171}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Journey on Record",
+    "overview": "Terrain's web world is the app's world laid out on an off-white page: near-black type and pill buttons on a warm canvas, real documentary photographs in generous 24px-rounded frames, and a single forest green reserved for trust. The page reads as a sequence, not a catalogue. Numbered chapters carry a buyer from finding a plot abroad to owning it, and the trust checks sit inside that story rather than in a feature grid.\n\nDensity is low and the rhythm is wide. Sections are separated by hairline rules and white space, never by colored slabs; the only dark surfaces are the footer and the photo-backed closing card. Depth comes from photographs and the live map, not from shadows. Motion is quiet and scroll-bound: a photo rises as its chapter enters, the numeral's rule draws beneath it, and everything holds still under reduced motion.\n\nThe hero is the one place the product shows itself directly: a live Mapbox map of Abuja occupies the right of the first viewport and dissolves into the canvas behind the copy. This world replaces the earlier survey-grid and black-slab landing look; that look is not part of this system.",
+    "keyCharacteristics": [
+      "Warm off-white canvas, near-black ink, forest green only for trust.",
+      "Zain 800 for every heading and numeral, Nunito for reading, Inter for anything you press.",
+      "Pills for every interactive control; 24px rounded frames for photos.",
+      "Hairline rules and space as dividers; no slabs, no cards-on-cards.",
+      "Real photographs and the live map as the imagery; no illustrations.",
+      "Scroll-driven, reduced-motion-safe reveals."
+    ],
+    "rules": [
+      {
+        "name": "The Earned Green Rule",
+        "body": "Trust Green marks a check that happened: a chapter step, a protection fact, a status. It never fills a button or a section.",
+        "section": "colors"
+      },
+      {
+        "name": "The Gold Seal Rule",
+        "body": "Gold appears only as the verified-company seal. A gold anything-else dilutes the one mark that means CAC-checked.",
+        "section": "colors"
+      },
+      {
+        "name": "The Three Voices Rule",
+        "body": "Zain speaks, Nunito explains, Inter acts. A button never sets in Zain; a heading never sets in Inter.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat Page Rule",
+        "body": "Content on the canvas (chapters, checklist, chips) carries no shadow. Only things floating over the page or the map do.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do set every heading and numeral in Zain 800 with -0.02em tracking at display and headline sizes.",
+      "Do make every control a full pill, and every photo a 24px-rounded frame.",
+      "Do separate sections with a 1px Rule line and space (56-96px), on the same Canvas ground.",
+      "Do keep Trust Green for checks and numerals, Verified Sage for focus and hover, and Gold for the verified-company seal.",
+      "Do use real documentary photography and the live map; give each scroll-driven reveal a reduced-motion fallback that shows content at rest.",
+      "Do cap repeated proof (companies) at a fixed count and let it wrap."
+    ],
+    "donts": [
+      "Don't fill a button or a section with green; buttons are Ink.",
+      "Don't bring back the survey grid backdrop or full-bleed black slabs between sections. The footer and the photo-backed closing card are the only dark grounds.",
+      "Don't use illustrations, stat counters, testimonials or feature-card grids to carry trust; the numbered journey and the checklist do.",
+      "Don't put shadows on content sitting on the canvas; reserve them for the floating nav, the field, and map elements.",
+      "Don't add small uppercase tracked labels above headings."
+    ]
+  }
+}
