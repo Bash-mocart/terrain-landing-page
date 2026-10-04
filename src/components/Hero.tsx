@@ -1,17 +1,38 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { LiveMap } from "./LiveMap";
 
 export function Hero() {
-  const [isExploring, setIsExploring] = useState(false);
-
   return (
     <section className="relative min-h-[680px] w-full overflow-hidden bg-canvas sm:min-h-[760px] lg:min-h-[1012px]">
       {/* Avoid a stacking context here so Mapbox popups can appear above the gradients. */}
       <div className="absolute inset-0">
-        <LiveMap isExploring={isExploring} />
+        <LiveMap />
+      </div>
+      {/* Before launch the map shows no listings; this says why. */}
+      <div className="pointer-events-none absolute right-[6%] top-1/2 z-[3] hidden -translate-y-1/2 sm:flex lg:right-[14%]">
+        <div className="max-w-xs rounded-3xl border border-border-rule bg-canvas/90 px-6 py-5 text-center shadow-lg backdrop-blur-sm">
+          <span
+            className="inline-flex items-center gap-2 rounded-full bg-verified px-3 py-1 text-[11px] uppercase tracking-[0.16em] text-white"
+            style={{ fontFamily: "var(--font-interactive)", fontWeight: 600 }}
+          >
+            <span className="size-1.5 rounded-full bg-white" aria-hidden />
+            Coming soon
+          </span>
+          <p
+            className="mt-3 text-xl leading-snug text-primary"
+            style={{ fontFamily: "var(--font-display)", fontWeight: 700 }}
+          >
+            Verified listings land on this map soon.
+          </p>
+          <p
+            className="mt-2 text-sm leading-relaxed text-secondary"
+            style={{ fontFamily: "var(--font-body)" }}
+          >
+            Get the app to see them first.
+          </p>
+        </div>
       </div>
       <div
         className="pointer-events-none absolute inset-x-0 top-0 z-[1] h-[60%] bg-gradient-to-b from-canvas/90 via-canvas/65 to-transparent sm:hidden"
@@ -72,14 +93,20 @@ export function Hero() {
               Get the app
             </Link>
           </div>
-          <button
-            type="button"
-            onClick={() => setIsExploring((prev) => !prev)}
-            aria-pressed={isExploring}
-            className="terrain-map-link sm:hidden"
+          {/* On a phone the map sits behind the text, so say it here. */}
+          <p
+            className="mt-6 flex items-center gap-2 text-sm text-secondary sm:hidden"
+            style={{ fontFamily: "var(--font-body)" }}
           >
-            {isExploring ? "Done exploring ×" : "Tap to explore the map →"}
-          </button>
+            <span
+              className="inline-flex items-center gap-1.5 rounded-full bg-verified px-2.5 py-1 text-[10px] uppercase tracking-[0.16em] text-white"
+              style={{ fontFamily: "var(--font-interactive)", fontWeight: 600 }}
+            >
+              <span className="size-1.5 rounded-full bg-white" aria-hidden />
+              Coming soon
+            </span>
+            Verified listings on the map
+          </p>
         </div>
       </div>
     </section>
