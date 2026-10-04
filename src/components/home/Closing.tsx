@@ -39,8 +39,8 @@ export function Closing() {
         <div className="mx-auto max-w-[1240px] px-6 sm:px-10">
           <div className="relative overflow-hidden rounded-3xl">
             <Image
-              src="/photos/grow.webp"
-              alt="A new road running through open land"
+              src="/photos/estate.webp"
+              alt="A new estate taking shape on open land, seen from above"
               fill
               sizes="(min-width: 1240px) 1160px, 100vw"
               className="object-cover"

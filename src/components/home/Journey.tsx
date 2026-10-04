@@ -1,38 +1,39 @@
 import Image from "next/image";
 
-// Her journey: one buyer, far from home, from finding a plot to owning it,
+// Your journey: a buyer far from home, from finding a plot to owning it,
 // with Terrain's checks inside the story. The sequence is the content, so
 // the chapters are numbered. Photos are real (Unsplash, provenance embedded
 // in each file); the people in them are not presented as customers.
 const CHAPTERS = [
   {
-    photo: "/photos/finds.webp",
-    alt: "Hands holding a phone above a laptop",
-    title: "Far from home, she finds a plot.",
-    body: "She browses checked land and homes in Abuja from her phone, wherever she is.",
+    photo: "/photos/plot.webp",
+    alt: "Marked-out estate plots and a new road, seen from above",
+    title: "Far from home, you find a plot.",
+    body: "Browse checked land and homes in Abuja from your phone, wherever you are.",
   },
   {
-    photo: "/photos/messages.webp",
-    alt: "A man at an office desk taking a call",
-    title: "She messages a verified company.",
-    body: "Every company on Terrain is CAC-registered and checked before it can list. The chat stays in Terrain, and nothing in it can be edited or deleted.",
+    photo: "/photos/message.webp",
+    alt: "Two people reading a message on a phone together",
+    position: "75% 30%",
+    title: "You message a verified company.",
+    body: "Every company on Terrain is CAC-registered and checked before it can list. Your chat stays in Terrain, and nothing in it can be edited or deleted.",
   },
   {
     photo: "/photos/checks.webp",
     alt: "A surveyor working with a total station on cleared land",
     title: "Terrain checks the title and the land.",
-    body: "Title documents and survey boundaries are checked before she commits.",
+    body: "Title documents and survey boundaries are checked before you commit.",
   },
   {
-    photo: "/photos/pays.webp",
-    alt: "A woman at home using a laptop",
-    title: "She pays the company, as agreed.",
-    body: "Straight to the company, in instalments if they offer them. Terrain never holds her money.",
+    photo: "/photos/sign.webp",
+    alt: "A hand signing paperwork at a desk",
+    title: "You pay the company, as agreed.",
+    body: "Straight to the company, in instalments if they offer them. Terrain never holds your money.",
   },
   {
-    photo: "/photos/hers.webp",
-    alt: "Rooftops of a neighbourhood with hills behind",
-    title: "Terrain keeps watch. It’s hers.",
+    photo: "/photos/home.webp",
+    alt: "Finished homes with green roofs along an estate road",
+    title: "Terrain keeps watch. It’s yours.",
     body: "The offer letter, receipts and documents stay on record in the chat, and the sale is recorded at the registry.",
   },
 ] as const;
@@ -46,7 +47,7 @@ export function Journey() {
           className="max-w-xl text-[clamp(32px,5vw,52px)] leading-[1] tracking-[-0.02em] text-primary"
           style={{ fontFamily: "var(--font-display)", fontWeight: 800 }}
         >
-          How she bought land in Abuja without flying home.
+          Buy land in Abuja without flying home.
         </h2>
         <ol className="mt-12 space-y-12 sm:mt-16 sm:space-y-20">
           {CHAPTERS.map((c, i) => (
@@ -83,6 +84,7 @@ export function Journey() {
                   fill
                   sizes="(min-width: 1240px) 900px, (min-width: 640px) 70vw, 100vw"
                   className="object-cover"
+                  style={"position" in c ? { objectPosition: c.position } : undefined}
                   priority={i === 0}
                 />
               </div>
