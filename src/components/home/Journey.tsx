@@ -19,8 +19,8 @@ const CHAPTERS = [
     body: "Every company on Terrain is CAC-registered and checked before it can list. Your chat stays in Terrain, and nothing in it can be edited or deleted.",
   },
   {
-    photo: "/photos/checks.webp",
-    alt: "A surveyor working with a total station on cleared land",
+    photo: "/photos/site.webp",
+    alt: "A half-built house on a marked-out plot, seen from above",
     title: "Terrain checks the title and the land.",
     body: "Title documents and survey boundaries are checked before you commit.",
   },
