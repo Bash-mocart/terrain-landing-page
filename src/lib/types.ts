@@ -40,6 +40,10 @@ export type Listing = {
   created_at?: string;
   verified_at?: string;
   has_payment_plan?: boolean;
+  /** Display-ready nearest place, "Wumba, Abuja". */
+  place_label?: string;
+  /** Detail read only: the public link and the line Share sends with it. */
+  share?: { url: string; text: string; image_url?: string };
 };
 
 export type PublicSellerProfile = {
