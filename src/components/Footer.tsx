@@ -20,8 +20,8 @@ const NAV = [
     links: [
       { label: "For companies", href: "/#for-companies" },
       { label: "Apply to list", href: "mailto:agents@terrain.ng" },
-      { label: "Privacy", href: "#" },
-      { label: "Terms", href: "#" },
+      { label: "Privacy", href: "/privacy" },
+      { label: "Terms", href: "/terms" },
     ],
   },
   {
