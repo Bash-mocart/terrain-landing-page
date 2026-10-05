@@ -203,7 +203,7 @@ export default function PrivacyPage() {
           verifying companies and listings, keeping the chat and deal record,
           checking messages for fraud, handling reports, preventing abuse, and
           counting listing views so companies know their listings are seen. We
-          balance these against your rights, and you can object (section 7).
+          balance these against your rights, and you can object (section 6).
         </li>
         <li>
           <strong>Legal obligations</strong>: keeping records the law requires
@@ -280,14 +280,7 @@ export default function PrivacyPage() {
         would move with it under this policy, and we would tell you first.
       </p>
 
-      <LegalHeading id="transfers">5. Data outside Nigeria</LegalHeading>
-      <p>
-        Our servers and some of the providers above are outside Nigeria. When
-        your data leaves Nigeria, we only send it where the Nigeria Data
-        Protection Act allows, with providers bound by contract to protect it.
-      </p>
-
-      <LegalHeading id="retention">6. How long we keep it</LegalHeading>
+      <LegalHeading id="retention">5. How long we keep it</LegalHeading>
       <p>
         We keep your account details while your account is open. When you
         delete your account (Profile, then Delete account):
@@ -341,27 +334,27 @@ export default function PrivacyPage() {
         Waitlist sign-ups are kept until you ask us to remove them.
       </p>
 
-      <LegalHeading id="rights">7. Your rights</LegalHeading>
+      <LegalHeading id="rights">6. Your rights</LegalHeading>
       <p>Under the Nigeria Data Protection Act you can ask us to:</p>
       <ul>
         <li>tell you what personal data we hold about you and give you a copy;</li>
         <li>correct anything that is wrong (most of it you can edit in Profile);</li>
         <li>
           delete your data (in the app: Profile, then Delete account), subject
-          to the records described in section 6;
+          to the records described in section 5;
         </li>
         <li>restrict how we use it, or object to a use based on our legitimate interests;</li>
         <li>give you your data in a format you can take elsewhere;</li>
         <li>stop a use you consented to, at any time.</li>
       </ul>
       <p>
-        Contact us as shown in section 11. We will answer within the time the
+        Contact us as shown in section 10. We will answer within the time the
         law sets, and we may ask you to confirm it is really you. If you are
         not happy with our answer, you can complain to the{" "}
         <a href="https://ndpc.gov.ng">Nigeria Data Protection Commission</a>.
       </p>
 
-      <LegalHeading id="security">8. Keeping it safe</LegalHeading>
+      <LegalHeading id="security">7. Keeping it safe</LegalHeading>
       <p>
         Data travels to and from Terrain encrypted. Sign-in and signing codes
         are stored only as hashes, NIN numbers only as a keyed hash, and the
@@ -371,21 +364,21 @@ export default function PrivacyPage() {
         Protection Commission as the law requires.
       </p>
 
-      <LegalHeading id="children">9. Children</LegalHeading>
+      <LegalHeading id="children">8. Children</LegalHeading>
       <p>
         Terrain is for adults. You must be 18 or older to use it. We do not
         knowingly collect data from anyone under 18, and if we learn we have,
         we will delete it.
       </p>
 
-      <LegalHeading id="changes">10. Changes to this policy</LegalHeading>
+      <LegalHeading id="changes">9. Changes to this policy</LegalHeading>
       <p>
         When we change how we use your data, we will update this page. If a
         change matters to you, we will tell you in the app or by email before
         it takes effect.
       </p>
 
-      <LegalHeading id="contact">11. Contact us</LegalHeading>
+      <LegalHeading id="contact">10. Contact us</LegalHeading>
       <p>
         For any privacy question or request, talk to us in the app (Profile,
         then Help &amp; safety) or on WhatsApp at{" "}
