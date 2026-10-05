@@ -1,5 +1,10 @@
 import Link from "next/link";
 
+// PLACEHOLDER: replace with the Terrain app's App Store / Play Store pages
+// once the listings are live.
+export const APP_STORE_URL = "https://apps.apple.com";
+export const PLAY_STORE_URL = "https://play.google.com";
+
 // Shared App Store / Google Play button row. The hero defines its own
 // inline pair (left untouched to keep the map section stable); this is
 // the reusable version for the rest of the page, currently the closing
@@ -14,8 +19,8 @@ export function StoreButtons({
 }) {
   return (
     <div className="flex flex-wrap items-center gap-3">
-      <StoreButton href="https://apps.apple.com" platform="ios" tone={tone} />
-      <StoreButton href="https://play.google.com" platform="android" tone={tone} />
+      <StoreButton href={APP_STORE_URL} platform="ios" tone={tone} />
+      <StoreButton href={PLAY_STORE_URL} platform="android" tone={tone} />
     </div>
   );
 }

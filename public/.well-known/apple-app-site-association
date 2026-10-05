@@ -13,6 +13,10 @@
           {
             "/": "/company/*",
             "comment": "Shared company pages open the Terrain app"
+          },
+          {
+            "/": "/listings/*",
+            "comment": "Shared listings open the Terrain app"
           }
         ]
       }
