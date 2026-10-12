@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { api } from "@/lib/api";
+import { isEmail } from "@/lib/email";
 
 // Smoke-test signup + the fake-door "request an independent check" rider
 // (terra-backend docs/product_validation_field_kit.md). Three states:
@@ -44,8 +45,8 @@ export function SignupForm({
     e.preventDefault();
     if (busy) return;
     setError("");
-    if (contact.trim().length < 5) {
-      setError("Enter your WhatsApp number or email.");
+    if (!isEmail(contact.trim())) {
+      setError("Enter your email address.");
       return;
     }
     setBusy(true);
@@ -156,13 +157,15 @@ export function SignupForm({
   }
 
   return (
-    <form onSubmit={submitSignup} className="max-w-md">
+    <form onSubmit={submitSignup} noValidate className="max-w-md">
       <div className="flex flex-col gap-3 sm:flex-row">
         <input
           value={contact}
           onChange={(e) => setContact(e.target.value)}
-          placeholder="WhatsApp number or email"
-          inputMode="email"
+          type="email"
+          autoComplete="email"
+          aria-label="Email address"
+          placeholder="Your email address"
           className="w-full rounded-full border border-border-rule bg-white px-5 py-3.5 text-sm text-primary placeholder:text-secondary/70 focus:border-verified focus:outline-none"
         />
         <button

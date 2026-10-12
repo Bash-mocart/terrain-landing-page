@@ -179,8 +179,8 @@ export default function PrivacyPage() {
 
       <h3>On terrain.ng</h3>
       <p>
-        If you join the waitlist, we keep the email address or WhatsApp number
-        you give us and the page or campaign link you came from. If you sign
+        If you join the waitlist, we keep the email address you give us
+        and the page or campaign link you came from. If you sign
         in on the website, your browser stores your session. Some campaign
         pages use the Meta Pixel to measure whether our adverts work; it sends
         Meta details of your visit to that page.
