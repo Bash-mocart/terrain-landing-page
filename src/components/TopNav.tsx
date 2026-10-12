@@ -62,7 +62,7 @@ export function TopNav() {
         }`}
       >
         <Link href="/" aria-label="Terrain home">
-          <TerrainLogo markSize={26} tone="onLight" wordClassName="text-2xl" />
+          <TerrainLogo markSize={26} tone="onLight" />
         </Link>
 
         <div
@@ -113,7 +113,7 @@ export function TopNav() {
               aria-label="Terrain home"
               onClick={() => setMenuOpen(false)}
             >
-              <TerrainLogo markSize={32} tone="onLight" wordClassName="text-[30px]" />
+              <TerrainLogo markSize={32} tone="onLight" />
             </Link>
             <button
               ref={closeButtonRef}

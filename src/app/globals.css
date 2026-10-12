@@ -502,3 +502,51 @@ body {
     margin-bottom: 6.25rem;
   }
 }
+
+/* Launch gate (src/components/LaunchGate.tsx). Motion only when the visitor
+   hasn't asked for less; otherwise everything simply sits at rest. */
+@media (prefers-reduced-motion: no-preference) {
+  /* Logo, slogan words, line, countdown and form rise in, one after another. */
+  .gate-rise {
+    opacity: 0;
+    animation: gate-rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+    animation-delay: var(--d, 0ms);
+  }
+  /* A soft ring around the "opening" dot, like a live signal. */
+  .gate-pulse::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    background: inherit;
+    animation: gate-pulse 2s ease-out infinite;
+  }
+  /* Each new countdown value drops into place. */
+  .gate-tick {
+    animation: gate-tick 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+}
+
+@keyframes gate-rise {
+  from { opacity: 0; transform: translateY(22px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes gate-pulse {
+  from { transform: scale(1); opacity: 0.55; }
+  to { transform: scale(3.2); opacity: 0; }
+}
+@keyframes gate-tick {
+  from { opacity: 0; transform: translateY(-40%); }
+  to { opacity: 1; transform: none; }
+}
+
+/* After the contours have drawn in, the map breathes very slowly. */
+@media (prefers-reduced-motion: no-preference) {
+  .gate-breathe {
+    animation: gate-breathe 26s ease-in-out 4s infinite alternate;
+  }
+}
+@keyframes gate-breathe {
+  from { transform: scale(1); }
+  to { transform: scale(1.06) translateY(-1%); }
+}

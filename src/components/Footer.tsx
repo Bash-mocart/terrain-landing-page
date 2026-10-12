@@ -41,7 +41,7 @@ export function Footer() {
         <div className="grid grid-cols-1 gap-10 sm:gap-12 sm:grid-cols-2 lg:grid-cols-12">
           <div className="sm:col-span-2 lg:col-span-6">
             <Link href="/" aria-label="Terrain home">
-              <TerrainLogo markSize={32} tone="onDark" wordClassName="text-3xl" />
+              <TerrainLogo markSize={32} tone="onDark" />
             </Link>
             <p
               className="mt-6 max-w-sm text-base leading-relaxed text-canvas/70"
