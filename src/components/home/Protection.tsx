@@ -8,8 +8,8 @@ const POINTS = [
     body: "Every company is checked against the CAC register before it can list, and carries a gold check.",
   },
   {
-    title: "Every listing is checked.",
-    body: "Title documents and the property itself are checked before a listing goes live.",
+    title: "The title is on the listing.",
+    body: "Each listing shows the title document the company says it holds, so you know what to ask for before you pay.",
   },
   {
     title: "The chat is the record.",

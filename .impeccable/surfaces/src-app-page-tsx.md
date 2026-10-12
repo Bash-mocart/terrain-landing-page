@@ -7,7 +7,7 @@ related_targets: []
 
 # Surface: terrain.ng landing page (src/app/page.tsx)
 
-Mode: Persuade. Audience: fraud-wary buyers in Nigeria and abroad. Action: join the waitlist (POST /v1/waitlist); companies get a quieter "Sell on Terrain" path. Proof: real verified companies from /v1/home/sections; the real deal flow (in-app chat with the company, Terrain checks, pay the company as agreed, recorded at the registry). Constraints: no escrow, no invented counts, cities, testimonials, 3D/drone; listings are "Coming soon"; keep the hero live map. Imagery: real Unsplash photos in public/photos (provenance embedded), no illustrations, people never presented as customers.
+Mode: Persuade. Audience: fraud-wary buyers in Nigeria and abroad. Action: join the waitlist (POST /v1/waitlist); companies get a quieter "Sell on Terrain" path. Proof: real verified companies from /v1/home/sections; the real deal flow (in-app chat with the company, offer letter, pay the company as agreed, every document kept on record in the chat; Terrain does not check titles). Constraints: no escrow, no invented counts, cities, testimonials, 3D/drone; listings are "Coming soon"; keep the hero live map. Imagery: real Unsplash photos in public/photos (provenance embedded), no illustrations, people never presented as customers.
 
 Chosen structure: "Her journey" (seed 53040691, dealt index 3), comp .impeccable/mocks/decision/her-journey-photo.webp approved as a guide, not a pixel spec (user: "Yes, the comp is a guide"); build path code-led for this session.
 

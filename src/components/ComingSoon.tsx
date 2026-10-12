@@ -23,8 +23,8 @@ export function ComingSoon() {
           className="mt-4 leading-relaxed text-secondary"
           style={{ fontFamily: "var(--font-body)" }}
         >
-          We check every company and every plot before it goes live. Get the
-          app to see them first.
+          We check every company before it can list. Get the app to see
+          them first.
         </p>
         <div className="mt-8 flex justify-center [&>div]:justify-center">
           <StoreButtons />
