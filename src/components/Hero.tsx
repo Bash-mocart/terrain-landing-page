@@ -1,5 +1,6 @@
 import { LiveMap } from "./LiveMap";
 import { WaitlistForm } from "./home/WaitlistForm";
+import { ComingSoonPill } from "./ComingSoonPill";
 
 // The live map of Abuja (no pins before launch) owns the right of the hero
 // and fades into the page ground behind the copy.
@@ -23,21 +24,19 @@ export function Hero() {
             className="text-[clamp(44px,8vw,76px)] leading-[0.95] tracking-[-0.02em] text-primary"
             style={{ fontFamily: "var(--font-display)", fontWeight: 800 }}
           >
-            Own property
-            <br />
-            you can trust.
+            Own. Build. Grow.
           </h1>
           <p
             className="mt-5 text-xl leading-snug text-primary sm:text-2xl"
             style={{ fontFamily: "var(--font-body)" }}
           >
-            From anywhere in the world.
+            A home to own. Land to build on. Land to hold.
           </p>
           <p
             className="mt-3 max-w-md text-base leading-relaxed text-secondary"
             style={{ fontFamily: "var(--font-body)" }}
           >
-            Verified companies, checked land, and every deal kept on record.
+            Verified companies, checked properties, and every deal kept on record.
           </p>
           <div className="mt-8">
             <WaitlistForm id="hero-waitlist" />
@@ -46,13 +45,7 @@ export function Hero() {
             className="mt-4 flex flex-wrap items-center gap-2 text-sm text-secondary"
             style={{ fontFamily: "var(--font-body)" }}
           >
-            <span
-              className="inline-flex items-center gap-1.5 rounded-full bg-[#1a5c38]/10 px-2.5 py-0.5 text-[12px] text-[#1a5c38]"
-              style={{ fontWeight: 700 }}
-            >
-              <span className="size-1.5 rounded-full bg-[#1a5c38]" aria-hidden />
-              Coming soon
-            </span>
+            <ComingSoonPill />
             Listings open on the map at launch.
           </p>
         </div>
