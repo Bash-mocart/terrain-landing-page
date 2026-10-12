@@ -36,7 +36,7 @@ export function Hero() {
             className="mt-3 max-w-md text-base leading-relaxed text-secondary"
             style={{ fontFamily: "var(--font-body)" }}
           >
-            Verified companies, checked properties, and every deal kept on record.
+            Verified companies, and every deal kept on record.
           </p>
           <div className="mt-8">
             <WaitlistForm id="hero-waitlist" />

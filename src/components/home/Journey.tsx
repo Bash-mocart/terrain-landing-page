@@ -1,7 +1,8 @@
 import Image from "next/image";
 
-// Your journey: a buyer far from home, from finding a plot to owning it,
-// with Terrain's checks inside the story. The sequence is the content, so
+// Your journey: a buyer far from home, from finding a property to owning it,
+// following the app's deal steps (message, offer letter, verify if wanted,
+// pay, recorded). The sequence is the content, so
 // the chapters are numbered. Photos are real (Unsplash, provenance embedded
 // in each file); the people in them are not presented as customers.
 const CHAPTERS = [
@@ -9,7 +10,7 @@ const CHAPTERS = [
     photo: "/photos/plot.webp",
     alt: "Marked-out estate plots and a new road, seen from above",
     title: "Far from home, you find the right property.",
-    body: "Browse checked land and homes across Nigeria from your phone, wherever you are.",
+    body: "Browse land and homes across Nigeria from your phone, wherever you are.",
   },
   {
     photo: "/photos/message.webp",
@@ -19,22 +20,22 @@ const CHAPTERS = [
     body: "Every company on Terrain is CAC-registered and checked before it can list. Your chat stays in Terrain, and nothing in it can be edited or deleted.",
   },
   {
-    photo: "/photos/site.webp",
-    alt: "A half-built house on a marked-out plot, seen from above",
-    title: "Terrain checks the title and the property.",
-    body: "Title documents and survey boundaries are checked before you commit.",
-  },
-  {
     photo: "/photos/sign.webp",
     alt: "A hand signing paperwork at a desk",
-    title: "You pay the company, as agreed.",
-    body: "Straight to the company, in instalments if they offer them. Terrain never holds your money.",
+    title: "You both sign the offer letter.",
+    body: "The company sends the offer letter in your chat. You sign it before any money moves.",
+  },
+  {
+    photo: "/photos/site.webp",
+    alt: "A half-built house on a marked-out plot, seen from above",
+    title: "Check it if you want, then pay.",
+    body: "Ask Terrain, and a lawyer and surveyor inspect the title and the land, then share their findings in your chat. You pay the company directly, as agreed. Terrain never holds your money.",
   },
   {
     photo: "/photos/home.webp",
     alt: "Finished homes with green roofs along an estate road",
-    title: "Terrain keeps watch. It’s yours.",
-    body: "The offer letter, receipts and documents stay on record in the chat, and the sale is recorded at the registry.",
+    title: "Every document stays on record.",
+    body: "The offer letter, receipts and documents stay in your chat, protecting both sides. It’s yours.",
   },
 ] as const;
 

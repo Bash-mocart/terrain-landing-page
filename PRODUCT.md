@@ -25,9 +25,9 @@ from real buyers at home and abroad.
 ## Positioning
 
 Only verified real estate companies can sell (CAC-checked before they list, shown with a
-gold check), every listing is checked by Terrain, and the whole deal happens inside a
+gold check), every listing shows its stated title document, and the whole deal happens inside a
 Terrain chat that can't be edited or deleted: message the company, receive the offer
-letter, pay as agreed, and the deal is recorded at the registry. The record is the
+letter, pay as agreed, and every document stays on record in the chat. The record is the
 product.
 
 ## Operating Context
@@ -46,8 +46,14 @@ product.
 Confirmed in the product today:
 - Verified companies (gold check) with staff profiles; companies invite their team by email.
 - In-app chat with the company (no phone numbers exposed); chats are immutable; calls in app.
-- Deal steps in the chat: offer letter → pay → recorded at the registry.
-- Terrain checks listings (title documents: C of O > Govt Consent > Deed > Survey Plan > R of O).
+- Deal steps in the chat (server-driven, terra-backend internal/deal/steps.go): Message →
+  Offer letter → Verify (optional, on request) → Pay → Recorded. "Recorded" means every
+  document and receipt stays in the chat; it is NOT a land-registry filing.
+- Listings show the title document the company states (C of O > Govt Consent > Deed >
+  Survey Plan > Family Land). Terrain does NOT check every listing's title (owner,
+  2026-10-12). On request, Terrain brings in a lawyer and surveyor who inspect the title and
+  the land and post findings in the chat (the optional Verify step; owner confirmed it's
+  offered). Claim it only as optional, on request.
 - Payment plans (instalments) on listings; follow a company to get a push when it lists.
 - Map with an infrastructure layer (roads and projects nearby) and nearby places.
 - Listing media: photos and video.
