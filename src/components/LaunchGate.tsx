@@ -25,7 +25,7 @@ export function LaunchGate() {
           src="/terrain/abuja-map.svg"
           alt=""
           aria-hidden
-          className="gate-breathe pointer-events-none fixed inset-0 h-full w-full object-cover object-[55%_45%] opacity-80 blur-[1.5px]"
+          className="gate-breathe pointer-events-none fixed inset-0 h-full w-full object-cover object-[55%_45%] opacity-80 blur-[3px]"
         />
         {/* Canvas veil: clear for the words in the middle, terrain at the edges. */}
         <div
@@ -86,6 +86,12 @@ export function LaunchGate() {
             <Link href="/terms" className="hover:text-primary">Terms</Link>
             <a href="mailto:support@terrain.ng" className="hover:text-primary">Contact</a>
           </nav>
+          <p className="mt-3 text-xs text-secondary/80" style={{ fontFamily: "var(--font-body)" }}>
+            Map of Abuja ©{" "}
+            <a href="https://www.openstreetmap.org/copyright" className="underline-offset-2 hover:underline">
+              OpenStreetMap contributors
+            </a>
+          </p>
         </div>
       </section>
     </>
