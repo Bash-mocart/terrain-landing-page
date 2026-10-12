@@ -28,7 +28,7 @@ const CHAPTERS = [
   {
     photo: "/photos/site.webp",
     alt: "A half-built house on a marked-out plot, seen from above",
-    title: "Check it if you want, then pay.",
+    title: "Verify, then pay.",
     body: "Ask Terrain, and a lawyer and surveyor inspect the title and the land, then share their findings in your chat. You pay the company directly, as agreed. Terrain never holds your money.",
   },
   {
