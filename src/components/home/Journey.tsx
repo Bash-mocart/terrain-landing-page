@@ -8,8 +8,8 @@ const CHAPTERS = [
   {
     photo: "/photos/plot.webp",
     alt: "Marked-out estate plots and a new road, seen from above",
-    title: "Far from home, you find a plot.",
-    body: "Browse checked land and homes in Abuja from your phone, wherever you are.",
+    title: "Far from home, you find the right property.",
+    body: "Browse checked land and homes across Nigeria from your phone, wherever you are.",
   },
   {
     photo: "/photos/message.webp",
@@ -21,7 +21,7 @@ const CHAPTERS = [
   {
     photo: "/photos/site.webp",
     alt: "A half-built house on a marked-out plot, seen from above",
-    title: "Terrain checks the title and the land.",
+    title: "Terrain checks the title and the property.",
     body: "Title documents and survey boundaries are checked before you commit.",
   },
   {
@@ -47,7 +47,7 @@ export function Journey() {
           className="max-w-xl text-[clamp(32px,5vw,52px)] leading-[1] tracking-[-0.02em] text-primary"
           style={{ fontFamily: "var(--font-display)", fontWeight: 800 }}
         >
-          Buy land in Abuja without flying home.
+          Buy property in Nigeria without flying home.
         </h2>
         <ol className="mt-10 space-y-12 sm:mt-12 sm:space-y-20">
           {CHAPTERS.map((c, i) => (
