@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { api } from "@/lib/api";
+import { isEmail } from "@/lib/email";
 
 // The home page's one action. Posts to the same waitlist as the ad pages
 // (variant "verified" is the closest promise; `source` marks it as home so
@@ -17,8 +18,8 @@ export function WaitlistForm({ id, onDark = false }: { id?: string; onDark?: boo
     e.preventDefault();
     if (busy) return;
     const value = contact.trim();
-    if (value.length < 5) {
-      setError("Enter your email or WhatsApp number.");
+    if (!isEmail(value)) {
+      setError("Enter your email address.");
       return;
     }
     setError("");
@@ -44,7 +45,7 @@ export function WaitlistForm({ id, onDark = false }: { id?: string; onDark?: boo
     return (
       <p role="status" className={`text-base ${onDark ? "text-white" : "text-primary"}`} style={{ fontFamily: "var(--font-body)" }}>
         <span className="font-bold">You’re on the list.</span>{" "}
-        <span className={onDark ? "text-white/80" : "text-secondary"}>We’ll message you when Terrain opens.</span>
+        <span className={onDark ? "text-white/80" : "text-secondary"}>We’ll email you when Terrain opens.</span>
       </p>
     );
   }
@@ -53,19 +54,18 @@ export function WaitlistForm({ id, onDark = false }: { id?: string; onDark?: boo
     <form id={id} onSubmit={submit} noValidate className="w-full max-w-md">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-0 sm:rounded-full sm:border sm:border-border-rule sm:bg-white sm:p-1.5 sm:shadow-[0_6px_20px_rgba(9,5,3,0.06)]">
         <label htmlFor={`${id ?? "waitlist"}-contact`} className="sr-only">
-          Email or WhatsApp number
+          Email address
         </label>
         <input
           id={`${id ?? "waitlist"}-contact`}
-          type="text"
-          inputMode="email"
+          type="email"
           autoComplete="email"
           value={contact}
           onChange={(e) => {
             setContact(e.target.value);
             if (error) setError("");
           }}
-          placeholder="Email or WhatsApp number"
+          placeholder="Your email address"
           aria-invalid={error ? true : undefined}
           aria-describedby={error ? `${id ?? "waitlist"}-error` : undefined}
           className="h-12 w-full min-w-0 rounded-full border border-border-rule bg-white px-5 text-[15px] text-primary placeholder:text-secondary focus:outline-none focus-visible:ring-2 focus-visible:ring-verified sm:h-11 sm:flex-1 sm:border-0 sm:bg-transparent sm:focus-visible:ring-0"
