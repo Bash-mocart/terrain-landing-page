@@ -50,8 +50,10 @@ Confirmed in the product today:
   Offer letter → Verify (optional, on request) → Pay → Recorded. "Recorded" means every
   document and receipt stays in the chat; it is NOT a land-registry filing.
 - Listings show the title document the company states (C of O > Govt Consent > Deed >
-  Survey Plan > Family Land). Terrain does NOT check titles or boundaries itself (owner,
-  2026-10-12: "we don't really do this"). Don't claim title, boundary or on-the-ground checks.
+  Survey Plan > Family Land). Terrain does NOT check every listing's title (owner,
+  2026-10-12). On request, Terrain brings in a lawyer and surveyor who inspect the title and
+  the land and post findings in the chat (the optional Verify step; owner confirmed it's
+  offered). Claim it only as optional, on request.
 - Payment plans (instalments) on listings; follow a company to get a push when it lists.
 - Map with an infrastructure layer (roads and projects nearby) and nearby places.
 - Listing media: photos and video.
