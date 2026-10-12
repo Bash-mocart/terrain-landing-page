@@ -25,7 +25,7 @@ export function LaunchGate() {
           src="/terrain/abuja-map.svg"
           alt=""
           aria-hidden
-          className="gate-breathe pointer-events-none fixed inset-0 h-full w-full object-cover object-[55%_45%]"
+          className="gate-breathe pointer-events-none fixed inset-0 h-full w-full object-cover object-[55%_45%] opacity-80 blur-[1.5px]"
         />
         {/* Canvas veil: clear for the words in the middle, terrain at the edges. */}
         <div
