@@ -1,8 +1,9 @@
 import Image from "next/image";
 
 // Your journey: a buyer far from home, from finding a property to owning it,
-// following the app's deal steps (message, offer letter, verify if wanted,
-// pay, recorded). The sequence is the content, so
+// following the app's deal steps (message, offer letter, pay, recorded).
+// The optional lawyer + surveyor check stays off the site until the owner
+// has agreed its terms. The sequence is the content, so
 // the chapters are numbered. Photos are real (Unsplash, provenance embedded
 // in each file); the people in them are not presented as customers.
 const CHAPTERS = [
@@ -28,8 +29,8 @@ const CHAPTERS = [
   {
     photo: "/photos/site.webp",
     alt: "A half-built house on a marked-out plot, seen from above",
-    title: "Verify, then pay.",
-    body: "Ask Terrain, and a lawyer and surveyor inspect the title and the land, then share their findings in your chat. You pay the company directly, as agreed. Terrain never holds your money.",
+    title: "You pay the company, as agreed.",
+    body: "Straight to the company, in instalments if they offer them. Terrain never holds your money.",
   },
   {
     photo: "/photos/home.webp",
