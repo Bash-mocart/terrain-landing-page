@@ -4,7 +4,7 @@ import { Countdown } from "./Countdown";
 import { WaitlistForm } from "./home/WaitlistForm";
 
 // Opening day, Lagos time (WAT, UTC+1). Until then the home page is this
-// gate: real Abuja contour lines drawing in behind the slogan, a countdown,
+// gate: a real map of Abuja drawing itself in behind the slogan, a countdown,
 // the waitlist.
 // ponytail: one constant; move to the backend's app config if it ever
 // needs changing without a deploy.
@@ -19,13 +19,13 @@ export function LaunchGate() {
         aria-labelledby="gate-title"
         className="fixed inset-0 overflow-y-auto bg-canvas"
       >
-        {/* Real Abuja contour lines (public/terrain), drawing themselves in. */}
+        {/* A real map of Abuja (public/terrain): terrain, water and roads drawing in. */}
         {/* eslint-disable-next-line @next/next/no-img-element -- animated SVG must stay an untouched file */}
         <img
-          src="/terrain/abuja-contours.svg"
+          src="/terrain/abuja-map.svg"
           alt=""
           aria-hidden
-          className="gate-breathe pointer-events-none fixed inset-0 h-full w-full object-cover object-[62%_44%]"
+          className="gate-breathe pointer-events-none fixed inset-0 h-full w-full object-cover object-[55%_45%]"
         />
         {/* Canvas veil: clear for the words in the middle, terrain at the edges. */}
         <div
@@ -33,7 +33,7 @@ export function LaunchGate() {
           className="pointer-events-none fixed inset-0"
           style={{
             background:
-              "radial-gradient(ellipse 55% 50% at 50% 46%, rgb(253 252 251 / 0.85) 0%, rgb(253 252 251 / 0.5) 55%, rgb(253 252 251 / 0) 100%)",
+              "radial-gradient(ellipse 60% 62% at 50% 50%, rgb(253 252 251 / 0.9) 0%, rgb(253 252 251 / 0.78) 50%, rgb(253 252 251 / 0) 100%)",
           }}
         />
         <div className="relative mx-auto flex min-h-full max-w-2xl flex-col items-center justify-center px-6 py-14 text-center">
