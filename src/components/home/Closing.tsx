@@ -51,14 +51,14 @@ export function Closing() {
                 className="text-[clamp(40px,7vw,72px)] leading-[0.95] tracking-[-0.02em] text-white"
                 style={{ fontFamily: "var(--font-display)", fontWeight: 800 }}
               >
-                Own. Build. Grow.
+                Be first in.
               </p>
               <h2
                 id="close-title"
                 className="mt-4 max-w-md text-lg leading-snug text-white/90"
                 style={{ fontFamily: "var(--font-body)" }}
               >
-                Be first in when Terrain opens.
+                We’ll email you when Terrain opens.
               </h2>
               <div className="mt-8">
                 <WaitlistForm id="closing-waitlist" onDark />

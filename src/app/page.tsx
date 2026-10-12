@@ -7,11 +7,11 @@ import { Footer } from "@/components/Footer";
 
 // One buyer's journey, then why it's safe, who's on Terrain, and the close.
 //
-//   Hero (live map)   own property you can trust + waitlist
+//   Hero (live map)   Own. Build. Grow. + waitlist
 //   Journey           five chapters, finds -> hers      #how-it-works
 //   Protection        built to protect you from fraud, with the real
 //                     verified companies as proof        #protection #companies
-//   Closing           sell on Terrain + Own. Build. Grow. + waitlist  #for-companies #waitlist
+//   Closing           sell on Terrain + be first in + waitlist  #for-companies #waitlist
 export default function Home() {
   return (
     <>

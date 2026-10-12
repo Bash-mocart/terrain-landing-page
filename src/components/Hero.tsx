@@ -23,21 +23,19 @@ export function Hero() {
             className="text-[clamp(44px,8vw,76px)] leading-[0.95] tracking-[-0.02em] text-primary"
             style={{ fontFamily: "var(--font-display)", fontWeight: 800 }}
           >
-            Own property
-            <br />
-            you can trust.
+            Own. Build. Grow.
           </h1>
           <p
             className="mt-5 text-xl leading-snug text-primary sm:text-2xl"
             style={{ fontFamily: "var(--font-body)" }}
           >
-            From anywhere in the world.
+            Land and homes in Nigeria, from anywhere in the world.
           </p>
           <p
             className="mt-3 max-w-md text-base leading-relaxed text-secondary"
             style={{ fontFamily: "var(--font-body)" }}
           >
-            Verified companies, checked land, and every deal kept on record.
+            Verified companies, checked properties, and every deal kept on record.
           </p>
           <div className="mt-8">
             <WaitlistForm id="hero-waitlist" />

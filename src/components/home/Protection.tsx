@@ -9,7 +9,7 @@ const POINTS = [
   },
   {
     title: "Every listing is checked.",
-    body: "Title documents and the land itself are checked before a listing goes live.",
+    body: "Title documents and the property itself are checked before a listing goes live.",
   },
   {
     title: "The chat is the record.",
