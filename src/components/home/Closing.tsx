@@ -47,19 +47,19 @@ export function Closing() {
             />
             <div className="absolute inset-0 bg-gradient-to-r from-[#090503]/80 via-[#090503]/55 to-[#090503]/10" aria-hidden />
             <div className="relative px-6 py-14 sm:px-12 sm:py-20 lg:py-24">
-              <p
+              <h2
+                id="close-title"
                 className="text-[clamp(40px,7vw,72px)] leading-[0.95] tracking-[-0.02em] text-white"
                 style={{ fontFamily: "var(--font-display)", fontWeight: 800 }}
               >
                 Be first in.
-              </p>
-              <h2
-                id="close-title"
+              </h2>
+              <p
                 className="mt-4 max-w-md text-lg leading-snug text-white/90"
                 style={{ fontFamily: "var(--font-body)" }}
               >
                 We’ll email you when Terrain opens.
-              </h2>
+              </p>
               <div className="mt-8">
                 <WaitlistForm id="closing-waitlist" onDark />
               </div>
