@@ -74,7 +74,7 @@ export function WaitlistForm({ id, onDark = false }: { id?: string; onDark?: boo
         <button
           type="submit"
           disabled={busy}
-          className="h-12 shrink-0 rounded-full bg-primary px-6 text-[15px] text-canvas transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-verified focus-visible:ring-offset-2 disabled:opacity-60 sm:h-11"
+          className={`h-12 shrink-0 rounded-full px-6 text-[15px] transition-opacity ${onDark ? "bg-canvas text-primary sm:bg-primary sm:text-canvas" : "bg-primary text-canvas"} hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-verified focus-visible:ring-offset-2 disabled:opacity-60 sm:h-11`}
           style={{ fontFamily: "var(--font-interactive)", fontWeight: 600 }}
         >
           {busy ? "Joining…" : "Join the waitlist"}

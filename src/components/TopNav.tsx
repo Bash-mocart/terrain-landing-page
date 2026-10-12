@@ -6,7 +6,7 @@ import { TerrainLogo } from "./TerrainLogo";
 
 // Root-relative anchors also work from product and variant routes.
 const LINKS = [
-  { label: "How it works", href: "/#how-it-works" },
+  { label: "Buy property", href: "/#how-it-works" },
   { label: "Fraud protection", href: "/#protection" },
   { label: "For companies", href: "/#for-companies" },
 ];
@@ -89,7 +89,7 @@ export function TopNav() {
 
         <button
           type="button"
-          className="-mr-1 inline-flex h-9 w-9 items-center justify-center text-primary lg:hidden"
+          className="-mr-2.5 inline-flex h-11 w-11 items-center justify-center text-primary lg:hidden"
           aria-label="Open menu"
           aria-expanded={menuOpen}
           aria-controls="mobile-menu"
@@ -118,7 +118,7 @@ export function TopNav() {
             <button
               ref={closeButtonRef}
               type="button"
-              className="-mr-2 inline-flex h-10 w-10 items-center justify-center text-primary"
+              className="-mr-2.5 inline-flex h-11 w-11 items-center justify-center text-primary"
               aria-label="Close menu"
               onClick={() => setMenuOpen(false)}
             >

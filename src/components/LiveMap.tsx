@@ -15,45 +15,6 @@ const ABUJA_MAX_BOUNDS: [[number, number], [number, number]] = [
   [7.85, 9.45], // NE
 ];
 
-// Sample fallback inventory used when the API fails or returns no FCT listings.
-const FALLBACK_LISTINGS: Listing[] = [
-  {
-    id: "sample-asokoro",
-    title: "Plot 14, Asokoro Crescent",
-    price: 150_000_000,
-    latitude: 9.0473,
-    longitude: 7.5181,
-  },
-  {
-    id: "sample-maitama",
-    title: "Plot 22, Maitama Cul-de-Sac",
-    price: 220_000_000,
-    latitude: 9.0888,
-    longitude: 7.4954,
-  },
-  {
-    id: "sample-wuse-ii",
-    title: "Plot 8, Wuse II Estate",
-    price: 95_000_000,
-    latitude: 9.0816,
-    longitude: 7.4647,
-  },
-  {
-    id: "sample-garki",
-    title: "Plot 41, Garki Phase 1",
-    price: 65_000_000,
-    latitude: 9.0258,
-    longitude: 7.4933,
-  },
-  {
-    id: "sample-jabi",
-    title: "Plot 73, Jabi Lake View",
-    price: 45_000_000,
-    latitude: 9.0894,
-    longitude: 7.4262,
-  },
-];
-
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? "";
 
 type PopupRef = { current: mapboxgl.Popup | null };
@@ -331,11 +292,10 @@ export function LiveMap({
           },
         );
       } catch (e) {
-        console.warn("Terrain map fetch failed, using fallback:", e);
+        console.warn("Terrain map fetch failed:", e);
         listings = [];
       }
       if (cancelled) return;
-      if (listings.length === 0) listings = FALLBACK_LISTINGS;
 
       try {
         for (const m of markersRef.current) m.remove();

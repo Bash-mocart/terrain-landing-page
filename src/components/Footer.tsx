@@ -53,21 +53,21 @@ export function Footer() {
           </div>
           {NAV.map((col) => (
             <div key={col.heading} className="lg:col-span-2">
-              <h4
+              <h3
                 className="text-xs uppercase tracking-[0.18em] text-canvas/60"
                 style={{ fontFamily: "var(--font-interactive)" }}
               >
                 {col.heading}
-              </h4>
+              </h3>
               <ul
-                className="mt-5 space-y-3"
+                className="mt-3 sm:mt-5 sm:space-y-3"
                 style={{ fontFamily: "var(--font-body)" }}
               >
                 {col.links.map((l) => (
                   <li key={l.label}>
                     <Link
                       href={l.href}
-                      className="text-sm text-canvas/85 transition-colors hover:text-canvas"
+                      className="inline-flex min-h-11 items-center text-sm text-canvas/85 transition-colors hover:text-canvas sm:min-h-0"
                     >
                       {l.label}
                     </Link>
