@@ -53,7 +53,7 @@ Confirmed in the product today:
   Survey Plan > Family Land). Terrain does NOT check every listing's title (owner,
   2026-10-12). On request, Terrain brings in a lawyer and surveyor who inspect the title and
   the land and post findings in the chat (the optional Verify step; owner confirmed it's
-  offered). Claim it only as optional, on request.
+  offered). Do NOT show it on the site yet: the owner wants to agree its terms first (2026-10-12).
 - Payment plans (instalments) on listings; follow a company to get a push when it lists.
 - Map with an infrastructure layer (roads and projects nearby) and nearby places.
 - Listing media: photos and video.
