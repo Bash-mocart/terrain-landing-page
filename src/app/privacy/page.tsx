@@ -171,6 +171,13 @@ export default function PrivacyPage() {
           problems. They do not log what you send. These logs are kept for a
           short time and overwritten automatically.
         </li>
+        <li>
+          <strong>Crash reports.</strong> If the app crashes or our server
+          hits an error, a report goes to Sentry so we can fix it: what went
+          wrong, the app version, and your phone&rsquo;s model and operating
+          system. We set it up not to send your name, messages, documents or
+          contact details.
+        </li>
       </ul>
       <p>
         The app does not use advertising or analytics software, and does not
@@ -263,6 +270,10 @@ export default function PrivacyPage() {
             Mapbox&rsquo;s privacy policy
           </a>
           .
+        </li>
+        <li>
+          <strong>Sentry</strong>: receives crash and error reports so we can
+          fix problems.
         </li>
         <li>
           <strong>Google</strong>: only if you choose to sign in with Google.
