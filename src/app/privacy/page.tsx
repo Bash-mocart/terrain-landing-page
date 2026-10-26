@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { LegalHeading, LegalPage } from "@/components/LegalPage";
+import { LEGAL } from "@/lib/legal";
 
 export const metadata: Metadata = {
   title: "Privacy policy · Terrain",
@@ -40,10 +41,14 @@ export default function PrivacyPage() {
       <LegalHeading id="who-we-are">1. Who we are</LegalHeading>
       <p>
         Terrain is a Nigerian marketplace for land and homes from verified
-        real estate companies. &ldquo;Terrain&rdquo;, &ldquo;we&rdquo; and
-        &ldquo;us&rdquo; mean the company that runs the Terrain app and
-        terrain.ng. We decide how your personal data is used, so we are its
-        data controller.
+        real estate companies. It is run by {LEGAL.name} ({LEGAL.rc}), a
+        company incorporated with the Corporate Affairs Commission of Nigeria
+        on {LEGAL.incorporated}. Our registered address is {LEGAL.address}.
+      </p>
+      <p>
+        &ldquo;Terrain&rdquo;, &ldquo;we&rdquo; and &ldquo;us&rdquo; mean{" "}
+        {LEGAL.name}, which runs the Terrain app and terrain.ng. We decide how
+        your personal data is used, so we are its data controller.
       </p>
 
       <LegalHeading id="what-we-collect">2. What we collect</LegalHeading>
@@ -392,8 +397,11 @@ export default function PrivacyPage() {
       <LegalHeading id="contact">10. Contact us</LegalHeading>
       <p>
         For any privacy question or request, talk to us in the app (Profile,
-        then Help &amp; safety) or on WhatsApp at{" "}
-        <a href="https://wa.me/2348147746701">+234 814 774 6701</a>. Our{" "}
+        then Help &amp; safety), email{" "}
+        <a href={`mailto:${LEGAL.email}`}>{LEGAL.email}</a>, or call or
+        WhatsApp <a href={LEGAL.whatsapp}>{LEGAL.phone}</a>.
+        All the ways to reach us are on our <Link href="/contact">Contact</Link>{" "}
+        page. Our{" "}
         <Link href="/terms">Terms</Link> explain the rules for using Terrain.
       </p>
     </LegalPage>

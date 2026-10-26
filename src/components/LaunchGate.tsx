@@ -2,6 +2,7 @@ import Link from "next/link";
 import { TerrainLogo } from "./TerrainLogo";
 import { Countdown } from "./Countdown";
 import { WaitlistForm } from "./home/WaitlistForm";
+import { LEGAL_LINE } from "@/lib/legal";
 
 // Opening day, Lagos time (WAT, UTC+1). Until then the home page is this
 // gate: a real map of Abuja drawing itself in behind the slogan, a countdown,
@@ -84,13 +85,16 @@ export function LaunchGate() {
           >
             <Link href="/privacy" className="hover:text-primary">Privacy</Link>
             <Link href="/terms" className="hover:text-primary">Terms</Link>
-            <a href="mailto:support@terrain.ng" className="hover:text-primary">Contact</a>
+            <Link href="/contact" className="hover:text-primary">Contact</Link>
           </nav>
           <p className="mt-3 text-xs text-secondary/80" style={{ fontFamily: "var(--font-body)" }}>
             Map of Abuja ©{" "}
             <a href="https://www.openstreetmap.org/copyright" className="underline-offset-2 hover:underline">
               OpenStreetMap contributors
             </a>
+          </p>
+          <p className="mt-2 text-xs text-secondary/80" style={{ fontFamily: "var(--font-body)" }}>
+            © {new Date().getFullYear()} {LEGAL_LINE}
           </p>
         </div>
       </section>
