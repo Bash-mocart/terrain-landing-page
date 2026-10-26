@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { LegalHeading, LegalPage } from "@/components/LegalPage";
+import { LEGAL } from "@/lib/legal";
 
 export const metadata: Metadata = {
   title: "Terms · Terrain",
@@ -15,6 +16,15 @@ export default function TermsPage() {
       title="Terms"
       lede="These terms are the agreement between you and Terrain when you use the Terrain app or terrain.ng. Please read them. By creating an account or using Terrain, you agree to them."
     >
+      <LegalHeading id="who-we-are">Who we are</LegalHeading>
+      <p>
+        Terrain is run by {LEGAL.name} ({LEGAL.rc}), a company incorporated
+        with the Corporate Affairs Commission of Nigeria on{" "}
+        {LEGAL.incorporated}. Our registered address is {LEGAL.address}.
+        &ldquo;Terrain&rdquo;, &ldquo;we&rdquo; and &ldquo;us&rdquo; in these
+        terms mean {LEGAL.name}.
+      </p>
+
       <LegalHeading id="what-terrain-is">1. What Terrain is</LegalHeading>
       <p>
         Terrain is a marketplace and records platform for land and homes in
@@ -214,8 +224,9 @@ export default function TermsPage() {
       <LegalHeading id="disputes">12. Disputes and governing law</LegalHeading>
       <p>
         If you have a problem with Terrain, please talk to us first through
-        the in-app support chat or on WhatsApp at{" "}
-        <a href="https://wa.me/2348147746701">+234 814 774 6701</a>, and we
+        the in-app support chat, by email at{" "}
+        <a href={`mailto:${LEGAL.email}`}>{LEGAL.email}</a>, or on WhatsApp at{" "}
+        <a href={LEGAL.whatsapp}>{LEGAL.phone}</a>, and we
         will try to put it right. These terms are governed by the laws of the
         Federal Republic of Nigeria, and the courts of Nigeria have
         jurisdiction over any dispute about them.
@@ -231,8 +242,11 @@ export default function TermsPage() {
 
       <LegalHeading id="contact">14. Contact us</LegalHeading>
       <p>
-        Talk to us in the app (Profile, then Help &amp; safety) or on WhatsApp
-        at <a href="https://wa.me/2348147746701">+234 814 774 6701</a>.
+        Talk to us in the app (Profile, then Help &amp; safety), email{" "}
+        <a href={`mailto:${LEGAL.email}`}>{LEGAL.email}</a>, or call or
+        WhatsApp <a href={LEGAL.whatsapp}>{LEGAL.phone}</a>.
+        Letters can go to {LEGAL.name}, {LEGAL.address}. See also our{" "}
+        <Link href="/contact">Contact</Link> page.
       </p>
     </LegalPage>
   );

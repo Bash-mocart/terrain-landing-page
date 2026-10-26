@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { TerrainLogo } from "./TerrainLogo";
 import { Coordinate } from "./cartographic";
+import { LEGAL_LINE } from "@/lib/legal";
 
 // Footer. Dark surface with the wordmark, three nav columns, and a
 // thin legal line. Social icons land alongside the wordmark; copy
@@ -29,7 +30,7 @@ const NAV = [
     links: [
       { label: "Help Center", href: "#" },
       { label: "Platform Status", href: "#" },
-      { label: "Contact Support", href: "mailto:support@terrain.ng" },
+      { label: "Contact", href: "/contact" },
     ],
   },
 ];
@@ -79,8 +80,7 @@ export function Footer() {
         </div>
         <div className="mt-12 flex flex-col items-start gap-3 border-t border-canvas/15 pt-6 text-xs text-canvas/55 sm:mt-16 md:flex-row md:items-center md:justify-between">
           <p style={{ fontFamily: "var(--font-body)" }}>
-            © {new Date().getFullYear()} Terrain Technologies Ltd. All rights
-            reserved.
+            © {new Date().getFullYear()} {LEGAL_LINE}
           </p>
           <div className="flex items-center gap-4">
             <Coordinate tone="canvas">9.0820&deg; N &middot; 8.6753&deg; E</Coordinate>
