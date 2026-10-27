@@ -7,7 +7,7 @@ import { SellerProfile } from "@/components/seller/SellerProfile";
 
 export const metadata: Metadata = {
   title: "Seller profile | Terrain",
-  description: "View verified property sellers and their listings on Terrain.",
+  description: "View real estate companies and their listings on Terrain.",
 };
 
 export default async function SellerPage({

@@ -17,7 +17,7 @@ export function ComingSoon() {
           className="mt-5 text-4xl leading-tight tracking-tight text-primary"
           style={{ fontFamily: "var(--font-display)", fontWeight: 700 }}
         >
-          Verified listings are almost here.
+          Land and homes from verified companies, almost here.
         </h1>
         <p
           className="mt-4 leading-relaxed text-secondary"

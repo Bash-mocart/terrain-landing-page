@@ -80,7 +80,7 @@ export async function BrowseFeed({
       <div className="mx-auto max-w-[1280px] px-6 py-10 sm:px-8 sm:py-14 lg:px-10">
         <div className="max-w-3xl">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-verified">
-            Verified property marketplace
+            Property from verified companies
           </p>
           <h1 className="mt-3 font-display text-[clamp(38px,6vw,64px)] font-bold leading-none tracking-tight">
             Find property you can trust.
@@ -136,7 +136,7 @@ export async function BrowseFeed({
 
         {verifiedListings.length > 0 && (
           <PropertySection
-            title="Verified this week"
+            title="New this week"
             listings={verifiedListings}
             className="mt-14"
           />

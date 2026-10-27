@@ -92,13 +92,8 @@ export default async function SharedListingPage({ params }: Props) {
           />
         )}
         <div className="p-6">
-          {listing.is_verified && (
-            <span className="inline-flex rounded-full bg-verified px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-white">
-              Verified
-            </span>
-          )}
           <h1
-            className="mt-3 text-3xl leading-tight text-primary"
+            className="text-3xl leading-tight text-primary"
             style={{ fontFamily: "var(--font-display)" }}
           >
             {listing.title || "Property on Terrain"}
