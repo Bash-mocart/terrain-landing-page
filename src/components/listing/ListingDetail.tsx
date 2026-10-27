@@ -71,14 +71,9 @@ export function ListingDetail({
                   {formatPrice(Number(listing.price) || 0)}
                 </p>
                 <h1 className="mt-2 font-display text-3xl font-bold tracking-tight text-primary">
-                  {listing.title || "Verified property"}
+                  {listing.title || "Property on Terrain"}
                 </h1>
               </div>
-              {listing.is_verified && (
-                <span className="ml-auto shrink-0 rounded-full bg-verified px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-white">
-                  Verified
-                </span>
-              )}
             </div>
 
             <div className="mt-5 flex flex-wrap items-center gap-3">

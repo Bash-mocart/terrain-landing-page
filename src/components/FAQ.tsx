@@ -24,7 +24,7 @@ const FAQS: Q[] = [
   {
     q: "How do I view a property in person?",
     a:
-      "Every listing shows the agent's contact details, so you can reach them directly to arrange a visit. Terrain can also help: we assist with site visits, property inspection, and document checks, so you are not verifying a property on your own.",
+      "Message the company in the Terrain app to arrange a visit; the chat stays on record.",
   },
   {
     q: "How does Terrain decide which agents are allowed to list?",
@@ -39,7 +39,7 @@ const FAQS: Q[] = [
   {
     q: "What protects me if a deal goes wrong?",
     a:
-      "Two things. First, we only allow CAC-registered, vetted companies to list, so you start by dealing with a real business. Second, we can help you check the property before you pay, with site visits, inspection, and document verification. You still make the final call, and payment goes directly to the agent, not through Terrain.",
+      "We only allow CAC-registered, vetted companies to list, so you start by dealing with a real business, and every chat and offer letter stays on record. You still make the final call, and payment goes directly to the agent, not through Terrain.",
   },
 ];
 

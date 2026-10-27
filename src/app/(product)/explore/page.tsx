@@ -3,7 +3,7 @@ import { ComingSoon } from "@/components/ComingSoon";
 
 export const metadata: Metadata = {
   title: "Explore property across Nigeria | Terrain",
-  description: "Explore verified land and homes across Nigeria on the map.",
+  description: "Explore land and homes from verified real estate companies across Nigeria on the map.",
 };
 
 // Paused before launch; at launch render <ExploreMap /> again

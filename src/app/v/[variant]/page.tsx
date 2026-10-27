@@ -25,16 +25,16 @@ import { MetaPixel } from "@/components/smoke/MetaPixel";
 const VARIANTS = {
   verified: {
     eyebrow: "Nigeria’s property registry",
-    headline: "Every property verified. Every company CAC-checked.",
+    headline: "Every company CAC-checked.",
     subhead:
-      "Buy land and homes without fear. Terrain checks the title, the boundary, and the company behind every listing before you ever see it.",
-    cta: "Browse verified properties",
+      "Buy land and homes from real estate companies Terrain has checked against the CAC register. Every chat and offer letter stays on record.",
+    cta: "Browse properties",
   },
   plans: {
     eyebrow: "Own property in instalments",
     headline: "Own land and homes with interest-free payment plans.",
     subhead:
-      "Verified plots and homes with instalment plans from trusted companies. Pay a deposit, spread the rest — no interest, no middlemen.",
+      "Plots and homes with instalment plans from verified companies. Pay a deposit, spread the rest — no interest, no middlemen.",
     cta: "See payment plans",
   },
   abroad: {

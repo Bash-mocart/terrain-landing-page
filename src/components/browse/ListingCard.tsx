@@ -31,11 +31,6 @@ export function ListingCard({ listing }: { listing: Listing }) {
         }
       >
         <div className="flex h-full items-start justify-between p-4">
-          {listing.is_verified && (
-            <span className="rounded-full bg-verified px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-white">
-              Verified
-            </span>
-          )}
           {listing.has_payment_plan && (
             <span className="ml-auto rounded-full bg-primary px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-canvas">
               Installments
@@ -48,7 +43,7 @@ export function ListingCard({ listing }: { listing: Listing }) {
           {formatPrice(Number(listing.price) || 0)}
         </p>
         <h3 className="mt-1 line-clamp-1 text-base text-primary">
-          {listing.title || "Verified property"}
+          {listing.title || "Property on Terrain"}
         </h3>
         <p className="mt-2 text-sm text-secondary">
           {location || "Nigeria"}

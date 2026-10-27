@@ -83,14 +83,9 @@ export function ListingPreviewCard({
                   {formatPrice(Number(listing.price) || 0)}
                 </p>
                 <h2 className="mt-1 text-base font-semibold text-primary">
-                  {listing.title || "Verified property"}
+                  {listing.title || "Property on Terrain"}
                 </h2>
               </div>
-              {listing.is_verified && (
-                <span className="ml-auto shrink-0 rounded-full bg-verified px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-white">
-                  Verified
-                </span>
-              )}
             </div>
             <p className="mt-2 text-sm text-secondary">
               {location}

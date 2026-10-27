@@ -30,12 +30,12 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Terrain. Verified land and homes in Nigeria.",
+  title: "Terrain. Land and homes from verified companies in Nigeria.",
   description:
     "Land and homes across Nigeria from verified real estate companies, with every deal kept on record.",
   metadataBase: new URL("https://terrain.ng"),
   openGraph: {
-    title: "Terrain. Verified land and homes in Nigeria.",
+    title: "Terrain. Land and homes from verified companies in Nigeria.",
     description:
       "Land and homes across Nigeria from verified real estate companies, with every deal kept on record.",
     url: "https://terrain.ng",

@@ -6,7 +6,7 @@ import { ApiError } from "@/lib/api";
 
 export const metadata: Metadata = {
   title: "Property listing | Terrain",
-  description: "Review verified property details from Terrain.",
+  description: "Property details from a real estate company on Terrain.",
 };
 
 export default async function ListingPage({
