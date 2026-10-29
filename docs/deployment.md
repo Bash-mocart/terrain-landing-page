@@ -34,12 +34,14 @@ Configure these public variables separately for Preview and Production:
 | `NEXT_PUBLIC_TERRAIN_API_URL` | Production: `https://api.terrain.ng`. Preview: test backend URL. |
 | `NEXT_PUBLIC_MAPBOX_TOKEN` | Public `pk` token authorized for production or preview origins. |
 | `NEXT_PUBLIC_META_PIXEL_ID` | Production experiment pixel ID when tracking is enabled; omit in previews to avoid test events. |
+| `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | Production: the Cloudflare Turnstile site key for `terrain.ng`. Preview: unset (no widget). |
 
 Changes to these variables require a rebuild.
 
 An unset API URL falls back to production. Until previews have a test backend,
 intercept signup and check-request submissions in browser tests to avoid
-writing production data.
+writing production data. Once the backend enforces Turnstile, preview signups
+to the production API get 400 because previews have no widget.
 
 ## Release checks
 

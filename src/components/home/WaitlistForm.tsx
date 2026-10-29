@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { TurnstileWidget } from "@/components/TurnstileWidget";
 import { api } from "@/lib/api";
 import { isEmail } from "@/lib/email";
 
@@ -12,6 +13,8 @@ export function WaitlistForm({ id, onDark = false }: { id?: string; onDark?: boo
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [done, setDone] = useState(false);
+  const [token, setToken] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
   const sourceRef = useRef<string | null>(null);
 
   async function submit(e: React.FormEvent) {
@@ -31,11 +34,14 @@ export function WaitlistForm({ id, onDark = false }: { id?: string; onDark?: boo
         intent: "",
         variant: "verified",
         source: sourceRef.current,
+        turnstile_token: token ?? "",
       });
       setDone(true);
     } catch (err) {
       console.error("Waitlist signup failed:", err);
       setError("That didn’t go through. Try again in a moment.");
+      setToken(null);
+      setAttempt((n) => n + 1);
     } finally {
       setBusy(false);
     }
@@ -80,6 +86,7 @@ export function WaitlistForm({ id, onDark = false }: { id?: string; onDark?: boo
           {busy ? "Joining…" : "Join the waitlist"}
         </button>
       </div>
+      <TurnstileWidget key={attempt} onToken={setToken} />
       {error && (
         <p id={`${id ?? "waitlist"}-error`} role="alert" className={`mt-2 pl-5 text-sm ${onDark ? "text-white" : "text-[#c92a2a]"}`}>
           {error}

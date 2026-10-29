@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { TurnstileWidget } from "@/components/TurnstileWidget";
 import { api } from "@/lib/api";
 import { isEmail } from "@/lib/email";
 
@@ -37,6 +38,8 @@ export function SignupForm({
   const [error, setError] = useState("");
   const [signupId, setSignupId] = useState("");
   const [checkRequested, setCheckRequested] = useState(false);
+  const [token, setToken] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
   const [price, setPrice] = useState<number | null>(null);
   const sourceRef = useRef<string | null>(null);
@@ -60,6 +63,7 @@ export function SignupForm({
         intent,
         variant,
         source: sourceRef.current,
+        turnstile_token: token ?? "",
       });
       setSignupId(id);
       track("Lead", { variant, intent });
@@ -67,6 +71,8 @@ export function SignupForm({
     } catch (error) {
       console.error("Waitlist signup failed:", error);
       setError("Something went wrong. Please try again.");
+      setToken(null);
+      setAttempt((n) => n + 1);
     } finally {
       setBusy(false);
     }
@@ -176,6 +182,7 @@ export function SignupForm({
           {busy ? "Sending…" : cta}
         </button>
       </div>
+      <TurnstileWidget key={attempt} onToken={setToken} />
       <div className="mt-3 flex flex-wrap items-center gap-2">
         {(
           [
